@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.service.AuthenticationService;
 import com.example.demo.service.LogoutService;
+import com.example.demo.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +26,23 @@ public class AuthenticationController {
 
   private final LogoutService logoutService;
 
+  @Autowired
+  private UserService userService;
+
   @PostMapping("/sign-up")
   public ResponseEntity<AuthenticationResponse> register(
     @RequestBody RegisterRequest request
   ) {
+    if (userService.isEmailExists(request.getEmail())) {
+      AuthenticationResponse response = new AuthenticationResponse();
+      response.setMessage("Email already exists");
+      return ResponseEntity.badRequest().body(response);
+    }
+    if (userService.isUsernameExists(request.getUsername())) {
+      AuthenticationResponse response = new AuthenticationResponse();
+      response.setMessage("Username already exists");
+      return ResponseEntity.badRequest().body(response);
+    }
     return ResponseEntity.ok(authenticationService.register(request));
   }
 

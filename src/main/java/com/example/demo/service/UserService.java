@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class UserService {
 
@@ -19,4 +21,19 @@ public class UserService {
   public User findByEmail(String email) {
     return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
   }
+
+  public User findByUsername(String username) {
+    return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
+  }
+
+  public boolean isEmailExists(String email) {
+    Optional<User> user = userRepository.findByEmail(email);
+    return user.isPresent();
+  }
+
+  public boolean isUsernameExists(String username){
+    Optional<User> user = userRepository.findByUsername((username));
+    return user.isPresent();
+  }
+
 }

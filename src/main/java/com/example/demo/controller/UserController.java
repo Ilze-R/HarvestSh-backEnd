@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/user")
 public class UserController {
@@ -22,6 +24,16 @@ public class UserController {
   @Autowired
   private UserRepository userRepository;
 
+
+  @GetMapping("/all-users")
+  public List<User> getGroups() {
+    return (List<User>) userRepository.findAll();
+  }
+
+  @GetMapping("/users-count")
+  public Long getUsersCount() {
+    return userRepository.count();
+  }
 
 //  @PutMapping("change/{role}") // api/user/change/{role}
 //  public ResponseEntity<?> changeRole(@AuthenticationPrincipal UserPrincipal userPrincipal, @PathVariable Role role) {
