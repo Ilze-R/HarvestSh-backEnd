@@ -1,39 +1,23 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.User;
-import com.example.demo.exceptions.UserNotFoundException;
-import com.example.demo.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import com.example.demo.domain.Users;
+import com.example.demo.dto.UserDTO;
+import com.example.demo.form.UpdateForm;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Optional;
-
-@Service
-public class UserService {
-
-  @Autowired
-  UserRepository userRepository;
-
-  @Autowired
-  private PasswordEncoder passwordEncoder;
-
-  public User findByEmail(String email) {
-    return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
-  }
-
-  public User findByUsername(String username) {
-    return userRepository.findByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
-  }
-
-  public boolean isEmailExists(String email) {
-    Optional<User> user = userRepository.findByEmail(email);
-    return user.isPresent();
-  }
-
-  public boolean isUsernameExists(String username){
-    Optional<User> user = userRepository.findByUsername((username));
-    return user.isPresent();
-  }
-
+public interface UserService {
+    UserDTO createUser(Users user);
+    UserDTO getUserByEmail(String email);
+    void sendVerificationCode(UserDTO user);
+    UserDTO verifyCode(String email, String code);
+    void resetPassword(String email);
+    UserDTO verifyPasswordKey(String key);
+    void updatePassword(Long userId, String password, String confirmPassword);
+    UserDTO verifyAccountKey(String key);
+    UserDTO updateUserDetails(UpdateForm user);
+    UserDTO getUserById(Long userId);
+    void updatePassword(Long userId, String currentPassword, String newPassword, String confirmNewPassword);
+    void updateUserRole(Long userId, String roleName);
+    void updateAccountSettings(Long userId, Boolean enabled, Boolean notLocked);
+    void updateImage(UserDTO user, MultipartFile image);
 }
