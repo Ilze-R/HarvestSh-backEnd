@@ -14,7 +14,7 @@ import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails {
-    private final User user;
+    private final Users user;
     private final Role role;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -1,24 +1,25 @@
 package com.example.demo.repository;
 
-import com.example.demo.domain.User;
+import com.example.demo.domain.Users;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.form.UpdateForm;
-import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 
-public interface UserRepository<T extends User>{
+public interface UserRepository<T extends Users> {
     T create(T data);
     Collection<T> list(int page, int pageSize);
     T get (Long id);
     T update(T data);
+
+//    Optional<T> findById(Id id);
     Boolean delete (Long id);
 
-    User getUserByEmail(String email);
+    Users getUserByEmail(String email);
     void sendVerificationCode(UserDTO user);
 
-    User verifyCode(String email, String code);
+    Users verifyCode(String email, String code);
 
     void resetPassword(String email);
 

@@ -1,31 +1,27 @@
 package com.example.demo.service.implementation;
 
-import com.example.demo.domain.Gives;
 import com.example.demo.domain.Role;
-import com.example.demo.domain.User;
+import com.example.demo.domain.Users;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.form.UpdateForm;
-import com.example.demo.repository.GivesRepository;
 import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import static org.springframework.data.domain.PageRequest.*;
 
 import static com.example.demo.dtomapper.UserDTOMapper.fromUser;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserRepository<User> userRepository;
+    private final UserRepository<Users> userRepository;
     private final RoleRepository<Role> roleRepository;
-    private final GivesRepository givesRepository;
+
 
     @Override
-    public UserDTO createUser(User user) {
+    public UserDTO createUser(Users user) {
         return mapUserToDTO(userRepository.create(user));
     }
 
@@ -94,29 +90,7 @@ public class UserServiceImpl implements UserService {
         userRepository.updateImage(user, image);
     }
 
-    @Override
-    public Gives createGive(Gives gives) {
-        return givesRepository.save(gives);
-    }
-
-    @Override
-    public Page<Gives> getGives(int page, int size) {
-        return givesRepository.findAll(of(page, size));
-    }
-
-    @Override
-    public void addGivesToUser(Long id, Gives gives) {
-        User user = userRepository.get(id);
-        gives.setUser(user);
-        givesRepository.save(gives);
-    }
-
-    @Override
-    public Gives getOneGive(Long id) {
-        return givesRepository.findById(id).get();
-    }
-
-    private UserDTO mapUserToDTO(User user) {
+    private UserDTO mapUserToDTO(Users user) {
         return fromUser(user, roleRepository.getRoleByUserId(user.getId()));
     }
 }

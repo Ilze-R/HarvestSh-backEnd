@@ -9,6 +9,7 @@ public enum EventType {
     ROLE_UPDATE("You updated your role and permissions"),
 
     ACCOUNT_SETTINGS_UPDATE("You updated your account settings"),
+    MFA_UPDATE("You updated your MFA settings"),
 
     PASSWORD_UPDATE("You updated your password");
 

@@ -14,12 +14,7 @@ import java.time.LocalDateTime;
 public class UserDTO {
     private Long id;
     private String username;
-//    private String lastName;
     private String email;
-//    private String address;
-//    private String phone;
-//    private String title;
-//    private String bio;
     private String imageUrl;
     private boolean enabled;
     private boolean isNotLocked;

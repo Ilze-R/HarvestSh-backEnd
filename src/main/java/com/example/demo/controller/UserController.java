@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.Gives;
+import com.example.demo.domain.Give;
 import com.example.demo.domain.HttpResponse;
-import com.example.demo.domain.User;
 import com.example.demo.domain.UserPrincipal;
+import com.example.demo.domain.Users;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.enumeration.EventType;
 import com.example.demo.event.NewUserEvent;
@@ -11,6 +11,7 @@ import com.example.demo.exception.ApiException;
 import com.example.demo.form.*;
 import com.example.demo.provider.TokenProvider;
 import com.example.demo.service.EventService;
+import com.example.demo.service.GiveService;
 import com.example.demo.service.RoleService;
 import com.example.demo.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,7 +31,6 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static com.example.demo.dtomapper.UserDTOMapper.toUser;
 import static com.example.demo.enumeration.EventType.*;
@@ -58,6 +58,7 @@ public class UserController {
     private final HttpServletResponse response;
     private final ApplicationEventPublisher publisher;
     private final EventService eventService;
+    private  final GiveService giveService;
 
     @PostMapping("/login")
     public ResponseEntity<HttpResponse> login(@RequestBody @Valid LoginForm loginForm) {
@@ -67,7 +68,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<HttpResponse> saveUser(@RequestBody @Valid User user) {
+    public ResponseEntity<HttpResponse> saveUser(@RequestBody @Valid Users user) {
         UserDTO userDTO = userService.createUser(user);
         return ResponseEntity.created(getUrl()).body(
                 HttpResponse.builder()
@@ -326,56 +327,69 @@ public class UserController {
                         .build());
     }
 
-    @PostMapping("/gives/created")
-    public ResponseEntity<HttpResponse> createInvoice(@AuthenticationPrincipal UserDTO user, @RequestBody Gives gives) {
-        return ResponseEntity.created(URI.create(""))
-                .body(
-                        HttpResponse.builder()
-                                .timeStamp(now().toString())
-                                .data(of("user", userService.getUserByEmail(user.getEmail()),
-                                        "gives", userService.createGive(gives)))
-                                .message("Give created")
-                                .status(CREATED)
-                                .statusCode(CREATED.value())
-                                .build());
-    }
-
-//    @GetMapping("/give/new")
-//    public ResponseEntity<HttpResponse> newInvoice(@AuthenticationPrincipal UserDTO user) {
-//        return ResponseEntity.ok(
-//                HttpResponse.builder()
-//                        .timeStamp(now().toString())
-//                        .data(of("user", userService.getUserByEmail(user.getEmail()),
-//                                "gives", userService.g))
-//                        .message("Gives retrieved")
-//                        .status(OK)
-//                        .statusCode(OK.value())
-//                        .build());
-//    }
-
-    @GetMapping("/gives/list")
-    public ResponseEntity<HttpResponse> getInvoices(@AuthenticationPrincipal UserDTO user, @RequestParam Optional<Integer> page, @RequestParam Optional<Integer> size) {
+    @PostMapping("/give/addtouser/{id}")
+    public ResponseEntity<HttpResponse> addGiveToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id, @RequestBody Give give) {
+        Give createdGive = giveService.createGive(give, id);
         return ResponseEntity.ok(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
                         .data(of("user", userService.getUserByEmail(user.getEmail()),
-                                "page", userService.getGives(page.orElse(0), size.orElse(10))))
-                        .message("Gives retrieved")
+                                "give", createdGive))
+                        .message(String.format("Give added to user with ID: %s", id))
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
     }
 
-    @GetMapping("/gives/get/{id}")
-    public ResponseEntity<HttpResponse> getInvoice(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id) {
-        Gives gives = userService.getOneGive(id);
+//    @PostMapping("/give/created")
+//    public ResponseEntity<HttpResponse> createInvoice(@AuthenticationPrincipal UserDTO user, @RequestBody Give give) {
+//        return ResponseEntity.created(URI.create(""))
+//                .body(
+//                        HttpResponse.builder()
+//                                .timeStamp(now().toString())
+//                                .data(of("user", userService.getUserByEmail(user.getEmail()),
+//                                        "give", userService.createGive(give)))
+//                                .message("Give created")
+//                                .status(CREATED)
+//                                .statusCode(CREATED.value())
+//                                .build());
+//    }
+
+
+//    @PostMapping("/user/{id}/give")
+//    public Give createGive(@PathVariable Long id,
+//                                 @Valid @RequestBody Give give) {
+//        return userService.getUserById(id).map(user -> {
+//            give.(user);
+//            return commentRepository.save(comment);
+//        }).orElseThrow(() -> new ResourceNotFoundException("PostId " + postId + " not found"));
+//    }
+
+    @PostMapping("/user/{id}/give")
+    public ResponseEntity<HttpResponse> createGive(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id, @RequestBody Give give){
+    giveService.createGive(give, id);
         return ResponseEntity.ok(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
-                        .data(of("user", userService.getUserByEmail(user.getEmail()), "gives", gives , "usergives", userService.getOneGive(id).getUser()))
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "give", userService.getUserById(id)))
+                        .message(String.format("Give added to user with ID: %s", id))
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/give/new")
+    public ResponseEntity<HttpResponse> newGive(@AuthenticationPrincipal UserDTO user) {
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "give", userService.getUserByEmail(user.getEmail())))
                         .message("Give retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
     }
+
 }

@@ -1,8 +1,8 @@
 package com.example.demo.repository.implementation;
 
 import com.example.demo.domain.Role;
-import com.example.demo.domain.User;
 import com.example.demo.domain.UserPrincipal;
+import com.example.demo.domain.Users;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.enumeration.VerificationType;
 import com.example.demo.exception.ApiException;
@@ -43,7 +43,6 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Map.of;
 import static java.util.Objects.requireNonNull;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.time.DateFormatUtils.format;
 import static org.apache.commons.lang3.time.DateUtils.addDays;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
@@ -51,14 +50,14 @@ import static org.springframework.web.servlet.support.ServletUriComponentsBuilde
 @Repository
 @RequiredArgsConstructor
 @Slf4j
-public class UserRepositoryImpl implements UserRepository<User>, UserDetailsService {
+public class UserRepositoryImpl implements UserRepository<Users>, UserDetailsService {
     private static final String DATE_FORMAT = "yyyy-MM-dd hh:mm:ss";
     private final NamedParameterJdbcTemplate jdbc;
     private final RoleRepository<Role> roleRepository;
     private final BCryptPasswordEncoder encoder;
     private final EmailService emailService;
     @Override
-    public User create(User user) {
+    public Users create(Users user) {
         // Check the email is unique
         if(getEmailCount(user.getEmail().trim().toLowerCase()) > 0) throw new ApiException("Email already in use. Please use a different email and try again");
        // Save new user
@@ -116,12 +115,12 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
 
 
     @Override
-    public Collection<User> list(int page, int pageSize) {
+    public Collection<Users> list(int page, int pageSize) {
         return null;
     }
 
     @Override
-    public User get(Long id) {
+    public Users get(Long id) {
         try {
             return jdbc.queryForObject(SELECT_USER_BY_ID_QUERY, of("id", id), new UserRowMapper());
         } catch (EmptyResultDataAccessException exception){
@@ -133,7 +132,7 @@ public class UserRepositoryImpl implements UserRepository<User>, UserDetailsServ
     }
 
     @Override
-    public User update(User data) {
+    public Users update(Users data) {
         return null;
     }
 
@@ -150,7 +149,7 @@ return jdbc.queryForObject(COUNT_USER_EMAIL_QUERY, of("email", email), Integer.c
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = getUserByEmail(email);
+        Users user = getUserByEmail(email);
         if(user == null){
             log.error("User not found in the database");
             throw new UsernameNotFoundException("User not found in the database");
@@ -161,9 +160,9 @@ return jdbc.queryForObject(COUNT_USER_EMAIL_QUERY, of("email", email), Integer.c
     }
 
     @Override
-    public User getUserByEmail(String email) {
+    public Users getUserByEmail(String email) {
         try {
-            User user = jdbc.queryForObject(SELECT_USER_BY_EMAIL_QUERY, of("email", email), new UserRowMapper());
+            Users user = jdbc.queryForObject(SELECT_USER_BY_EMAIL_QUERY, of("email", email), new UserRowMapper());
             return user;
         } catch (EmptyResultDataAccessException exception){
             throw new ApiException("No user found by email: " + email);
@@ -189,12 +188,12 @@ return jdbc.queryForObject(COUNT_USER_EMAIL_QUERY, of("email", email), Integer.c
     }
 
     @Override
-    public User verifyCode(String email, String code) {
+    public Users verifyCode(String email, String code) {
         if(isVerificationCodeExpired(code)) throw new ApiException("This code has expired. Please login again");
 
         try {
-            User userByCode = jdbc.queryForObject(SELECT_USER_BY_USER_CODE_QUERY, of("code", code), new UserRowMapper());
-            User userByEmail = jdbc.queryForObject(SELECT_USER_BY_EMAIL_QUERY, of("email", email), new UserRowMapper());
+            Users userByCode = jdbc.queryForObject(SELECT_USER_BY_USER_CODE_QUERY, of("code", code), new UserRowMapper());
+            Users userByEmail = jdbc.queryForObject(SELECT_USER_BY_EMAIL_QUERY, of("email", email), new UserRowMapper());
             if (userByCode.getEmail().equalsIgnoreCase(userByEmail.getEmail())) {
                 jdbc.update(DELETE_CODE, of("code", code));
                 return userByCode;
@@ -214,7 +213,7 @@ throw new ApiException("Could not find record");
             throw new ApiException("There is no account for this email address.");
         try {
             String expirationDate = format(addDays(new Date(), 1), DATE_FORMAT);
-            User user = getUserByEmail(email);
+            Users user = getUserByEmail(email);
             String verificationUrl = getVerificationUrl(UUID.randomUUID().toString(), PASSWORD.getType());
             jdbc.update(DELETE_PASSWORD_VERIFICATION_BY_USER_ID_QUERY, of("userId", user.getId()));
             jdbc.update(INSERT_PASSWORD_VERIFICATION_QUERY, of("userId", user.getId(), "url", verificationUrl, "expirationDate", expirationDate));
@@ -227,10 +226,10 @@ throw new ApiException("Could not find record");
     }
 
     @Override
-    public User verifyPasswordKey(String key) {
+    public Users verifyPasswordKey(String key) {
         if(isLinkExpired(key, PASSWORD)) throw new ApiException("The link has expired. Please reset your password again.");
         try {
-            User user = jdbc.queryForObject(SELECT_USER_BY_PASSWORD_URL_QUERY, of("url", getVerificationUrl(key, PASSWORD.getType())), new UserRowMapper());
+            Users user = jdbc.queryForObject(SELECT_USER_BY_PASSWORD_URL_QUERY, of("url", getVerificationUrl(key, PASSWORD.getType())), new UserRowMapper());
 //            jdbc.update("DELETE_USER_FROM_PASSWORD_VERIFICATION_QUERY", of("id", user.getId())); //depends un user case
             return user;
         } catch (EmptyResultDataAccessException exception) {
@@ -267,9 +266,9 @@ throw new ApiException("Could not find record");
     }
 
     @Override
-    public User verifyAccountKey(String key) {
+    public Users verifyAccountKey(String key) {
         try {
-           User user = jdbc.queryForObject(SELECT_USER_BY_ACCOUNT_URL_QUERY, of("url", getVerificationUrl(key, ACCOUNT.getType())), new UserRowMapper());
+           Users user = jdbc.queryForObject(SELECT_USER_BY_ACCOUNT_URL_QUERY, of("url", getVerificationUrl(key, ACCOUNT.getType())), new UserRowMapper());
       jdbc.update(UPDATE_USER_ENABLED_QUERY, of("enabled", true, "id", user.getId()));
         return user;
         } catch (EmptyResultDataAccessException exception) {
@@ -280,7 +279,7 @@ throw new ApiException("Could not find record");
     }
 
     @Override
-    public User updateUserDetails(UpdateForm user) {
+    public Users updateUserDetails(UpdateForm user) {
         try {
             jdbc.update(UPDATE_USER_DETAILS_QUERY, getUserDetailsSqlParameterSource(user));
             return get(user.getId());
@@ -296,7 +295,7 @@ throw new ApiException("Could not find record");
     public void updatePassword(Long id, String currentPassword, String newPassword, String confirmNewPassword) {
         if (!newPassword.equals(confirmNewPassword)) {
             throw new ApiException("Passwords don't match. Please try again.");}
-            User user = get(id);
+            Users user = get(id);
             if (encoder.matches(currentPassword, user.getPassword())) {
                 try {
                     jdbc.update(UPDATE_USER_PASSWORD_BY_ID_QUERY, of("userId", id, "password", encoder.encode(newPassword)));
@@ -371,7 +370,7 @@ throw new ApiException("Could not find record");
         }
     }
 
-    private SqlParameterSource getSqlParameterSource(User user) {
+    private SqlParameterSource getSqlParameterSource(Users user) {
         return new MapSqlParameterSource()
                 .addValue("username", user.getUsername())
                 .addValue("email", user.getEmail())
