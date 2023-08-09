@@ -2,12 +2,17 @@ package com.example.demo.service.implementation;
 
 import com.example.demo.domain.Give;
 import com.example.demo.domain.Users;
-import com.example.demo.exception.ApiException;
 import com.example.demo.repository.GiveRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.GiveService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
 
 
 @Service
@@ -27,11 +32,14 @@ public class GiveServiceImpl implements GiveService {
     }
 
     @Override
-    public Give getGiveByUserId(Long id) {
-        Give give = giveRepository.get(id);
-        if (give == null) {
-            throw new ApiException("No give found by id: " + id);
-        }
-        return give;
+    public Collection<Give> getGivesForUser(Long userId) {
+        return giveRepository.listForUser(userId);
     }
+
+
+//    @Override
+//    public Page<Give> getGives(int page, int size) {
+//        return giveRepository.findAll(of(page, size));
+//    }
+
 }
