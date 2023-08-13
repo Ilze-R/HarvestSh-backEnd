@@ -32,7 +32,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Optional;
 
 import static com.example.demo.dtomapper.UserDTOMapper.toUser;
 import static com.example.demo.enumeration.EventType.*;
@@ -338,6 +337,19 @@ public class UserController {
                         .data(of("user", userService.getUserByEmail(user.getEmail()),
                                 "give", createdGive))
                         .message(String.format("Give added to user with ID: %s", id))
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+    @GetMapping("/give/{id}")
+    public ResponseEntity<HttpResponse> displayGive (@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id) {
+        Give retrievedGive = giveService.getGiveById(id);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "give", retrievedGive))
+                        .message(String.format("Give with ID %d retrieved successfully", id))
                         .status(OK)
                         .statusCode(OK.value())
                         .build());

@@ -12,4 +12,6 @@ public interface GiveService  {
 //    Give getGiveByUserId(Long id);
 
     Collection<Give> getGivesForUser(Long userId);
+
+    Give getGiveById (Long id);
 }

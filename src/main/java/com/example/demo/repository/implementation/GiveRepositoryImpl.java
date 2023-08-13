@@ -4,7 +4,6 @@ import com.example.demo.domain.Give;
 import com.example.demo.exception.ApiException;
 import com.example.demo.repository.GiveRepository;
 import com.example.demo.rowmapper.GiveRowMapper;
-import com.example.demo.rowmapper.RoleRowMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.Objects;
 
 import static com.example.demo.query.GiveQuery.*;
@@ -34,7 +33,7 @@ public class GiveRepositoryImpl implements GiveRepository<Give> {
     @Override
     public Give get(Long id) {
         try {
-            return jdbc.queryForObject(SELECT_GIVE_BY_ID_QUERY, of("id", id), new GiveRowMapper());
+            return jdbc.queryForObject(SELECT_GIVE_BY_USER_ID_QUERY, of("id", id), new GiveRowMapper());
         } catch (EmptyResultDataAccessException exception){
             throw new ApiException("No give found by id: " + id);
         }catch (Exception exception){
@@ -51,6 +50,8 @@ public class GiveRepositoryImpl implements GiveRepository<Give> {
             parameters.addValue("date", Timestamp.valueOf(currentDateTime));
             parameters.addValue("type", give.getType());
             parameters.addValue("amount", give.getAmount());
+            parameters.addValue("amountType", give.getAmountType());
+            parameters.addValue("description", give.getDescription());
             parameters.addValue("status", give.getStatus());
             parameters.addValue("users_give_id", userId);
 
@@ -66,15 +67,6 @@ public class GiveRepositoryImpl implements GiveRepository<Give> {
         }
     }
 
-//    @Override
-//    public Collection<Give> list() {
-//        log.info("Fetching all Gives");
-//        try {
-//            return jdbc.query(SELECT_GIVES_QUERY, new GiveRowMapper());
-//        } catch (Exception exception){
-//            throw new ApiException("An error occurred. Please try again");
-//        }
-//    }
 @Override
 public Collection<Give> listForUser(Long userId) {
     log.info("Fetching gives for user with ID: {}", userId);
@@ -88,10 +80,16 @@ public Collection<Give> listForUser(Long userId) {
     }
 }
 
-//    @Override
-//    public List<Give> findAll() {
-//        String sql = "SELECT id, date, type, amount, status, users_id FROM Give";
-//        return jdbc.query(sql, giveRowMapper);
-//    }
+    @Override
+    public Give getGiveById(Long id) {
+        try {
+            return jdbc.queryForObject(SELECT_GIVE_BY_ID_QUERY, Collections.singletonMap("id", id), giveRowMapper);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new ApiException("No give found by id: " + id);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
 
 }
