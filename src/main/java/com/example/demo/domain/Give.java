@@ -19,6 +19,8 @@ public class Give {
     private LocalDateTime date;
     private String type;
     private double amount;
+    private String amountType;
+    private String description;
     private String status;
 
 }

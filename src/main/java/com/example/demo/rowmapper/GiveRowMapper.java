@@ -16,6 +16,8 @@ public class GiveRowMapper implements RowMapper<Give> {
                 .date(resultSet.getTimestamp("date").toLocalDateTime())
                 .type(resultSet.getString("type"))
                 .amount(resultSet.getDouble("amount"))
+                .amountType(resultSet.getString("amount_type"))
+                .description(resultSet.getString("description"))
                 .status(resultSet.getString("status"))
                 .build();
     }

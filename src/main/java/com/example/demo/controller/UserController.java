@@ -31,6 +31,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 import static com.example.demo.dtomapper.UserDTOMapper.toUser;
 import static com.example.demo.enumeration.EventType.*;
@@ -340,30 +341,34 @@ public class UserController {
                         .statusCode(OK.value())
                         .build());
     }
+    @GetMapping("/give/{id}")
+    public ResponseEntity<HttpResponse> displayGive (@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id) {
+        Give retrievedGive = giveService.getGiveById(id);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "give", retrievedGive))
+                        .message(String.format("Give with ID %d retrieved successfully", id))
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
 
-//    @PostMapping("/give/created")
-//    public ResponseEntity<HttpResponse> createInvoice(@AuthenticationPrincipal UserDTO user, @RequestBody Give give) {
-//        return ResponseEntity.created(URI.create(""))
-//                .body(
-//                        HttpResponse.builder()
-//                                .timeStamp(now().toString())
-//                                .data(of("user", userService.getUserByEmail(user.getEmail()),
-//                                        "give", userService.createGive(give)))
-//                                .message("Give created")
-//                                .status(CREATED)
-//                                .statusCode(CREATED.value())
-//                                .build());
-//    }
-
-
-//    @PostMapping("/user/{id}/give")
-//    public Give createGive(@PathVariable Long id,
-//                                 @Valid @RequestBody Give give) {
-//        return userService.getUserById(id).map(user -> {
-//            give.(user);
-//            return commentRepository.save(comment);
-//        }).orElseThrow(() -> new ResourceNotFoundException("PostId " + postId + " not found"));
-//    }
+    @GetMapping("/give/list")
+    public ResponseEntity<HttpResponse> getGives(@AuthenticationPrincipal UserDTO user) {
+        Long userId = user.getId();
+        Collection<Give> gives = giveService.getGivesForUser(userId);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "give", gives))
+                        .message("Gives retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
 
     @PostMapping("/user/{id}/give")
     public ResponseEntity<HttpResponse> createGive(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id, @RequestBody Give give){

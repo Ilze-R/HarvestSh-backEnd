@@ -30,6 +30,8 @@ CREATE TABLE Give (
                       date DATETIME DEFAULT CURRENT_TIMESTAMP,
                       type VARCHAR(255) NOT NULL,
                       amount DOUBLE NOT NULL,
+                      amount_type VARCHAR(10) NOT NULL,
+                      description VARCHAR(500),
                       status VARCHAR(255) NOT NULL,
                       users_give_id BIGINT UNSIGNED NOT NULL,
                       FOREIGN KEY (users_give_id) REFERENCES Users(id),
