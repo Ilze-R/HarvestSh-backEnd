@@ -1,17 +1,17 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Give;
-import com.example.demo.domain.Role;
-import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 
 public interface GiveService  {
 
-    Give createGive(Give give, long userId);
-//    Give getGiveByUserId(Long id);
+    Give createGive(long userId, Give give, MultipartFile image);
 
     Collection<Give> getGivesForUser(Long userId);
 
     Give getGiveById (Long id);
+
+//    void giveImage(Give give, MultipartFile image);
 }

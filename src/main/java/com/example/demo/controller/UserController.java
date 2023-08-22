@@ -1,19 +1,13 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.Give;
-import com.example.demo.domain.HttpResponse;
-import com.example.demo.domain.UserPrincipal;
-import com.example.demo.domain.Users;
+import com.example.demo.domain.*;
 import com.example.demo.dto.UserDTO;
 import com.example.demo.enumeration.EventType;
 import com.example.demo.event.NewUserEvent;
 import com.example.demo.exception.ApiException;
 import com.example.demo.form.*;
 import com.example.demo.provider.TokenProvider;
-import com.example.demo.service.EventService;
-import com.example.demo.service.GiveService;
-import com.example.demo.service.RoleService;
-import com.example.demo.service.UserService;
+import com.example.demo.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -60,6 +54,7 @@ public class UserController {
     private final ApplicationEventPublisher publisher;
     private final EventService eventService;
     private  final GiveService giveService;
+
 
     @PostMapping("/login")
     public ResponseEntity<HttpResponse> login(@RequestBody @Valid LoginForm loginForm) {
@@ -328,9 +323,10 @@ public class UserController {
                         .build());
     }
 
-    @PostMapping("/give/addtouser/{id}")
-    public ResponseEntity<HttpResponse> addGiveToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id, @RequestBody Give give) {
-        Give createdGive = giveService.createGive(give, id);
+    @PostMapping("/give/addtouser/image/{id}")
+    public ResponseEntity<HttpResponse> addGiveToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id,
+                                                      @ModelAttribute Give give, @RequestParam("image") MultipartFile image) {
+        Give createdGive = giveService.createGive(id, give, image);
         return ResponseEntity.ok(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -341,6 +337,28 @@ public class UserController {
                         .statusCode(OK.value())
                         .build());
     }
+
+//    @PostMapping("/give/addtouser/{id}")
+//    public ResponseEntity<HttpResponse> addGiveToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id,
+//                                                      @RequestParam("type") String type ,
+//                                                      @RequestParam("amount") double amount,
+//                                                      @RequestParam("amountType") String amountType,
+//                                                      @RequestParam("description") String description,
+//                                                      @RequestParam("image") MultipartFile image,
+//                                                      @RequestParam("location") String location,
+//                                                      @RequestParam("status") String status) {
+//        Give createdGive = giveService.createGive(id, type, amount, amountType, description, image, location, status);
+//        return ResponseEntity.ok(
+//                HttpResponse.builder()
+//                        .timeStamp(now().toString())
+//                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+//                                "give", createdGive))
+//                        .message(String.format("Give added to user with ID: %s", id))
+//                        .status(OK)
+//                        .statusCode(OK.value())
+//                        .build());
+//    }
+
     @GetMapping("/give/{id}")
     public ResponseEntity<HttpResponse> displayGive (@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id) {
         Give retrievedGive = giveService.getGiveById(id);
@@ -370,19 +388,6 @@ public class UserController {
                         .build());
     }
 
-    @PostMapping("/user/{id}/give")
-    public ResponseEntity<HttpResponse> createGive(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id, @RequestBody Give give){
-    giveService.createGive(give, id);
-        return ResponseEntity.ok(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("user", userService.getUserByEmail(user.getEmail()),
-                                "give", userService.getUserById(id)))
-                        .message(String.format("Give added to user with ID: %s", id))
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
 
     @GetMapping("/give/new")
     public ResponseEntity<HttpResponse> newGive(@AuthenticationPrincipal UserDTO user) {
