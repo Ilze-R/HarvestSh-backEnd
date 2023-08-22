@@ -21,6 +21,8 @@ public class Give {
     private double amount;
     private String amountType;
     private String description;
+    private String img_url;
+    private String location;
     private String status;
 
 }

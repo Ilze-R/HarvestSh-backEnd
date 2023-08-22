@@ -32,12 +32,13 @@ CREATE TABLE Give (
                       amount DOUBLE NOT NULL,
                       amount_type VARCHAR(10) NOT NULL,
                       description VARCHAR(500),
+                      img_url  VARCHAR(255),
+                      location VARCHAR(500),
                       status VARCHAR(255) NOT NULL,
                       users_give_id BIGINT UNSIGNED NOT NULL,
                       FOREIGN KEY (users_give_id) REFERENCES Users(id),
                       CONSTRAINT FK_Give_Users FOREIGN KEY (users_give_id) REFERENCES Users(id)
 );
-
 
 DROP TABLE IF EXISTS Roles;
 

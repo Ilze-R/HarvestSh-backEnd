@@ -18,6 +18,8 @@ public class GiveRowMapper implements RowMapper<Give> {
                 .amount(resultSet.getDouble("amount"))
                 .amountType(resultSet.getString("amount_type"))
                 .description(resultSet.getString("description"))
+                .img_url(resultSet.getString("img_url"))
+                .location(resultSet.getString("location"))
                 .status(resultSet.getString("status"))
                 .build();
     }

@@ -1,12 +1,11 @@
 package com.example.demo.service.implementation;
 
 import com.example.demo.domain.Give;
-import com.example.demo.domain.Users;
 import com.example.demo.repository.GiveRepository;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.service.GiveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
 
@@ -19,8 +18,8 @@ public class GiveServiceImpl implements GiveService {
 
 
     @Override
-    public Give createGive( Give give, long userId) {
-        return giveRepository.create(give, userId);
+    public Give createGive(long userId, Give give, MultipartFile image) {
+        return giveRepository.create(userId, give, image);
     }
 
     @Override
@@ -32,5 +31,10 @@ public class GiveServiceImpl implements GiveService {
     public Give getGiveById(Long id) {
         return giveRepository.getGiveById(id);
     }
+
+//    @Override
+//    public void giveImage(Give give, MultipartFile image) {
+//        giveRepository.giveImage(give, image);
+//    }
 
 }

@@ -13,7 +13,12 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -21,7 +26,9 @@ import java.util.Collections;
 import java.util.Objects;
 
 import static com.example.demo.query.GiveQuery.*;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Map.of;
+import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 
 @Repository
 @RequiredArgsConstructor
@@ -43,21 +50,24 @@ public class GiveRepositoryImpl implements GiveRepository<Give> {
     }
 
     @Override
-    public Give create(Give give, Long userId) {
+    public Give create(Long userId, Give give, MultipartFile image) {
         try {
             LocalDateTime currentDateTime = LocalDateTime.now();
+            String giveImageUrl = setGiveImageUrl(give.getType());
+            give.setImg_url(giveImageUrl);
+            saveImage(give.getType(), image);
             MapSqlParameterSource parameters = new MapSqlParameterSource();
             parameters.addValue("date", Timestamp.valueOf(currentDateTime));
             parameters.addValue("type", give.getType());
             parameters.addValue("amount", give.getAmount());
             parameters.addValue("amountType", give.getAmountType());
             parameters.addValue("description", give.getDescription());
+            parameters.addValue("img_url", giveImageUrl);
+            parameters.addValue("location", give.getLocation());
             parameters.addValue("status", give.getStatus());
             parameters.addValue("users_give_id", userId);
-
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbc.update(INSERT_GIVE_QUERY, parameters, keyHolder);
-
             long generatedId = Objects.requireNonNull(keyHolder.getKey()).longValue();
             give.setId(generatedId);
             give.setDate(currentDateTime);
@@ -65,6 +75,29 @@ public class GiveRepositoryImpl implements GiveRepository<Give> {
         } catch (Exception exception){
             throw new ApiException("An error occurred. Please try again");
         }
+    }
+
+        private String setGiveImageUrl(String type) {
+        return fromCurrentContextPath().path("/user/image/" + type + ".png").toUriString();
+    }
+
+        private void saveImage(String email, MultipartFile image) {
+        Path fileStorageLocation = Paths.get(System.getProperty("user.home") + "/Downloads/images/").toAbsolutePath().normalize();
+        if(!Files.exists(fileStorageLocation)){
+            try {
+                Files.createDirectories(fileStorageLocation);
+            }catch (Exception exception){
+                log.error(exception.getMessage());
+                throw new ApiException("Unable to create directories to save image");
+            }
+            log.info("Created directories: {}", fileStorageLocation);
+        }
+        try{
+            Files.copy(image.getInputStream(), fileStorageLocation.resolve(email + ".png"), REPLACE_EXISTING);
+        } catch (IOException exception){
+            throw  new ApiException(exception.getMessage());
+        }
+        log.info("File saved in: {} folder", fileStorageLocation);
     }
 
 @Override
@@ -91,5 +124,6 @@ public Collection<Give> listForUser(Long userId) {
             throw new ApiException("An error occurred. Please try again");
         }
     }
+
 
 }
