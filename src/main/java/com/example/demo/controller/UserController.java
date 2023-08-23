@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -323,7 +324,8 @@ public class UserController {
                         .build());
     }
 
-    @PostMapping("/give/addtouser/image/{id}")
+//    @PostMapping("/give/addtouser/image/{id}")
+@PostMapping(path = "/give/addtouser/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpResponse> addGiveToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id,
                                                       @ModelAttribute Give give, @RequestParam("image") MultipartFile image) {
         Give createdGive = giveService.createGive(id, give, image);

@@ -12,6 +12,10 @@ spring:
     url: jdbc:mysql://localhost:3306/harvest
     password: sniegavirs
     username: root
+  servlet:
+      multipart:
+        max-file-size: 2000MB
+        max-request-size: 2000MB
   jpa:
     database-platform: org.hibernate.dialect.MySQL8InnoDBDialect
     generate-ddl: true
