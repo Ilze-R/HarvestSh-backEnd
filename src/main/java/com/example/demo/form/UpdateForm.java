@@ -15,16 +15,8 @@ public class UpdateForm {
     @NotEmpty(message = "Username cannot be empty")
     private String username;
 
-//    @NotEmpty(message = "Last name cannot be empty")
-//    private String lastName;
     @NotEmpty(message = "Email cannot be empty")
     @Email(message = "Invalid email. Please enter a valid email address")
     private String email;
 
-//    @Pattern(regexp = "^\\d{11}$", message = "Invalid phone number")
-//    private String phone;
-//    private String address;
-
-//    private String title;
-//    private String bio;
 }

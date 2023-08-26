@@ -16,7 +16,6 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -25,7 +24,6 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.Collection;
 
 import static com.example.demo.dtomapper.UserDTOMapper.toUser;
 import static com.example.demo.enumeration.EventType.*;
@@ -53,7 +51,6 @@ public class UserController {
     private final HttpServletResponse response;
     private final ApplicationEventPublisher publisher;
     private final EventService eventService;
-    private  final GiveService giveService;
 
 
     @PostMapping("/login")
@@ -318,85 +315,6 @@ public class UserController {
                         .timeStamp(now().toString())
                         .data(of("user", user))
                         .message("Verification Code Sent")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-
-    @PostMapping("/give/addtouser/image/{id}")
-    public ResponseEntity<HttpResponse> addGiveToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id,
-                                                      @ModelAttribute Give give, @RequestParam("image") MultipartFile image) {
-        Give createdGive = giveService.createGive(id, give, image);
-        return ResponseEntity.ok(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("user", userService.getUserByEmail(user.getEmail()),
-                                "give", createdGive))
-                        .message(String.format("Give added to user with ID: %s", id))
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-
-//    @PostMapping("/give/addtouser/{id}")
-//    public ResponseEntity<HttpResponse> addGiveToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id,
-//                                                      @RequestParam("type") String type ,
-//                                                      @RequestParam("amount") double amount,
-//                                                      @RequestParam("amountType") String amountType,
-//                                                      @RequestParam("description") String description,
-//                                                      @RequestParam("image") MultipartFile image,
-//                                                      @RequestParam("location") String location,
-//                                                      @RequestParam("status") String status) {
-//        Give createdGive = giveService.createGive(id, type, amount, amountType, description, image, location, status);
-//        return ResponseEntity.ok(
-//                HttpResponse.builder()
-//                        .timeStamp(now().toString())
-//                        .data(of("user", userService.getUserByEmail(user.getEmail()),
-//                                "give", createdGive))
-//                        .message(String.format("Give added to user with ID: %s", id))
-//                        .status(OK)
-//                        .statusCode(OK.value())
-//                        .build());
-//    }
-
-    @GetMapping("/give/{id}")
-    public ResponseEntity<HttpResponse> displayGive (@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id) {
-        Give retrievedGive = giveService.getGiveById(id);
-        return ResponseEntity.ok(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("user", userService.getUserByEmail(user.getEmail()),
-                                "give", retrievedGive))
-                        .message(String.format("Give with ID %d retrieved successfully", id))
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-
-    @GetMapping("/give/list")
-    public ResponseEntity<HttpResponse> getGives(@AuthenticationPrincipal UserDTO user) {
-        Long userId = user.getId();
-        Collection<Give> gives = giveService.getGivesForUser(userId);
-        return ResponseEntity.ok(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("user", userService.getUserByEmail(user.getEmail()),
-                                "give", gives))
-                        .message("Gives retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-
-
-    @GetMapping("/give/new")
-    public ResponseEntity<HttpResponse> newGive(@AuthenticationPrincipal UserDTO user) {
-        return ResponseEntity.ok(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("user", userService.getUserByEmail(user.getEmail()),
-                                "give", userService.getUserByEmail(user.getEmail())))
-                        .message("Give retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());

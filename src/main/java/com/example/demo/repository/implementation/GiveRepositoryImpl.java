@@ -37,6 +37,7 @@ public class GiveRepositoryImpl implements GiveRepository<Give> {
 
     private final NamedParameterJdbcTemplate jdbc;
     private final GiveRowMapper giveRowMapper;
+
     @Override
     public Give get(Long id) {
         try {
@@ -77,29 +78,6 @@ public class GiveRepositoryImpl implements GiveRepository<Give> {
         }
     }
 
-        private String setGiveImageUrl(String type) {
-        return fromCurrentContextPath().path("/user/image/" + type + ".png").toUriString();
-    }
-
-        private void saveImage(String email, MultipartFile image) {
-        Path fileStorageLocation = Paths.get(System.getProperty("user.home") + "/Downloads/images/").toAbsolutePath().normalize();
-        if(!Files.exists(fileStorageLocation)){
-            try {
-                Files.createDirectories(fileStorageLocation);
-            }catch (Exception exception){
-                log.error(exception.getMessage());
-                throw new ApiException("Unable to create directories to save image");
-            }
-            log.info("Created directories: {}", fileStorageLocation);
-        }
-        try{
-            Files.copy(image.getInputStream(), fileStorageLocation.resolve(email + ".png"), REPLACE_EXISTING);
-        } catch (IOException exception){
-            throw  new ApiException(exception.getMessage());
-        }
-        log.info("File saved in: {} folder", fileStorageLocation);
-    }
-
 @Override
 public Collection<Give> listForUser(Long userId) {
     log.info("Fetching gives for user with ID: {}", userId);
@@ -125,5 +103,53 @@ public Collection<Give> listForUser(Long userId) {
         }
     }
 
+    @Override
+    public Give updateGive(Long userId, Give give) {
+        try {
+            jdbc.getJdbcTemplate().execute("SET FOREIGN_KEY_CHECKS=0");
+            jdbc.update(UPDATE_GIVE_QUERY, getGiveSqlParameterSource(userId, give));
+            jdbc.getJdbcTemplate().execute("SET FOREIGN_KEY_CHECKS=1");
+            return get(give.getId());
+        } catch (EmptyResultDataAccessException exception) {
+            throw new ApiException("No Give found by id: " + give.getId());
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
 
+    private SqlParameterSource getGiveSqlParameterSource(Long userId, Give give) {
+        return new MapSqlParameterSource()
+                .addValue("id", give.getId())
+                .addValue("type", give.getType())
+                .addValue("amount", give.getAmount())
+               // .addValue("amountType", give.getAmountType())
+                .addValue("description", give.getDescription())
+                .addValue("location", give.getLocation())
+                .addValue("users_give_id", userId);
+    }
+
+
+    private String setGiveImageUrl(String type) {
+        return fromCurrentContextPath().path("/user/image/" + type + ".png").toUriString();
+    }
+
+    private void saveImage(String email, MultipartFile image) {
+        Path fileStorageLocation = Paths.get(System.getProperty("user.home") + "/Downloads/images/").toAbsolutePath().normalize();
+        if(!Files.exists(fileStorageLocation)){
+            try {
+                Files.createDirectories(fileStorageLocation);
+            }catch (Exception exception){
+                log.error(exception.getMessage());
+                throw new ApiException("Unable to create directories to save image");
+            }
+            log.info("Created directories: {}", fileStorageLocation);
+        }
+        try{
+            Files.copy(image.getInputStream(), fileStorageLocation.resolve(email + ".png"), REPLACE_EXISTING);
+        } catch (IOException exception){
+            throw  new ApiException(exception.getMessage());
+        }
+        log.info("File saved in: {} folder", fileStorageLocation);
+    }
 }
