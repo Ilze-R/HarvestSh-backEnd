@@ -32,9 +32,9 @@ public class GiveServiceImpl implements GiveService {
         return giveRepository.getGiveById(id);
     }
 
-//    @Override
-//    public void giveImage(Give give, MultipartFile image) {
-//        giveRepository.giveImage(give, image);
-//    }
+    @Override
+    public Give updateGive(Long userId, Give give) {
+        return giveRepository.updateGive(userId, give);
+    }
 
 }

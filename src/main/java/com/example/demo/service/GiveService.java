@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Give;
+import com.example.demo.dto.UserDTO;
+import com.example.demo.form.UpdateForm;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
@@ -13,5 +15,5 @@ public interface GiveService  {
 
     Give getGiveById (Long id);
 
-//    void giveImage(Give give, MultipartFile image);
+    Give updateGive(Long userId, Give give);
 }

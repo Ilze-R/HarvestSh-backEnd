@@ -3,8 +3,12 @@ spring:
     active: @spring.profiles.active@
   servlet:
     multipart:
-      max-file-size: 2000MB
-      max-request-size: 2000MB
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+server:
+  tomcat:
+    max-http-form-post-size: 20MB
 application:
   title: InvoiceMng
   version: 1.0
