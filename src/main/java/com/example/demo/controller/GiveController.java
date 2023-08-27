@@ -3,11 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.domain.Give;
 import com.example.demo.domain.HttpResponse;
 import com.example.demo.dto.UserDTO;
-import com.example.demo.event.NewUserEvent;
-import com.example.demo.form.UpdateForm;
 import com.example.demo.service.GiveService;
 import com.example.demo.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -94,6 +91,19 @@ public class GiveController {
                         .timeStamp(now().toString())
                         .data(of("give", updatedGive))
                         .message("Give updated")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @DeleteMapping("/give/delete/{id}")
+    public ResponseEntity<HttpResponse> deleteGive(@PathVariable("id") Long id) {
+       giveService.deleteGive(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("give", id))
+                        .message("Give deleted")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());

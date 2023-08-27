@@ -11,8 +11,6 @@ public class GiveQuery {
 
     public static final String SELECT_GIVE_BY_ID_QUERY = "SELECT * FROM Give WHERE id = :id";
 
-   // public static final String UPDATE_GIVE_QUERY = "UPDATE Give SET type = :type, amount = :amount, amount_type = :amountType, description = :description, location = :location, users_give_id = :users_give_id WHERE id = :id";
-
     public static final String UPDATE_GIVE_QUERY = "UPDATE Give\n" +
             "SET type = :type,\n" +
             "    amount = :amount,\n" +
@@ -21,5 +19,5 @@ public class GiveQuery {
             "    users_give_id = :users_give_id\n" +
             "WHERE id = :id";
 
-
+    public static final String DELETE_GIVE_QUERY = "DELETE FROM company WHERE id = :id";
 }

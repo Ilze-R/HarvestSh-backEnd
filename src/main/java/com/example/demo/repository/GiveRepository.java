@@ -18,4 +18,6 @@ public interface GiveRepository <T extends Give>{
 
     T updateGive(Long userId, Give give);
 
+  //  T deleteGive(Long id, Long userId);
+  void deleteGive(Long id);
 }

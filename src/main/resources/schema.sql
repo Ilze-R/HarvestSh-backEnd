@@ -36,8 +36,7 @@ CREATE TABLE Give (
                       location VARCHAR(500),
                       status VARCHAR(255) NOT NULL,
                       users_give_id BIGINT UNSIGNED NOT NULL,
-                      FOREIGN KEY (users_give_id) REFERENCES Users(id),
-                      CONSTRAINT FK_Give_Users FOREIGN KEY (users_give_id) REFERENCES Users(id)
+                      FOREIGN KEY (users_give_id) REFERENCES Users(id)
 );
 
 DROP TABLE IF EXISTS Roles;
