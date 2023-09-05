@@ -29,6 +29,9 @@ public class UserQuery {
     public static final String UPDATE_USER_IMAGE_QUERY = "UPDATE Users SET image_url = :imageUrl WHERE id = :id";
     public static final String UPDATE_USER_PASSWORD_BY_USER_ID_QUERY = "UPDATE Users SET password = :password WHERE id = :id";
 
+    public static final String INSERT_GARDENING_POST_QUERY = "INSERT INTO GardeningPost(date, title, description, tag, likes, view_count, img_url, users_gardening_post_id)"+
+            "VALUES (:date, :title, :description, :tag, :likes, :view_count, :img_url, :users_gardening_post_id)";
+
 }
 
 

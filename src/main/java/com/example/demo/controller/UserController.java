@@ -13,9 +13,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -24,6 +27,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static com.example.demo.dtomapper.UserDTOMapper.toUser;
 import static com.example.demo.enumeration.EventType.*;
@@ -44,6 +48,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private static final String TOKEN_PREFIX = "Bearer ";
     private final UserService userService;
+    private final GardeningPostService gardeningPostService;
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
     private final RoleService roleService;
@@ -315,6 +320,36 @@ public class UserController {
                         .timeStamp(now().toString())
                         .data(of("user", user))
                         .message("Verification Code Sent")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/gardeningpost/new")
+    public ResponseEntity<HttpResponse> newGardeningPost(@AuthenticationPrincipal UserDTO user) {
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "post", userService.getUserByEmail(user.getEmail())))
+                        .message("Gardening post retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/gardening/list")
+    public ResponseEntity<HttpResponse> getAllGardeningPosts(@AuthenticationPrincipal UserDTO user,
+                                                             @RequestParam(defaultValue = "1") int page,
+                                                             @RequestParam(defaultValue = "10") int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        List<GardeningPost> gardeningPosts = gardeningPostService.getAllGardeningPost(pageable);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "posts", gardeningPosts))
+                        .message("Gardening post retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());

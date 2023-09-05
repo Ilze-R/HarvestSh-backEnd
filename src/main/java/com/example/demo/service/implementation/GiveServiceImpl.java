@@ -37,4 +37,13 @@ public class GiveServiceImpl implements GiveService {
         return giveRepository.updateGive(userId, give);
     }
 
+//    @Override
+//    public Give deleteGive(Long id, Long userId) {
+//        return giveRepository.deleteGive(id, userId);
+//    }
+    @Override
+    public void deleteGive(Long id) {
+         giveRepository.deleteGive(id);
+    }
+
 }

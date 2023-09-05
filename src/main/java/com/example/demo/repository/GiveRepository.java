@@ -1,7 +1,6 @@
 package com.example.demo.repository;
 
 import com.example.demo.domain.Give;
-import com.example.demo.form.UpdateForm;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;
@@ -18,4 +17,6 @@ public interface GiveRepository <T extends Give>{
 
     T updateGive(Long userId, Give give);
 
+  //  T deleteGive(Long id, Long userId);
+  void deleteGive(Long id);
 }

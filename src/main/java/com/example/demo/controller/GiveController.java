@@ -1,13 +1,12 @@
 package com.example.demo.controller;
 
+import com.example.demo.domain.GardeningPost;
 import com.example.demo.domain.Give;
 import com.example.demo.domain.HttpResponse;
 import com.example.demo.dto.UserDTO;
-import com.example.demo.event.NewUserEvent;
-import com.example.demo.form.UpdateForm;
+import com.example.demo.service.GardeningPostService;
 import com.example.demo.service.GiveService;
 import com.example.demo.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +27,7 @@ public class GiveController {
 
     private  final GiveService giveService;
     private final UserService userService;
+    private final GardeningPostService gardeningPostService;
 
     @GetMapping("/give/{id}")
     public ResponseEntity<HttpResponse> displayGive (@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id) {
@@ -94,6 +94,34 @@ public class GiveController {
                         .timeStamp(now().toString())
                         .data(of("give", updatedGive))
                         .message("Give updated")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @DeleteMapping("/give/delete/{id}")
+    public ResponseEntity<HttpResponse> deleteGive(@PathVariable("id") Long id) {
+       giveService.deleteGive(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("give", id))
+                        .message("Give deleted")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PostMapping(path = "/give/addgardeningpost/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<HttpResponse> addGardeningPostToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id,
+                                                               @ModelAttribute GardeningPost gardeningPost, @RequestParam("image") MultipartFile image) {
+        GardeningPost createdGardeningPost = gardeningPostService.createPost(id, gardeningPost, image);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "gardeningPost", createdGardeningPost))
+                        .message(String.format("Gardening post added to user with ID: %s", id))
                         .status(OK)
                         .statusCode(OK.value())
                         .build());

@@ -118,6 +118,22 @@ public Collection<Give> listForUser(Long userId) {
         }
     }
 
+    @Override
+    public void deleteGive(Long id) {
+        try {
+            String deleteQuery = "DELETE FROM harvest.Give WHERE id = ?";
+            int rowsAffected = jdbc.getJdbcTemplate().update(deleteQuery, id);
+            if (rowsAffected == 0) {
+                throw new ApiException("No Give found by id: " + id);
+            }
+        } catch (EmptyResultDataAccessException exception) {
+            throw new ApiException("No Give found by id: " + id);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
     private SqlParameterSource getGiveSqlParameterSource(Long userId, Give give) {
         return new MapSqlParameterSource()
                 .addValue("id", give.getId())
