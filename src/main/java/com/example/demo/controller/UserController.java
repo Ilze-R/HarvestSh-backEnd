@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
@@ -48,7 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private static final String TOKEN_PREFIX = "Bearer ";
     private final UserService userService;
-    private final GardeningPostService gardeningPostService;
+    private final PostService postService;
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
     private final RoleService roleService;
@@ -325,7 +326,7 @@ public class UserController {
                         .build());
     }
 
-    @GetMapping("/gardeningpost/new")
+    @GetMapping("/post/new")
     public ResponseEntity<HttpResponse> newGardeningPost(@AuthenticationPrincipal UserDTO user) {
         return ResponseEntity.ok(
                 HttpResponse.builder()
@@ -338,18 +339,129 @@ public class UserController {
                         .build());
     }
 
+    @PostMapping(path = "/addgardeningpost/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<HttpResponse> addGardeningPostToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id,
+                                                               @ModelAttribute GardeningPost gardeningPost, @RequestParam("image") MultipartFile image) {
+        GardeningPost createdGardeningPost = postService.createGardeningPost(id, gardeningPost, image);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "gardeningPost", createdGardeningPost))
+                        .message(String.format("Gardening post added to user with ID: %s", id))
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PostMapping(path = "/addrecipepost/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<HttpResponse> addRecipePostToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id,
+                                                               @ModelAttribute RecipePost recipePost, @RequestParam("image") MultipartFile image) {
+        RecipePost createdRecipePost = postService.createRecipePost(id, recipePost, image);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "recipePost", createdRecipePost))
+                        .message(String.format("Recipe post added to user with ID: %s", id))
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PostMapping(path = "/addimadepost/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<HttpResponse> addIMadePostToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id,
+                                                            @ModelAttribute IMadePost iMadePost, @RequestParam("image") MultipartFile image) {
+        IMadePost createdIMadePost = postService.createIMadePost(id, iMadePost, image);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "iMadePost", createdIMadePost))
+                        .message(String.format("I made post added to user with ID: %s", id))
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PostMapping(path = "/addotherpost/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<HttpResponse> addOtherPostToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id,
+                                                           @ModelAttribute OtherPost otherPost, @RequestParam("image") MultipartFile image) {
+       OtherPost createdOtherPost = postService.createOtherPost(id, otherPost, image);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "otherPost", createdOtherPost))
+                        .message(String.format("Other post added to user with ID: %s", id))
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
     @GetMapping("/gardening/list")
     public ResponseEntity<HttpResponse> getAllGardeningPosts(@AuthenticationPrincipal UserDTO user,
                                                              @RequestParam(defaultValue = "1") int page,
                                                              @RequestParam(defaultValue = "10") int pageSize) {
         Pageable pageable = PageRequest.of(page - 1, pageSize);
-        List<GardeningPost> gardeningPosts = gardeningPostService.getAllGardeningPost(pageable);
+        List<GardeningPost> gardeningPosts = postService.getAllGardeningPost(pageable);
         return ResponseEntity.ok(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
                         .data(of("user", userService.getUserByEmail(user.getEmail()),
                                 "posts", gardeningPosts))
-                        .message("Gardening post retrieved")
+                        .message("Gardening posts retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/recipe/list")
+    public ResponseEntity<HttpResponse> getAllRecipePosts(@AuthenticationPrincipal UserDTO user,
+                                                             @RequestParam(defaultValue = "1") int page,
+                                                             @RequestParam(defaultValue = "10") int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        List<RecipePost> recipePosts = postService.getAllRecipePost(pageable);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "posts", recipePosts))
+                        .message("Gardening posts retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/imade/list")
+    public ResponseEntity<HttpResponse> getAllIMAdePosts(@AuthenticationPrincipal UserDTO user,
+                                                          @RequestParam(defaultValue = "1") int page,
+                                                          @RequestParam(defaultValue = "10") int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        List<IMadePost> iMadePosts = postService.getAllIMadePost(pageable);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "posts", iMadePosts))
+                        .message("Gardening posts retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/other/list")
+    public ResponseEntity<HttpResponse> getAllOtherPosts(@AuthenticationPrincipal UserDTO user,
+                                                         @RequestParam(defaultValue = "1") int page,
+                                                         @RequestParam(defaultValue = "10") int pageSize) {
+        Pageable pageable = PageRequest.of(page - 1, pageSize);
+        List<OtherPost> otherPosts = postService.getAllOtherPost(pageable);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "posts", otherPosts))
+                        .message("Gardening posts retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
