@@ -81,7 +81,7 @@ CREATE TABLE IMadePost (
                             users_i_made_post_id BIGINT UNSIGNED NOT NULL,
                             FOREIGN KEY (users_i_made_post_id) REFERENCES Users(id)
 );
-DROP TABLE IF EXISTS Otherost;
+DROP TABLE IF EXISTS OtherPost;
 
 CREATE TABLE OtherPost (
                            id BIGINT PRIMARY KEY AUTO_INCREMENT,

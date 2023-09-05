@@ -1,10 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.GardeningPost;
 import com.example.demo.domain.Give;
 import com.example.demo.domain.HttpResponse;
 import com.example.demo.dto.UserDTO;
-import com.example.demo.service.GardeningPostService;
 import com.example.demo.service.GiveService;
 import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +25,6 @@ public class GiveController {
 
     private  final GiveService giveService;
     private final UserService userService;
-    private final GardeningPostService gardeningPostService;
 
     @GetMapping("/give/{id}")
     public ResponseEntity<HttpResponse> displayGive (@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id) {
@@ -112,18 +109,4 @@ public class GiveController {
                         .build());
     }
 
-    @PostMapping(path = "/give/addgardeningpost/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<HttpResponse> addGardeningPostToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id,
-                                                               @ModelAttribute GardeningPost gardeningPost, @RequestParam("image") MultipartFile image) {
-        GardeningPost createdGardeningPost = gardeningPostService.createPost(id, gardeningPost, image);
-        return ResponseEntity.ok(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("user", userService.getUserByEmail(user.getEmail()),
-                                "gardeningPost", createdGardeningPost))
-                        .message(String.format("Gardening post added to user with ID: %s", id))
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
 }
