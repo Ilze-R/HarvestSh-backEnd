@@ -1,7 +1,6 @@
 package com.example.demo.repository;
 
 import com.example.demo.domain.Give;
-import com.example.demo.form.UpdateForm;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collection;

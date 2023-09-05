@@ -32,11 +32,68 @@ CREATE TABLE Give (
                       amount DOUBLE NOT NULL,
                       amount_type VARCHAR(10) NOT NULL,
                       description VARCHAR(500),
-                      img_url  VARCHAR(255),
+                      img_url  VARCHAR(255) ,
                       location VARCHAR(500),
                       status VARCHAR(255) NOT NULL,
                       users_give_id BIGINT UNSIGNED NOT NULL,
                       FOREIGN KEY (users_give_id) REFERENCES Users(id)
+);
+DROP TABLE IF EXISTS GardeningPost;
+
+CREATE TABLE GardeningPost (
+                      id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                      date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                      title VARCHAR(60) NOT NULL,
+                      description VARCHAR(1000),
+                      tag VARCHAR(50),
+                      likes INT,
+                      view_count INT,
+                      img_url  VARCHAR(255),
+                      users_gardening_post_id BIGINT UNSIGNED NOT NULL,
+                      FOREIGN KEY (users_gardening_post_id) REFERENCES Users(id)
+);
+DROP TABLE IF EXISTS RecipePost;
+
+CREATE TABLE RecipePost (
+                               id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                               date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                               title VARCHAR(60) NOT NULL,
+                               description VARCHAR(1000),
+                               tag VARCHAR(50),
+                               likes INT,
+                               view_count INT,
+                               img_url  VARCHAR(255),
+                               users_recipes_post_id BIGINT UNSIGNED NOT NULL,
+                               FOREIGN KEY (users_recipes_post_id) REFERENCES Users(id)
+);
+
+DROP TABLE IF EXISTS IMadePost;
+
+CREATE TABLE IMadePost (
+                            id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                            date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                            title VARCHAR(60) NOT NULL,
+                            description VARCHAR(1000),
+                            tag VARCHAR(50),
+                            likes INT,
+                            view_count INT,
+                            img_url  VARCHAR(255),
+                            users_i_made_post_id BIGINT UNSIGNED NOT NULL,
+                            FOREIGN KEY (users_i_made_post_id) REFERENCES Users(id)
+);
+DROP TABLE IF EXISTS Otherost;
+
+CREATE TABLE OtherPost (
+                           id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                           date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                           title VARCHAR(60) NOT NULL,
+                           description VARCHAR(1000),
+                           tag VARCHAR(50),
+                           likes INT,
+                           view_count INT,
+                           img_url  VARCHAR(255),
+                           users_other_post_id BIGINT UNSIGNED NOT NULL,
+                           FOREIGN KEY (users_other_post_id) REFERENCES Users(id)
 );
 
 DROP TABLE IF EXISTS Roles;
