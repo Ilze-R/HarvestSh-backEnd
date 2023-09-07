@@ -69,4 +69,9 @@ public class PostServiceImpl implements PostService {
         return postRepository.getAllOtherPost(pageable);
     }
 
+    @Override
+    public int getAllRecipePostCount() {
+        return postRepository.getAllRecipePostCount();
+    }
+
 }

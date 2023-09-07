@@ -21,4 +21,6 @@ public interface PostService {
     List<RecipePost> getAllRecipePost(Pageable pageable);
     List<IMadePost> getAllIMadePost(Pageable pageable);
     List<OtherPost> getAllOtherPost(Pageable pageable);
+
+    int getAllRecipePostCount();
 }

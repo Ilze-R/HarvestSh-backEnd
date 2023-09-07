@@ -27,7 +27,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.example.demo.query.UserQuery.*;
@@ -110,8 +112,8 @@ public class PostRepositoryImpl implements PostRepository {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
             parameters.addValue("date", Timestamp.valueOf(currentDateTime));
             parameters.addValue("title", iMadePost.getTitle());
-            parameters.addValue("description",iMadePost.getDescription());
-            parameters.addValue("tag",iMadePost.getTag());
+            parameters.addValue("description", iMadePost.getDescription());
+            parameters.addValue("tag", iMadePost.getTag());
             parameters.addValue("likes", iMadePost.getLikes());
             parameters.addValue("view_count", iMadePost.getView_count());
             parameters.addValue("img_url", iMadePost.getImg_url());
@@ -183,6 +185,12 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<OtherPost> getAllOtherPost(Pageable pageable) {
         return jdbcTemplate.query("SELECT * FROM OtherPost limit ? offset ?", otherPostRowMapper, pageable.getPageSize(), pageable.getOffset());
+    }
+
+    @Override
+    public int getAllRecipePostCount() {
+        Integer count = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM RecipePost", Integer.class);
+        return count != null ? count : 0;
     }
 
     private String setPostImageUrl(String type) {

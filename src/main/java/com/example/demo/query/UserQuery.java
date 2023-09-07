@@ -35,8 +35,8 @@ public class UserQuery {
     public static final String INSERT_RECIPE_POST_QUERY = "INSERT INTO RecipePost(date, title, description, tag, likes, view_count, img_url, users_recipes_post_id)"+
             "VALUES (:date, :title, :description, :tag, :likes, :view_count, :img_url, :users_recipes_post_id)";
 
-    public static final String INSERT_I_MADE_POST_QUERY = "INSERT INTO IMadePost(date, title, description, tag, likes, view_count, img_url, users_recipes_post_id)"+
-            "VALUES (:date, :title, :description, :tag, :likes, :view_count, :img_url, :users_recipes_post_id)";
+    public static final String INSERT_I_MADE_POST_QUERY = "INSERT INTO IMadePost(date, title, description, tag, likes, view_count, img_url, users_i_made_post_id)"+
+            "VALUES (:date, :title, :description, :tag, :likes, :view_count, :img_url, :users_i_made_post_id)";
 
     public static final String INSERT_OTHER_POST_QUERY = "INSERT INTO OtherPost(date, title, description, tag, likes, view_count, img_url, users_other_post_id)"+
             "VALUES (:date, :title, :description, :tag, :likes, :view_count, :img_url, :users_other_post_id)";

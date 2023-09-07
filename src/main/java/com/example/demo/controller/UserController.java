@@ -29,6 +29,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.demo.dtomapper.UserDTOMapper.toUser;
 import static com.example.demo.enumeration.EventType.*;
@@ -333,7 +334,7 @@ public class UserController {
                         .timeStamp(now().toString())
                         .data(of("user", userService.getUserByEmail(user.getEmail()),
                                 "post", userService.getUserByEmail(user.getEmail())))
-                        .message("Gardening post retrieved")
+                        .message("Post retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
@@ -428,6 +429,19 @@ public class UserController {
                         .data(of("user", userService.getUserByEmail(user.getEmail()),
                                 "posts", recipePosts))
                         .message("Gardening posts retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/recipe/count")
+    public ResponseEntity<HttpResponse> getAllRecipePosts(@AuthenticationPrincipal UserDTO user) {
+int postCount = postService.getAllRecipePostCount();
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("postCount", postCount))
+                        .message("Gardening posts counted")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
