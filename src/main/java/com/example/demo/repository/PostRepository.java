@@ -1,10 +1,7 @@
 package com.example.demo.repository;
 
-import com.example.demo.domain.GardeningPost;
+import com.example.demo.domain.*;
 
-import com.example.demo.domain.IMadePost;
-import com.example.demo.domain.OtherPost;
-import com.example.demo.domain.RecipePost;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,5 +25,8 @@ public interface PostRepository{
     List<IMadePost> getAllIMadePost(Pageable pageable);
     List<OtherPost> getAllOtherPost(Pageable pageable);
 
+    GardeningPost getGardeningPostById(long id);
+
     int getAllRecipePostCount();
+    GardeningComment addGardeningComment(Long userId, Long postId, GardeningComment gardeningComment);
 }

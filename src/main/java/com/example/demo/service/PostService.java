@@ -21,6 +21,7 @@ public interface PostService {
     List<RecipePost> getAllRecipePost(Pageable pageable);
     List<IMadePost> getAllIMadePost(Pageable pageable);
     List<OtherPost> getAllOtherPost(Pageable pageable);
-
     int getAllRecipePostCount();
+    GardeningPost getGardeningPostById(long id);
+    GardeningComment addGardeningComment (long userId, long postId, GardeningComment gardeningComment);
 }

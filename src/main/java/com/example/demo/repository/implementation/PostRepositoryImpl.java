@@ -1,17 +1,12 @@
 package com.example.demo.repository.implementation;
 
-import com.example.demo.domain.GardeningPost;
-import com.example.demo.domain.IMadePost;
-import com.example.demo.domain.OtherPost;
-import com.example.demo.domain.RecipePost;
+import com.example.demo.domain.*;
 import com.example.demo.exception.ApiException;
 import com.example.demo.repository.PostRepository;
-import com.example.demo.rowmapper.GardeningPostRowMapper;
-import com.example.demo.rowmapper.IMadePostRowMapper;
-import com.example.demo.rowmapper.OtherPostRowMapper;
-import com.example.demo.rowmapper.RecipePostRowMapper;
+import com.example.demo.rowmapper.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -27,13 +22,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
+import static com.example.demo.query.PostQuery.*;
 import static com.example.demo.query.UserQuery.*;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
+import static java.util.Map.of;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
 
 @Repository
@@ -59,6 +54,7 @@ public class PostRepositoryImpl implements PostRepository {
             parameters.addValue("date", Timestamp.valueOf(currentDateTime));
             parameters.addValue("title", gardeningPost.getTitle());
             parameters.addValue("description", gardeningPost.getDescription());
+           // log.info(gardeningPost.getDescription());
             parameters.addValue("tag", gardeningPost.getTag());
             parameters.addValue("likes", gardeningPost.getLikes());
             parameters.addValue("view_count", gardeningPost.getView_count());
@@ -156,6 +152,26 @@ public class PostRepositoryImpl implements PostRepository {
         }
     }
 
+    @Override
+    public GardeningComment addGardeningComment(Long userId, Long postId, GardeningComment gardeningComment) {
+        try {
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("date", Timestamp.valueOf(currentDateTime));
+            parameters.addValue("comment_text", gardeningComment.getComment_text());
+            parameters.addValue("parent_comment_id", gardeningComment.getParent_comment_id());
+            parameters.addValue("comment_user_id",userId);
+            parameters.addValue("comment_gardening_post_id", postId);
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbc.update(INSERT_GARDENING_COMMENT_QUERY, parameters, keyHolder);
+            long generatedId = Objects.requireNonNull(keyHolder.getKey()).longValue();
+            gardeningComment.setId(generatedId);
+            gardeningComment.setDate(currentDateTime);
+            return gardeningComment;
+        } catch (Exception exception){
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
 
     @Override
     public List<GardeningPost> getAllGardeningPosts() {
@@ -185,6 +201,18 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<OtherPost> getAllOtherPost(Pageable pageable) {
         return jdbcTemplate.query("SELECT * FROM OtherPost limit ? offset ?", otherPostRowMapper, pageable.getPageSize(), pageable.getOffset());
+    }
+
+    @Override
+    public GardeningPost getGardeningPostById(long id) {
+        try {
+            return jdbc.queryForObject(SELECT_GARDENING_POST_BY_ID, of("id", id), gardeningPostRowMapper);
+        } catch (EmptyResultDataAccessException exception){
+            throw new ApiException("Post found by id: " + id);
+        }catch (Exception exception){
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again");
+        }
     }
 
     @Override

@@ -31,7 +31,7 @@ CREATE TABLE Give (
                       type VARCHAR(255) NOT NULL,
                       amount DOUBLE NOT NULL,
                       amount_type VARCHAR(10) NOT NULL,
-                      description VARCHAR(500),
+                      description TEXT,
                       img_url  VARCHAR(255),
                       location VARCHAR(500),
                       status VARCHAR(255) NOT NULL,
@@ -41,10 +41,10 @@ CREATE TABLE Give (
 DROP TABLE IF EXISTS GardeningPost;
 
 CREATE TABLE GardeningPost (
-                      id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                      id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
                       date DATETIME DEFAULT CURRENT_TIMESTAMP,
                       title VARCHAR(60) NOT NULL,
-                      description VARCHAR(1000),
+                      description TEXT,
                       tag VARCHAR(50),
                       likes INT,
                       view_count INT,
@@ -52,13 +52,27 @@ CREATE TABLE GardeningPost (
                       users_gardening_post_id BIGINT UNSIGNED NOT NULL,
                       FOREIGN KEY (users_gardening_post_id) REFERENCES Users(id)
 );
+
+DROP TABLE IF EXISTS GardeningComment;
+
+CREATE TABLE GardeningComment (
+                               id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                               date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                               comment_text TEXT,
+                               parent_comment_id BIGINT,
+                               comment_user_id BIGINT UNSIGNED NOT NULL,
+                            comment_gardening_post_id BIGINT UNSIGNED NOT NULL,
+                               FOREIGN KEY (comment_user_id) REFERENCES Users(id),
+                               FOREIGN KEY (comment_gardening_post_id) REFERENCES GardeningPost(id)
+);
+
 DROP TABLE IF EXISTS RecipePost;
 
 CREATE TABLE RecipePost (
                                id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                date DATETIME DEFAULT CURRENT_TIMESTAMP,
                                title VARCHAR(60) NOT NULL,
-                               description VARCHAR(1000),
+                               description TEXT,
                                tag VARCHAR(50),
                                likes INT,
                                view_count INT,
@@ -73,7 +87,7 @@ CREATE TABLE IMadePost (
                             id BIGINT PRIMARY KEY AUTO_INCREMENT,
                             date DATETIME DEFAULT CURRENT_TIMESTAMP,
                             title VARCHAR(60) NOT NULL,
-                            description VARCHAR(1000),
+                            description TEXT,
                             tag VARCHAR(50),
                             likes INT,
                             view_count INT,
@@ -87,7 +101,7 @@ CREATE TABLE OtherPost (
                            id BIGINT PRIMARY KEY AUTO_INCREMENT,
                            date DATETIME DEFAULT CURRENT_TIMESTAMP,
                            title VARCHAR(60) NOT NULL,
-                           description VARCHAR(1000),
+                           description TEXT,
                            tag VARCHAR(50),
                            likes INT,
                            view_count INT,

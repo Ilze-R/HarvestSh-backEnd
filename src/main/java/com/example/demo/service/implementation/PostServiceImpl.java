@@ -1,9 +1,6 @@
 package com.example.demo.service.implementation;
 
-import com.example.demo.domain.GardeningPost;
-import com.example.demo.domain.IMadePost;
-import com.example.demo.domain.OtherPost;
-import com.example.demo.domain.RecipePost;
+import com.example.demo.domain.*;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -72,6 +69,16 @@ public class PostServiceImpl implements PostService {
     @Override
     public int getAllRecipePostCount() {
         return postRepository.getAllRecipePostCount();
+    }
+
+    @Override
+    public GardeningPost getGardeningPostById(long id) {
+        return postRepository.getGardeningPostById(id);
+    }
+
+    @Override
+    public GardeningComment addGardeningComment(long userId, long postId, GardeningComment gardeningComment) {
+        return postRepository.addGardeningComment(userId, postId, gardeningComment);
     }
 
 }
