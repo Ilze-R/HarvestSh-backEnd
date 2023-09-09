@@ -29,7 +29,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 import static com.example.demo.dtomapper.UserDTOMapper.toUser;
 import static com.example.demo.enumeration.EventType.*;
@@ -476,6 +475,21 @@ int postCount = postService.getAllRecipePostCount();
                         .data(of("user", userService.getUserByEmail(user.getEmail()),
                                 "posts", otherPosts))
                         .message("Gardening posts retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PostMapping(path = "/addgardeningcomment/{userId}/{postId}")
+    public ResponseEntity<HttpResponse> addCommentToGardeningPost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
+                                                           @RequestBody GardeningComment gardeningComment) {
+        GardeningComment createdComment = postService.addGardeningComment(userId, postId, gardeningComment);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "post", postService.getGardeningPostById(postId)))
+                        .message("Comment added")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
