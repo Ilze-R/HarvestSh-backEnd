@@ -69,7 +69,7 @@ CREATE TABLE GardeningComment (
 DROP TABLE IF EXISTS RecipePost;
 
 CREATE TABLE RecipePost (
-                               id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                            id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
                                date DATETIME DEFAULT CURRENT_TIMESTAMP,
                                title VARCHAR(60) NOT NULL,
                                description TEXT,
@@ -77,14 +77,27 @@ CREATE TABLE RecipePost (
                                likes INT,
                                view_count INT,
                                img_url  VARCHAR(255),
-                               users_recipes_post_id BIGINT UNSIGNED NOT NULL,
-                               FOREIGN KEY (users_recipes_post_id) REFERENCES Users(id)
+                               users_recipe_post_id BIGINT UNSIGNED NOT NULL,
+                               FOREIGN KEY (users_recipe_post_id) REFERENCES Users(id)
+);
+
+DROP TABLE IF EXISTS RecipeComment;
+
+CREATE TABLE RecipeComment (
+                               id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                               date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                               comment_text TEXT,
+                               parent_comment_id BIGINT,
+                               comment_user_id BIGINT UNSIGNED NOT NULL,
+                               comment_recipe_post_id BIGINT UNSIGNED NOT NULL,
+                               FOREIGN KEY (comment_user_id) REFERENCES Users(id),
+                               FOREIGN KEY (comment_recipe_post_id) REFERENCES RecipePost(id)
 );
 
 DROP TABLE IF EXISTS IMadePost;
 
 CREATE TABLE IMadePost (
-                            id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                           id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
                             date DATETIME DEFAULT CURRENT_TIMESTAMP,
                             title VARCHAR(60) NOT NULL,
                             description TEXT,
@@ -95,10 +108,23 @@ CREATE TABLE IMadePost (
                             users_i_made_post_id BIGINT UNSIGNED NOT NULL,
                             FOREIGN KEY (users_i_made_post_id) REFERENCES Users(id)
 );
+
+DROP TABLE IF EXISTS IMadeComment;
+
+CREATE TABLE IMadeComment (
+                               id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                               date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                               comment_text TEXT,
+                               parent_comment_id BIGINT,
+                               comment_user_id BIGINT UNSIGNED NOT NULL,
+                               comment_i_made_post_id BIGINT UNSIGNED NOT NULL,
+                               FOREIGN KEY (comment_user_id) REFERENCES Users(id),
+                               FOREIGN KEY (comment_i_made_post_id) REFERENCES IMadePost(id)
+);
 DROP TABLE IF EXISTS OtherPost;
 
 CREATE TABLE OtherPost (
-                           id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                           id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
                            date DATETIME DEFAULT CURRENT_TIMESTAMP,
                            title VARCHAR(60) NOT NULL,
                            description TEXT,
@@ -108,6 +134,19 @@ CREATE TABLE OtherPost (
                            img_url  VARCHAR(255),
                            users_other_post_id BIGINT UNSIGNED NOT NULL,
                            FOREIGN KEY (users_other_post_id) REFERENCES Users(id)
+);
+
+DROP TABLE IF EXISTS OtherComment;
+
+CREATE TABLE OtherComment (
+                              id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                              date DATETIME DEFAULT CURRENT_TIMESTAMP,
+                              comment_text TEXT,
+                              parent_comment_id BIGINT,
+                              comment_user_id BIGINT UNSIGNED NOT NULL,
+                              comment_other_post_id BIGINT UNSIGNED NOT NULL,
+                              FOREIGN KEY (comment_user_id) REFERENCES Users(id),
+                              FOREIGN KEY (comment_other_post_id) REFERENCES OtherPost(id)
 );
 
 DROP TABLE IF EXISTS Roles;

@@ -27,6 +27,20 @@ public interface PostRepository{
 
     GardeningPost getGardeningPostById(long id);
 
+   RecipePost getRecipePostById(long id);
+    IMadePost getIMadePostById(long id);
+    OtherPost getOtherPostById(long id);
+
     int getAllRecipePostCount();
     GardeningComment addGardeningComment(Long userId, Long postId, GardeningComment gardeningComment);
+    List<GardeningComment> getAllGardeningCommentsByPostId(Long postId);
+
+    RecipeComment addRecipeComment(Long userId, Long postId, RecipeComment recipeComment);
+    List<RecipeComment> getAllRecipeCommentsByPostId(Long postId);
+
+    IMadeComment addIMadeComment(Long userId, Long postId, IMadeComment iMadeComment);
+    List<IMadeComment> getAllIMadeCommentsByPostId(Long postId);
+
+    OtherComment addOtherComment(Long userId, Long postId, OtherComment otherComment);
+    List<OtherComment> getAllOtherCommentsByPostId(Long postId);
 }
