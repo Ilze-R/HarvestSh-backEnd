@@ -77,8 +77,58 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public RecipePost getRecipePostById(long id) {
+        return postRepository.getRecipePostById(id);
+    }
+
+    @Override
+    public IMadePost getIMadePostById(long id) {
+        return postRepository.getIMadePostById(id);
+    }
+
+    @Override
+    public OtherPost getOtherPostById(long id) {
+        return postRepository.getOtherPostById(id);
+    }
+
+    @Override
+    public List<GardeningComment> getAllGardeningCommentsByPostId(long id) {
+        return postRepository.getAllGardeningCommentsByPostId(id);
+    }
+
+    @Override
     public GardeningComment addGardeningComment(long userId, long postId, GardeningComment gardeningComment) {
         return postRepository.addGardeningComment(userId, postId, gardeningComment);
+    }
+
+    @Override
+    public List<RecipeComment> getAllRecipeCommentsByPostId(long id) {
+        return postRepository.getAllRecipeCommentsByPostId(id);
+    }
+
+    @Override
+    public RecipeComment addRecipeComment(long userId, long postId, RecipeComment recipeComment) {
+        return postRepository.addRecipeComment(userId, postId, recipeComment);
+    }
+
+    @Override
+    public List<IMadeComment> getAllIMadeCommentsByPostId(long id) {
+        return postRepository.getAllIMadeCommentsByPostId(id);
+    }
+
+    @Override
+    public IMadeComment addIMadeComment(long userId, long postId, IMadeComment iMadeComment) {
+        return postRepository.addIMadeComment(userId, postId, iMadeComment);
+    }
+
+    @Override
+    public List<OtherComment> getAllOtherCommentsByPostId(long id) {
+        return postRepository.getAllOtherCommentsByPostId(id);
+    }
+
+    @Override
+    public OtherComment addOtherComment(long userId, long postId, OtherComment otherComment) {
+        return postRepository.addOtherComment(userId, postId, otherComment);
     }
 
 }

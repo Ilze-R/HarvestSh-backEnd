@@ -23,4 +23,7 @@ public class GardeningComment {
     private LocalDateTime date;
     private String comment_text;
     private Long parent_comment_id;
+    private Long comment_user_id;
+    private String user_image_url;
+    private String username;
 }

@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -90,6 +91,45 @@ public class UserController {
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
+    }
+
+//    @GetMapping("/gardeningpost/comments/{id}")
+//    public ResponseEntity<HttpResponse> getAllGardeningPostComments(@PathVariable("id") long id) {
+//        List<GardeningComment> gardeningComment = postService.getAllGardeningCommentsByPostId(id);
+//        return ResponseEntity.ok().body(
+//                HttpResponse.builder()
+//                        .timeStamp(LocalDateTime.now().toString())
+//                        .data(of(
+//                                "comments", gardeningComment))
+//                        .message("Gardening Post comments retrieved")
+//                        .status(OK)
+//                        .statusCode(OK.value())
+//                        .build());
+//    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<HttpResponse> getUserById(Authentication authentication, @PathVariable("id") long id) {
+        UserDTO userDTO = getAuthenticatedUser(authentication);
+        UserDTO retrievedUser = userService.getUserById(userDTO.getId());
+        if (retrievedUser == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(
+                            HttpResponse.builder()
+                                    .timeStamp(LocalDateTime.now().toString())
+                                    .message("User not found")
+                                    .status(NOT_FOUND)
+                                    .build()
+                    );
+        }
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .data(of("user", retrievedUser))
+                        .message("User retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
     }
 
     @PatchMapping("/update")
@@ -490,6 +530,107 @@ int postCount = postService.getAllRecipePostCount();
                         .data(of("user", userService.getUserByEmail(user.getEmail()),
                                 "post", postService.getGardeningPostById(postId)))
                         .message("Comment added")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/gardeningpost/comments/{id}")
+    public ResponseEntity<HttpResponse> getAllGardeningPostComments(@PathVariable("id") long id) {
+        List<GardeningComment> gardeningComment = postService.getAllGardeningCommentsByPostId(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .data(of(
+                                "comments", gardeningComment))
+                        .message("Gardening Post comments retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PostMapping(path = "/addrecipecomment/{userId}/{postId}")
+    public ResponseEntity<HttpResponse> addCommentToRecipePost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
+                                                                  @RequestBody RecipeComment recipeComment) {
+        RecipeComment createdComment = postService.addRecipeComment(userId, postId, recipeComment);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "post", postService.getRecipePostById(postId)))
+                        .message("Comment added")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/recipepost/comments/{id}")
+    public ResponseEntity<HttpResponse> getAllRecipePostComments(@PathVariable("id") long id) {
+        List<RecipeComment> recipeComments = postService.getAllRecipeCommentsByPostId(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .data(of(
+                                "comments", recipeComments))
+                        .message("Recipe Post comments retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PostMapping(path = "/addimadecomment/{userId}/{postId}")
+    public ResponseEntity<HttpResponse> addCommentToIMadePost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
+                                                               @RequestBody IMadeComment iMadeComment) {
+        IMadeComment createdComment = postService.addIMadeComment(userId, postId, iMadeComment);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "post", postService.getIMadePostById(postId)))
+                        .message("Comment added")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/imadepost/comments/{id}")
+    public ResponseEntity<HttpResponse> getAllIMadePostComments(@PathVariable("id") long id) {
+        List<IMadeComment> iMadeComments = postService.getAllIMadeCommentsByPostId(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .data(of(
+                                "comments", iMadeComments))
+                        .message("I Made Post comments retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PostMapping(path = "/addothercomment/{userId}/{postId}")
+    public ResponseEntity<HttpResponse> addCommentToOtherPost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
+                                                              @RequestBody OtherComment otherComment) {
+        OtherComment createdComment = postService.addOtherComment(userId, postId, otherComment);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "post", postService.getOtherPostById(postId)))
+                        .message("Comment added")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/otherpost/comments/{id}")
+    public ResponseEntity<HttpResponse> getAllOtherPostComments(@PathVariable("id") long id) {
+        List<OtherComment> otherComments = postService.getAllOtherCommentsByPostId(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(LocalDateTime.now().toString())
+                        .data(of(
+                                "comments", otherComments))
+                        .message("Other Post comments retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());

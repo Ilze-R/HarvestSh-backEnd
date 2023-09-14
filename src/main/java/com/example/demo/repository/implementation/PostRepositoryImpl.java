@@ -22,11 +22,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import static com.example.demo.query.PostQuery.*;
-import static com.example.demo.query.UserQuery.*;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Map.of;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentContextPath;
@@ -38,6 +39,12 @@ public class PostRepositoryImpl implements PostRepository {
 
     private final NamedParameterJdbcTemplate jdbc;
     private final GardeningPostRowMapper gardeningPostRowMapper;
+
+    private final GardeningCommentRowMapper gardeningCommentRowMapper;
+    private final RecipeCommentRowMapper recipeCommentRowMapper;
+
+    private final IMadeCommentRowMapper iMadeCommentRowMapper;
+    private final OtherCommentRowMapper otherCommentRowMapper;
     private final RecipePostRowMapper recipePostRowMapper;
     private final IMadePostRowMapper iMadePostRowMapper;
     private final OtherPostRowMapper otherPostRowMapper;
@@ -86,7 +93,7 @@ public class PostRepositoryImpl implements PostRepository {
             parameters.addValue("likes", recipePost.getLikes());
             parameters.addValue("view_count", recipePost.getView_count());
             parameters.addValue("img_url", recipePost.getImg_url());
-            parameters.addValue("users_recipes_post_id", userId);
+            parameters.addValue("users_recipe_post_id", userId);
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbc.update(INSERT_RECIPE_POST_QUERY, parameters, keyHolder);
             long generatedId = Objects.requireNonNull(keyHolder.getKey()).longValue();
@@ -174,6 +181,118 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public List<GardeningComment> getAllGardeningCommentsByPostId(Long postId) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("comment_gardening_post_id", postId);
+            return jdbc.query(SELECT_ALL_GARDENING_COMMENTS_BY_POST_ID, params, gardeningCommentRowMapper);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
+    @Override
+    public RecipeComment addRecipeComment(Long userId, Long postId, RecipeComment recipeComment) {
+        try {
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("date", Timestamp.valueOf(currentDateTime));
+            parameters.addValue("comment_text", recipeComment.getComment_text());
+            parameters.addValue("parent_comment_id", recipeComment.getParent_comment_id());
+            parameters.addValue("comment_user_id",userId);
+            parameters.addValue("comment_recipe_post_id", postId);
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbc.update(INSERT_RECIPE_COMMENT_QUERY, parameters, keyHolder);
+            long generatedId = Objects.requireNonNull(keyHolder.getKey()).longValue();
+            recipeComment.setId(generatedId);
+            recipeComment.setDate(currentDateTime);
+            return recipeComment;
+        } catch (Exception exception){
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
+    @Override
+    public List<RecipeComment> getAllRecipeCommentsByPostId(Long postId) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("comment_recipe_post_id", postId);
+            return jdbc.query(SELECT_ALL_RECIPE_COMMENTS_BY_POST_ID, params, recipeCommentRowMapper);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
+    @Override
+    public IMadeComment addIMadeComment(Long userId, Long postId, IMadeComment iMadeComment) {
+        try {
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("date", Timestamp.valueOf(currentDateTime));
+            parameters.addValue("comment_text", iMadeComment.getComment_text());
+            parameters.addValue("parent_comment_id", iMadeComment.getParent_comment_id());
+            parameters.addValue("comment_user_id",userId);
+            parameters.addValue("comment_i_made_post_id", postId);
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbc.update(INSERT_I_MADE_COMMENT_QUERY, parameters, keyHolder);
+            long generatedId = Objects.requireNonNull(keyHolder.getKey()).longValue();
+            iMadeComment.setId(generatedId);
+           iMadeComment.setDate(currentDateTime);
+            return iMadeComment;
+        } catch (Exception exception){
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
+    @Override
+    public List<IMadeComment> getAllIMadeCommentsByPostId(Long postId) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("comment_i_made_post_id", postId);
+            return jdbc.query(SELECT_ALL_I_MADE_COMMENTS_BY_POST_ID, params, iMadeCommentRowMapper);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
+    @Override
+    public OtherComment addOtherComment(Long userId, Long postId, OtherComment otherComment) {
+        try {
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("date", Timestamp.valueOf(currentDateTime));
+            parameters.addValue("comment_text", otherComment.getComment_text());
+            parameters.addValue("parent_comment_id", otherComment.getParent_comment_id());
+            parameters.addValue("comment_user_id",userId);
+            parameters.addValue("comment_other_post_id", postId);
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbc.update(INSERT_OTHER_COMMENT_QUERY, parameters, keyHolder);
+            long generatedId = Objects.requireNonNull(keyHolder.getKey()).longValue();
+            otherComment.setId(generatedId);
+            otherComment.setDate(currentDateTime);
+            return otherComment;
+        } catch (Exception exception){
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
+    @Override
+    public List<OtherComment> getAllOtherCommentsByPostId(Long postId) {
+        try {
+            Map<String, Object> params = new HashMap<>();
+            params.put("comment_other_post_id", postId);
+            return jdbc.query(SELECT_ALL_OTHER_COMMENTS_BY_POST_ID, params, otherCommentRowMapper);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
+
+    @Override
     public List<GardeningPost> getAllGardeningPosts() {
         return jdbcTemplate.query("SELECT * FROM GardeningPost", gardeningPostRowMapper);
     }
@@ -203,10 +322,48 @@ public class PostRepositoryImpl implements PostRepository {
         return jdbcTemplate.query("SELECT * FROM OtherPost limit ? offset ?", otherPostRowMapper, pageable.getPageSize(), pageable.getOffset());
     }
 
+
+
     @Override
     public GardeningPost getGardeningPostById(long id) {
         try {
             return jdbc.queryForObject(SELECT_GARDENING_POST_BY_ID, of("id", id), gardeningPostRowMapper);
+        } catch (EmptyResultDataAccessException exception){
+            throw new ApiException("Post found by id: " + id);
+        }catch (Exception exception){
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
+    @Override
+    public RecipePost getRecipePostById(long id) {
+        try {
+            return jdbc.queryForObject(SELECT_RECIPE_POST_BY_ID, of("id", id), recipePostRowMapper);
+        } catch (EmptyResultDataAccessException exception){
+            throw new ApiException("Post found by id: " + id);
+        }catch (Exception exception){
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
+    @Override
+    public IMadePost getIMadePostById(long id) {
+        try {
+            return jdbc.queryForObject(SELECT_I_MADE_POST_BY_ID, of("id", id), iMadePostRowMapper);
+        } catch (EmptyResultDataAccessException exception){
+            throw new ApiException("Post found by id: " + id);
+        }catch (Exception exception){
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
+    @Override
+    public OtherPost getOtherPostById(long id) {
+        try {
+            return jdbc.queryForObject(SELECT_OTHER_POST_BY_ID, of("id", id), otherPostRowMapper);
         } catch (EmptyResultDataAccessException exception){
             throw new ApiException("Post found by id: " + id);
         }catch (Exception exception){

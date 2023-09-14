@@ -23,5 +23,22 @@ public interface PostService {
     List<OtherPost> getAllOtherPost(Pageable pageable);
     int getAllRecipePostCount();
     GardeningPost getGardeningPostById(long id);
+
+    RecipePost getRecipePostById(long id);
+
+    IMadePost getIMadePostById(long id);
+
+   OtherPost getOtherPostById(long id);
+
+    List<GardeningComment> getAllGardeningCommentsByPostId(long id);
     GardeningComment addGardeningComment (long userId, long postId, GardeningComment gardeningComment);
+
+    List<RecipeComment> getAllRecipeCommentsByPostId(long id);
+    RecipeComment addRecipeComment (long userId, long postId, RecipeComment recipeComment);
+
+    List<IMadeComment> getAllIMadeCommentsByPostId(long id);
+    IMadeComment addIMadeComment (long userId, long postId, IMadeComment iMadeComment);
+
+    List<OtherComment> getAllOtherCommentsByPostId(long id);
+    OtherComment addOtherComment (long userId, long postId, OtherComment otherComment);
 }
