@@ -43,4 +43,12 @@ public interface PostRepository{
 
     OtherComment addOtherComment(Long userId, Long postId, OtherComment otherComment);
     List<OtherComment> getAllOtherCommentsByPostId(Long postId);
+
+    void updateGardeningComment(Long commentId, String comment_text);
+
+    void updateRecipeComment(Long commentId, String comment_text);
+    void updateIMadeComment(Long commentId, String comment_text);
+    void updateOtherComment(Long commentId, String comment_text);
+
+    GardeningComment getGardeningCommentById(long id);
 }

@@ -57,4 +57,12 @@ public class PostQuery {
             "INNER JOIN Users ON OtherComment.comment_user_id = Users.id\n" +
             "WHERE OtherPost.id = :comment_other_post_id";
 
+    public static final String UPDATE_GARDENING_COMMENT_BY_COMMENT_ID_QUERY = "UPDATE GardeningComment SET comment_text = :comment_text WHERE id = :id";
+
+    public static final String UPDATE_RECIPE_COMMENT_BY_COMMENT_ID_QUERY = "UPDATE RecipeComment SET comment_text = :comment_text WHERE id = :id";
+    public static final String UPDATE_I_MADE_COMMENT_BY_COMMENT_ID_QUERY = "UPDATE IMadeComment SET comment_text = :comment_text WHERE id = :id";
+    public static final String UPDATE_OTHER_COMMENT_BY_COMMENT_ID_QUERY = "UPDATE OtherComment SET comment_text = :comment_text WHERE id = :id";
+
+
+    public static final String SELECT_GARDENING_COMMENT_BY_ID_QUERY = "SELECT * FROM GardeningComment WHERE id = :id";
 }
