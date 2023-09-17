@@ -41,4 +41,11 @@ public interface PostService {
 
     List<OtherComment> getAllOtherCommentsByPostId(long id);
     OtherComment addOtherComment (long userId, long postId, OtherComment otherComment);
+
+    void updateGardeningComment(Long commentId, String comment_text);
+    void updateRecipeComment(Long commentId, String comment_text);
+    void updateIMadeComment(Long commentId, String comment_text);
+    void updateOtherComment(Long commentId, String comment_text);
+
+    GardeningComment getGardeningCommentById(long id);
 }

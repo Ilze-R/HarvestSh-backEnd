@@ -636,4 +636,51 @@ int postCount = postService.getAllRecipePostCount();
                         .build());
     }
 
+    @PatchMapping("/update/gardeningcomment/{id}")
+    public ResponseEntity<HttpResponse> updateGardeningComment(@PathVariable("id") long id, @RequestBody @Valid CommentForm form) {
+        postService.updateGardeningComment(id, form.getComment_text());
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message("Comment updated successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PatchMapping("/update/recipecomment/{id}")
+    public ResponseEntity<HttpResponse> updateRecipeComment(@PathVariable("id") long id, @RequestBody @Valid CommentForm form) {
+        postService.updateRecipeComment(id, form.getComment_text());
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message("Comment updated successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+    @PatchMapping("/update/imadecomment/{id}")
+    public ResponseEntity<HttpResponse> updateIMadeComment(@PathVariable("id") long id, @RequestBody @Valid CommentForm form) {
+        postService.updateIMadeComment(id, form.getComment_text());
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message("Comment updated successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+    @PatchMapping("/update/othercomment/{id}")
+    public ResponseEntity<HttpResponse> updateOtherComment(@PathVariable("id") long id, @RequestBody @Valid CommentForm form) {
+        postService.updateOtherComment(id, form.getComment_text());
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message("Comment updated successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+
 }

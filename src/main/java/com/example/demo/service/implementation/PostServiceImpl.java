@@ -131,4 +131,29 @@ public class PostServiceImpl implements PostService {
         return postRepository.addOtherComment(userId, postId, otherComment);
     }
 
+    @Override
+    public void updateGardeningComment(Long commentId, String comment_text) {
+        postRepository.updateGardeningComment(commentId, comment_text);
+    }
+
+    @Override
+    public void updateIMadeComment(Long commentId, String comment_text) {
+        postRepository.updateIMadeComment(commentId, comment_text);
+    }
+
+    @Override
+    public void updateOtherComment(Long commentId, String comment_text) {
+        postRepository.updateOtherComment(commentId, comment_text);
+    }
+
+    @Override
+    public void updateRecipeComment(Long commentId, String comment_text) {
+        postRepository.updateRecipeComment(commentId, comment_text);
+    }
+
+    @Override
+    public GardeningComment getGardeningCommentById(long id) {
+        return postRepository.getGardeningCommentById(id);
+    }
+
 }

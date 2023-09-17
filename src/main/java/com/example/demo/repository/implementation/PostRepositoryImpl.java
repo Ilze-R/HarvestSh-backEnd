@@ -291,6 +291,54 @@ public class PostRepositoryImpl implements PostRepository {
         }
     }
 
+    @Override
+    public void updateGardeningComment(Long commentId, String comment_text) {
+            try {
+                jdbc.update(UPDATE_GARDENING_COMMENT_BY_COMMENT_ID_QUERY, of("id", commentId, "comment_text", comment_text));
+            } catch (Exception exception) {
+                throw new ApiException("An error occurred. Please try again.");
+            }
+    }
+
+    @Override
+    public void updateRecipeComment(Long commentId, String comment_text) {
+        try {
+            jdbc.update(UPDATE_RECIPE_COMMENT_BY_COMMENT_ID_QUERY, of("id", commentId, "comment_text", comment_text));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void updateIMadeComment(Long commentId, String comment_text) {
+        try {
+            jdbc.update(UPDATE_I_MADE_COMMENT_BY_COMMENT_ID_QUERY, of("id", commentId, "comment_text", comment_text));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void updateOtherComment(Long commentId, String comment_text) {
+        try {
+            jdbc.update(UPDATE_OTHER_COMMENT_BY_COMMENT_ID_QUERY, of("id", commentId, "comment_text", comment_text));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public GardeningComment getGardeningCommentById(long id) {
+        try {
+            return jdbc.queryForObject(SELECT_GARDENING_COMMENT_BY_ID_QUERY, of("id", id), new GardeningCommentRowMapper());
+        } catch (EmptyResultDataAccessException exception) {
+            throw new ApiException("No comment found by id: " + id);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
 
     @Override
     public List<GardeningPost> getAllGardeningPosts() {
