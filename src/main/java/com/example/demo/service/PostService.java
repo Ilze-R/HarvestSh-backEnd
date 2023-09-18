@@ -47,5 +47,10 @@ public interface PostService {
     void updateIMadeComment(Long commentId, String comment_text);
     void updateOtherComment(Long commentId, String comment_text);
 
+    void deleteGardeningComment(Long commentId);
+    void deleteRecipeComment(Long commentId);
+    void deleteIMadeComment(Long commentId);
+    void deleteOtherComment(Long commentId);
+
     GardeningComment getGardeningCommentById(long id);
 }

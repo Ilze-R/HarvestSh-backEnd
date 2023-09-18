@@ -147,6 +147,26 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void deleteGardeningComment(Long commentId) {
+        postRepository.deleteGardeningComment(commentId);
+    }
+
+    @Override
+    public void deleteRecipeComment(Long commentId) {
+        postRepository.deleteRecipeComment(commentId);
+    }
+
+    @Override
+    public void deleteIMadeComment(Long commentId) {
+        postRepository.deleteIMadeComment(commentId);
+    }
+
+    @Override
+    public void deleteOtherComment(Long commentId) {
+        postRepository.deleteOtherComment(commentId);
+    }
+
+    @Override
     public void updateRecipeComment(Long commentId, String comment_text) {
         postRepository.updateRecipeComment(commentId, comment_text);
     }
