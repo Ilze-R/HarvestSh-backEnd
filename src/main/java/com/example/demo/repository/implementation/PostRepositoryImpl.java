@@ -328,6 +328,42 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public void deleteGardeningComment(Long commentId) {
+        try {
+            jdbc.update(DELETE_GARDENING_COMMENT, of("id", commentId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteRecipeComment(Long commentId) {
+        try {
+            jdbc.update(DELETE_RECIPE_COMMENT, of("id", commentId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteIMadeComment(Long commentId) {
+        try {
+            jdbc.update(DELETE_I_MADE_COMMENT, of("id", commentId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteOtherComment(Long commentId) {
+        try {
+            jdbc.update(DELETE_OTHER_COMMENT, of("id", commentId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
     public GardeningComment getGardeningCommentById(long id) {
         try {
             return jdbc.queryForObject(SELECT_GARDENING_COMMENT_BY_ID_QUERY, of("id", id), new GardeningCommentRowMapper());

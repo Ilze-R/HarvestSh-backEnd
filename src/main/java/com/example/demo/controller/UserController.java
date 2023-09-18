@@ -93,20 +93,6 @@ public class UserController {
                         .build());
     }
 
-//    @GetMapping("/gardeningpost/comments/{id}")
-//    public ResponseEntity<HttpResponse> getAllGardeningPostComments(@PathVariable("id") long id) {
-//        List<GardeningComment> gardeningComment = postService.getAllGardeningCommentsByPostId(id);
-//        return ResponseEntity.ok().body(
-//                HttpResponse.builder()
-//                        .timeStamp(LocalDateTime.now().toString())
-//                        .data(of(
-//                                "comments", gardeningComment))
-//                        .message("Gardening Post comments retrieved")
-//                        .status(OK)
-//                        .statusCode(OK.value())
-//                        .build());
-//    }
-
     @GetMapping("/{id}")
     public ResponseEntity<HttpResponse> getUserById(Authentication authentication, @PathVariable("id") long id) {
         UserDTO userDTO = getAuthenticatedUser(authentication);

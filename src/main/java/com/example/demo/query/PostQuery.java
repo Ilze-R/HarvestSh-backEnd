@@ -63,6 +63,10 @@ public class PostQuery {
     public static final String UPDATE_I_MADE_COMMENT_BY_COMMENT_ID_QUERY = "UPDATE IMadeComment SET comment_text = :comment_text WHERE id = :id";
     public static final String UPDATE_OTHER_COMMENT_BY_COMMENT_ID_QUERY = "UPDATE OtherComment SET comment_text = :comment_text WHERE id = :id";
 
+    public static final String DELETE_GARDENING_COMMENT = "DELETE FROM GardeningComment WHERE id = :id";
+    public static final String DELETE_RECIPE_COMMENT = "DELETE FROM RecipeComment WHERE id = :id";
+    public static final String DELETE_I_MADE_COMMENT = "DELETE FROM IMadeComment WHERE id = :id";
+    public static final String DELETE_OTHER_COMMENT = "DELETE FROM OtherComment WHERE id = :id";
 
     public static final String SELECT_GARDENING_COMMENT_BY_ID_QUERY = "SELECT * FROM GardeningComment WHERE id = :id";
 }
