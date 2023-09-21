@@ -381,32 +381,48 @@ public class PostRepositoryImpl implements PostRepository {
         return jdbcTemplate.query("SELECT * FROM GardeningPost", gardeningPostRowMapper);
     }
 
+
     @Override
     public List<GardeningPost> getAllGardeningPosts(int pageSize, int offset) {
-        return jdbcTemplate.query("SELECT * FROM GardeningPost limit ? offset ?", gardeningPostRowMapper, pageSize, offset);
+        return jdbcTemplate.query("SELECT GardeningPost.*, Users.image_url AS user_image_url " +
+                "FROM GardeningPost " +
+                "INNER JOIN Users ON GardeningPost.users_gardening_post_id = Users.id " +
+                "LIMIT ? OFFSET ?", gardeningPostRowMapper, pageSize, offset);
     }
 
     @Override
     public List<GardeningPost> getAllGardeningPost(Pageable pageable) {
-        return jdbcTemplate.query("SELECT * FROM GardeningPost limit ? offset ?", gardeningPostRowMapper, pageable.getPageSize(), pageable.getOffset());
+        return jdbcTemplate.query("SELECT GardeningPost.*, Users.image_url AS user_image_url " +
+                "FROM GardeningPost " +
+                "INNER JOIN Users ON GardeningPost.users_gardening_post_id = Users.id " +
+                "ORDER BY GardeningPost.date DESC " +
+                "LIMIT ? OFFSET ?", gardeningPostRowMapper, pageable.getPageSize(), pageable.getOffset());
     }
+
 
     @Override
     public List<RecipePost> getAllRecipePost(Pageable pageable) {
-        return jdbcTemplate.query("SELECT * FROM RecipePost limit ? offset ?", recipePostRowMapper, pageable.getPageSize(), pageable.getOffset());
+        return jdbcTemplate.query("SELECT RecipePost.*, Users.image_url AS user_image_url " +
+                "FROM RecipePost " +
+                "INNER JOIN Users ON RecipePost.users_recipe_post_id = Users.id " +
+                "LIMIT ? OFFSET ?", recipePostRowMapper, pageable.getPageSize(), pageable.getOffset());
     }
 
     @Override
     public List<IMadePost> getAllIMadePost(Pageable pageable) {
-        return jdbcTemplate.query("SELECT * FROM IMadePost limit ? offset ?", iMadePostRowMapper, pageable.getPageSize(), pageable.getOffset());
+        return jdbcTemplate.query("SELECT IMadePost.*, Users.image_url AS user_image_url " +
+                "FROM IMadePost " +
+                "INNER JOIN Users ON IMadePost.users_i_made_post_id = Users.id " +
+                "LIMIT ? OFFSET ?", iMadePostRowMapper, pageable.getPageSize(), pageable.getOffset());
     }
 
     @Override
     public List<OtherPost> getAllOtherPost(Pageable pageable) {
-        return jdbcTemplate.query("SELECT * FROM OtherPost limit ? offset ?", otherPostRowMapper, pageable.getPageSize(), pageable.getOffset());
+        return jdbcTemplate.query("SELECT OtherPost.*, Users.image_url AS user_image_url " +
+                "FROM OtherPost " +
+                "INNER JOIN Users ON OtherPost.users_other_post_id = Users.id " +
+                "LIMIT ? OFFSET ?", otherPostRowMapper, pageable.getPageSize(), pageable.getOffset());
     }
-
-
 
     @Override
     public GardeningPost getGardeningPostById(long id) {

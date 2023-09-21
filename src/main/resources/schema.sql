@@ -53,6 +53,10 @@ CREATE TABLE GardeningPost (
                       FOREIGN KEY (users_gardening_post_id) REFERENCES Users(id)
 );
 
+
+
+
+
 DROP TABLE IF EXISTS GardeningComment;
 
 CREATE TABLE GardeningComment (

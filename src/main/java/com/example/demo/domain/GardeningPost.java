@@ -26,4 +26,5 @@ public class GardeningPost {
     private Long likes;
     private Long view_count;
     private String img_url;
+    private String user_image_url;
 }

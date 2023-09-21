@@ -37,25 +37,29 @@ public class PostQuery {
             "FROM GardeningComment\n" +
             "INNER JOIN GardeningPost ON GardeningComment.comment_gardening_post_id = GardeningPost.id\n" +
             "INNER JOIN Users ON GardeningComment.comment_user_id = Users.id\n" +
-            "WHERE GardeningPost.id = :comment_gardening_post_id";
+            "WHERE GardeningPost.id = :comment_gardening_post_id\n" +
+            "ORDER BY GardeningPost.date DESC, GardeningComment.date DESC";
 
     public static final String SELECT_ALL_RECIPE_COMMENTS_BY_POST_ID = "SELECT RecipeComment.*, Users.image_url AS user_image_url, Users.username AS username\n" +
             "FROM RecipeComment\n" +
             "INNER JOIN RecipePost ON RecipeComment.comment_recipe_post_id = RecipePost.id\n" +
             "INNER JOIN Users ON RecipeComment.comment_user_id = Users.id\n" +
-            "WHERE RecipePost.id = :comment_recipe_post_id";
+            "WHERE RecipePost.id = :comment_recipe_post_id\n" +
+            "ORDER BY RecipePost.date DESC, RecipeComment.date DESC";
 
     public static final String SELECT_ALL_I_MADE_COMMENTS_BY_POST_ID = "SELECT IMadeComment.*, Users.image_url AS user_image_url, Users.username AS username\n" +
             "FROM IMadeComment\n" +
             "INNER JOIN IMadePost ON IMadeComment.comment_i_made_post_id = IMadePost.id\n" +
             "INNER JOIN Users ON IMadeComment.comment_user_id = Users.id\n" +
-            "WHERE IMadePost.id = :comment_i_made_post_id";
+            "WHERE IMadePost.id = :comment_i_made_post_id\n" +
+            "ORDER BY IMadePost.date DESC, IMadeComment.date DESC";
 
     public static final String SELECT_ALL_OTHER_COMMENTS_BY_POST_ID = "SELECT OtherComment.*, Users.image_url AS user_image_url, Users.username AS username\n" +
             "FROM OtherComment\n" +
             "INNER JOIN OtherPost ON OtherComment.comment_other_post_id = OtherPost.id\n" +
             "INNER JOIN Users ON OtherComment.comment_user_id = Users.id\n" +
-            "WHERE OtherPost.id = :comment_other_post_id";
+            "WHERE OtherPost.id = :comment_other_post_id\n" +
+            "ORDER BY OtherPost.date DESC, OtherComment.date DESC";
 
     public static final String UPDATE_GARDENING_COMMENT_BY_COMMENT_ID_QUERY = "UPDATE GardeningComment SET comment_text = :comment_text WHERE id = :id";
 
