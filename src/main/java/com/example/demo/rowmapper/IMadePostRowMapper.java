@@ -12,6 +12,7 @@ public class IMadePostRowMapper implements RowMapper<IMadePost> {
     @Override
     public IMadePost mapRow(ResultSet rs, int rowNum) throws SQLException {
         IMadePost iMadePost = new IMadePost();
+        iMadePost.setId(rs.getLong(1));
         iMadePost.setDate(rs.getTimestamp(2).toLocalDateTime());
         iMadePost.setTitle(rs.getString(3));
         iMadePost.setDescription(rs.getString(4));

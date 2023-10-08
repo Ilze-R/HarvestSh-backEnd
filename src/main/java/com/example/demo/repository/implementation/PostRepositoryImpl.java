@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -63,7 +64,7 @@ public class PostRepositoryImpl implements PostRepository {
             parameters.addValue("description", gardeningPost.getDescription());
            // log.info(gardeningPost.getDescription());
             parameters.addValue("tag", gardeningPost.getTag());
-            parameters.addValue("likes", gardeningPost.getLikes());
+            parameters.addValue("likes", 0);
             parameters.addValue("view_count", gardeningPost.getView_count());
             parameters.addValue("img_url", gardeningPost.getImg_url());
             parameters.addValue("users_gardening_post_id", userId);
@@ -360,6 +361,65 @@ public class PostRepositoryImpl implements PostRepository {
             jdbc.update(DELETE_OTHER_COMMENT, of("id", commentId));
         } catch (Exception exception) {
             throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void addGardeningLike(Long id) {
+        try {
+           jdbc.update(UPDATE_PLUS_GARDENING_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteGardeningLike(Long id) {
+        try {
+            jdbc.update(UPDATE_MINUS_GARDENING_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void addPostLikeKeyTable(Long userId, Long postId) {
+        try {
+            jdbc.update(ADD_POST_LIKES_KEY_TABLE, of("userId", userId, "postId", postId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deletePostLikeKeyTable(Long userId, Long postId) {
+        try {
+            jdbc.update(DELETE_POST_LIKES_KEY_TABLE, of("userId", userId, "postId", postId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public int getAllGardeningPostLikes(Long postId) {
+        try {
+            return jdbc.queryForObject(GET_ALL_GARDENING_POST_LIKES, of("postId", postId), Integer.class);
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public boolean userHasLikedPost(Long userId, Long postId) {
+        try {
+            String sql = "SELECT COUNT(*) FROM PostLikes WHERE user_id = :userId AND post_id = :postId";
+            SqlParameterSource params = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("postId", postId);
+            int likeCount = jdbc.queryForObject(sql, params, Integer.class);
+            return likeCount > 0;
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred while checking if the user has liked the post.");
         }
     }
 

@@ -167,6 +167,38 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void updatePlusGardeningLike(Long id) {
+        postRepository.addGardeningLike(id);
+    }
+
+    @Override
+    public void updateMinusGardeningLike(Long id) {
+        postRepository.deleteGardeningLike(id);
+    }
+
+    @Override
+    public void addPostLikeKeyTable(Long userId, Long postId) {
+        postRepository.addPostLikeKeyTable(userId, postId);
+    }
+
+    @Override
+    public void deletePostLikeKeyTable(Long userId, Long postId) {
+        postRepository.deletePostLikeKeyTable(userId, postId);
+    }
+
+    @Override
+    public int getAllGardeningPostLikes(Long postId) {
+      return postRepository.getAllGardeningPostLikes(postId);
+    }
+
+    @Override
+    public boolean userHasLikedPost(Long userId, Long postId) {
+        return postRepository.userHasLikedPost(userId, postId);
+    }
+
+    ;
+
+    @Override
     public void updateRecipeComment(Long commentId, String comment_text) {
         postRepository.updateRecipeComment(commentId, comment_text);
     }

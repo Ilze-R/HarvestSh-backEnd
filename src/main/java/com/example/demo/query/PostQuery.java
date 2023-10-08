@@ -72,5 +72,17 @@ public class PostQuery {
     public static final String DELETE_I_MADE_COMMENT = "DELETE FROM IMadeComment WHERE id = :id";
     public static final String DELETE_OTHER_COMMENT = "DELETE FROM OtherComment WHERE id = :id";
 
+    public static  final String UPDATE_PLUS_GARDENING_LIKES = "UPDATE GardeningPost SET likes = likes + 1 WHERE id = :id";
+
+    public static  final String UPDATE_MINUS_GARDENING_LIKES = "UPDATE GardeningPost SET likes = likes - 1 WHERE id = :id";
+
+    public static final String ADD_POST_LIKES_KEY_TABLE = "INSERT INTO PostLikes (user_id, post_id)\n" +
+            "VALUES (:userId, :postId)";
+
+    public static final String DELETE_POST_LIKES_KEY_TABLE = "DELETE FROM PostLikes\n" +
+            "WHERE user_id = :userId AND post_id = :postId";
+
+    public static final String GET_ALL_GARDENING_POST_LIKES = "SELECT likes FROM GardeningPost WHERE id = :postId";
+
     public static final String SELECT_GARDENING_COMMENT_BY_ID_QUERY = "SELECT * FROM GardeningComment WHERE id = :id";
 }

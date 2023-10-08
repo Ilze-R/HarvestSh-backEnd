@@ -55,5 +55,16 @@ public interface PostRepository{
     void deleteIMadeComment(Long commentId);
     void deleteOtherComment(Long commentId);
 
+    void addGardeningLike(Long id);
+
+    void deleteGardeningLike(Long id);
+
+    void addPostLikeKeyTable(Long userId, Long postId);
+
+    void deletePostLikeKeyTable(Long userId, Long postId);
+
+    int getAllGardeningPostLikes(Long postId);
+
+    boolean userHasLikedPost(Long userId, Long postId);
     GardeningComment getGardeningCommentById(long id);
 }

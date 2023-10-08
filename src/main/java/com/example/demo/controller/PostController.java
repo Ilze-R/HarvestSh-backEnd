@@ -1,15 +1,17 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.HttpResponse;
+import com.example.demo.dto.UserDTO;
 import com.example.demo.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
 
+import static com.example.demo.utils.UserUtils.getAuthenticatedUser;
 import static java.time.LocalTime.now;
+import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -70,4 +72,40 @@ public class PostController {
                         .build()
         );
     }
+
+    @PatchMapping("/toggle/likes/{id}/{userid}")
+    public ResponseEntity<HttpResponse> toggleLikeToGardeningPost(@PathVariable("id") long id, @PathVariable("userid") long userId) {
+        boolean hasLiked = postService.userHasLikedPost(userId, id);
+        if (hasLiked) {
+            postService.updateMinusGardeningLike(id);
+            postService.deletePostLikeKeyTable(userId, id);
+        } else {
+            postService.updatePlusGardeningLike(id);
+            postService.addPostLikeKeyTable(userId, id);
+        }
+        int totalLikes = postService.getAllGardeningPostLikes(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("total-likes", totalLikes))
+                        .message(hasLiked ? "Post like deleted successfully" : "Post like added successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/alllikes/{id}")
+    public ResponseEntity<HttpResponse> getALlLikes(@PathVariable("id") long id) {
+        int totalLikes = postService.getAllGardeningPostLikes(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("total-likes", totalLikes))
+                        .message("All likes retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+
 }
