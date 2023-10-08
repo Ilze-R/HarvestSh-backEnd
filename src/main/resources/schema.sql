@@ -53,7 +53,15 @@ CREATE TABLE GardeningPost (
                       FOREIGN KEY (users_gardening_post_id) REFERENCES Users(id)
 );
 
+DROP TABLE IF EXISTS PostLikes;
 
+CREATE TABLE PostLikes (
+                           id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                           user_id BIGINT UNSIGNED NOT NULL,
+                           post_id BIGINT UNSIGNED NOT NULL,
+                           FOREIGN KEY (user_id) REFERENCES Users(id),
+                           FOREIGN KEY (post_id) REFERENCES GardeningPost(id)
+);
 
 
 
@@ -68,6 +76,16 @@ CREATE TABLE GardeningComment (
                             comment_gardening_post_id BIGINT UNSIGNED NOT NULL,
                                FOREIGN KEY (comment_user_id) REFERENCES Users(id),
                                FOREIGN KEY (comment_gardening_post_id) REFERENCES GardeningPost(id)
+);
+
+DROP TABLE IF EXISTS CommentLikes;
+
+CREATE TABLE CommentLikes (
+                              id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                              user_id BIGINT UNSIGNED NOT NULL,
+                              comment_id BIGINT NOT NULL,
+                              FOREIGN KEY (user_id) REFERENCES Users(id),
+                              FOREIGN KEY (comment_id) REFERENCES GardeningComment(id)
 );
 
 DROP TABLE IF EXISTS RecipePost;

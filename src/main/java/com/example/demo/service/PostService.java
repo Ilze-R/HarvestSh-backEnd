@@ -52,5 +52,14 @@ public interface PostService {
     void deleteIMadeComment(Long commentId);
     void deleteOtherComment(Long commentId);
 
+    void updatePlusGardeningLike(Long id);
+    void updateMinusGardeningLike(Long id);
+    void addPostLikeKeyTable(Long userId, Long postId);
+    void deletePostLikeKeyTable(Long userId, Long postId);
+
+    int getAllGardeningPostLikes(Long postId);
+
+    boolean userHasLikedPost(Long userId, Long postId);
+
     GardeningComment getGardeningCommentById(long id);
 }
