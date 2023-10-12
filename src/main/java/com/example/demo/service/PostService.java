@@ -61,5 +61,8 @@ public interface PostService {
 
     boolean userHasLikedPost(Long userId, Long postId);
 
+    List<LikedGardeningPost> getUserLikedPosts(Long userId);
+
     GardeningComment getGardeningCommentById(long id);
+
 }

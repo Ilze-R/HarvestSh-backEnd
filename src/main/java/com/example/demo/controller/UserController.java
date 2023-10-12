@@ -83,10 +83,11 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<HttpResponse> profile(Authentication authentication) {
         UserDTO user = userService.getUserByEmail(getAuthenticatedUser(authentication).getEmail());
+        List<LikedGardeningPost> likedPosts = postService.getUserLikedPosts(user.getId());
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
-                        .data(of("user", user, "events", eventService.getEventsByUserId(user.getId()),"roles", roleService.getRoles()))
+                        .data(of("user", user, "events", eventService.getEventsByUserId(user.getId()),"roles", roleService.getRoles(), "likedPosts", likedPosts))
                         .message("Profile Retrieved")
                         .status(OK)
                         .statusCode(OK.value())

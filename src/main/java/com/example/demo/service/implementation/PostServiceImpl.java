@@ -196,6 +196,11 @@ public class PostServiceImpl implements PostService {
         return postRepository.userHasLikedPost(userId, postId);
     }
 
+    @Override
+    public List<LikedGardeningPost> getUserLikedPosts(Long userId) {
+        return postRepository.getUserLikedPosts(userId);
+    }
+
     ;
 
     @Override

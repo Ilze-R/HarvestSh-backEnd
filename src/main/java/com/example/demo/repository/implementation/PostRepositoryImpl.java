@@ -23,10 +23,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 import static com.example.demo.query.PostQuery.*;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
@@ -40,7 +37,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     private final NamedParameterJdbcTemplate jdbc;
     private final GardeningPostRowMapper gardeningPostRowMapper;
-
+private final LikedGardeningPostRowMapper likedGardeningPostRowMapper;
     private final GardeningCommentRowMapper gardeningCommentRowMapper;
     private final RecipeCommentRowMapper recipeCommentRowMapper;
 
@@ -420,6 +417,22 @@ public class PostRepositoryImpl implements PostRepository {
             return likeCount > 0;
         } catch (Exception exception) {
             throw new ApiException("An error occurred while checking if the user has liked the post.");
+        }
+    }
+
+    @Override
+    public List<LikedGardeningPost> getUserLikedPosts(Long userId) {
+        try {
+            String sql = "SELECT gp.id, gp.date, gp.title, gp.description, gp.tag, gp.likes, gp.view_count, gp.img_url " +
+                    "FROM PostLikes pl " +
+                    "INNER JOIN GardeningPost gp ON pl.post_id = gp.id " +
+                    "WHERE pl.user_id = :userId";
+
+            List<LikedGardeningPost> likedPosts = jdbc.query(sql, of("userId", userId), likedGardeningPostRowMapper);
+            return likedPosts;
+        } catch (Exception exception) {
+            log.error("Error retrieving liked posts for user " + userId, exception);
+            throw new ApiException("An error occurred while retrieving liked posts.");
         }
     }
 
