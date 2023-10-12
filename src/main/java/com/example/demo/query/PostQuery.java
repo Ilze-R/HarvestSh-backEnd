@@ -29,6 +29,7 @@ public class PostQuery {
             "VALUES (:date, :comment_text, :parent_comment_id, :comment_user_id, :comment_other_post_id)";
 
     public static final String SELECT_GARDENING_POST_BY_ID = "SELECT * FROM GardeningPost WHERE id = :id";
+  //  public static final String SELECT_GARDENING_POST_BY_ID = "SELECT id, date, title, description, tag, likes, view_count, img_url, user_image_url FROM GardeningPost WHERE id = :id";
     public static final String SELECT_RECIPE_POST_BY_ID = "SELECT * FROM RecipePost WHERE id = :id";
     public static final String SELECT_I_MADE_POST_BY_ID = "SELECT * FROM IMadePost WHERE id = :id";
     public static final String SELECT_OTHER_POST_BY_ID = "SELECT * FROM OtherPost WHERE id = :id";
@@ -85,4 +86,6 @@ public class PostQuery {
     public static final String GET_ALL_GARDENING_POST_LIKES = "SELECT likes FROM GardeningPost WHERE id = :postId";
 
     public static final String SELECT_GARDENING_COMMENT_BY_ID_QUERY = "SELECT * FROM GardeningComment WHERE id = :id";
+
+    public static final String SELECT_ALL_POSTS_LIKED_BY_USER = "SELECT post_id FROM PostLikes WHERE user_id = :userId;";
 }

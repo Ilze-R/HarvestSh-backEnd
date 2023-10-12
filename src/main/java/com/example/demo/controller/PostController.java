@@ -1,15 +1,14 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.HttpResponse;
-import com.example.demo.dto.UserDTO;
+import com.example.demo.domain.*;
 import com.example.demo.service.PostService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import static com.example.demo.utils.UserUtils.getAuthenticatedUser;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import static java.time.LocalTime.now;
 import static java.util.Map.of;
 import static org.springframework.http.HttpStatus.OK;

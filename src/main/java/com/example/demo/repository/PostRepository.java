@@ -66,5 +66,7 @@ public interface PostRepository{
     int getAllGardeningPostLikes(Long postId);
 
     boolean userHasLikedPost(Long userId, Long postId);
+
+    List<LikedGardeningPost> getUserLikedPosts(Long userId);
     GardeningComment getGardeningCommentById(long id);
 }
