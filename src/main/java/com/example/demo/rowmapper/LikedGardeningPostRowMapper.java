@@ -1,6 +1,5 @@
 package com.example.demo.rowmapper;
 
-import com.example.demo.domain.GardeningPost;
 import com.example.demo.domain.LikedGardeningPost;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;

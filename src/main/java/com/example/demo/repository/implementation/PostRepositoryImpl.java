@@ -37,7 +37,10 @@ public class PostRepositoryImpl implements PostRepository {
 
     private final NamedParameterJdbcTemplate jdbc;
     private final GardeningPostRowMapper gardeningPostRowMapper;
-private final LikedGardeningPostRowMapper likedGardeningPostRowMapper;
+    private final LikedGardeningPostRowMapper likedGardeningPostRowMapper;
+    private final LikedRecipePostRowMapper likedRecipePostRowMapper;
+    private final LikedIMadePostRowMapper likedIMadePostRowMapper;
+    private final LikedOtherPostRowMapper likedOtherPostRowMapper;
     private final GardeningCommentRowMapper gardeningCommentRowMapper;
     private final RecipeCommentRowMapper recipeCommentRowMapper;
 
@@ -88,7 +91,7 @@ private final LikedGardeningPostRowMapper likedGardeningPostRowMapper;
             parameters.addValue("title", recipePost.getTitle());
             parameters.addValue("description", recipePost.getDescription());
             parameters.addValue("tag", recipePost.getTag());
-            parameters.addValue("likes", recipePost.getLikes());
+            parameters.addValue("likes", 0);
             parameters.addValue("view_count", recipePost.getView_count());
             parameters.addValue("img_url", recipePost.getImg_url());
             parameters.addValue("users_recipe_post_id", userId);
@@ -115,7 +118,7 @@ private final LikedGardeningPostRowMapper likedGardeningPostRowMapper;
             parameters.addValue("title", iMadePost.getTitle());
             parameters.addValue("description", iMadePost.getDescription());
             parameters.addValue("tag", iMadePost.getTag());
-            parameters.addValue("likes", iMadePost.getLikes());
+            parameters.addValue("likes", 0);
             parameters.addValue("view_count", iMadePost.getView_count());
             parameters.addValue("img_url", iMadePost.getImg_url());
             parameters.addValue("users_i_made_post_id", userId);
@@ -142,7 +145,7 @@ private final LikedGardeningPostRowMapper likedGardeningPostRowMapper;
             parameters.addValue("title", otherPost.getTitle());
             parameters.addValue("description", otherPost.getDescription());
             parameters.addValue("tag", otherPost.getTag());
-            parameters.addValue("likes", otherPost.getLikes());
+            parameters.addValue("likes", 0);
             parameters.addValue("view_count", otherPost.getView_count());
             parameters.addValue("img_url", otherPost.getImg_url());
             parameters.addValue("users_other_post_id", userId);
@@ -155,6 +158,11 @@ private final LikedGardeningPostRowMapper likedGardeningPostRowMapper;
         } catch (Exception exception){
             throw new ApiException("An error occurred. Please try again");
         }
+    }
+
+    @Override
+    public List<GardeningPost> getAllGardeningPosts() {
+        return null;
     }
 
     @Override
@@ -380,18 +388,18 @@ private final LikedGardeningPostRowMapper likedGardeningPostRowMapper;
     }
 
     @Override
-    public void addPostLikeKeyTable(Long userId, Long postId) {
+    public void addGardeningPostLikeKeyTable(Long userId, Long postId) {
         try {
-            jdbc.update(ADD_POST_LIKES_KEY_TABLE, of("userId", userId, "postId", postId));
+            jdbc.update(ADD_GARDENING_POST_LIKES_KEY_TABLE, of("userId", userId, "postId", postId));
         } catch (Exception exception) {
             throw new ApiException("An error occurred. Please try again.");
         }
     }
 
     @Override
-    public void deletePostLikeKeyTable(Long userId, Long postId) {
+    public void deleteGardeningPostLikeKeyTable(Long userId, Long postId) {
         try {
-            jdbc.update(DELETE_POST_LIKES_KEY_TABLE, of("userId", userId, "postId", postId));
+            jdbc.update(DELETE_GARDENING_POST_LIKES_KEY_TABLE, of("userId", userId, "postId", postId));
         } catch (Exception exception) {
             throw new ApiException("An error occurred. Please try again.");
         }
@@ -400,16 +408,17 @@ private final LikedGardeningPostRowMapper likedGardeningPostRowMapper;
     @Override
     public int getAllGardeningPostLikes(Long postId) {
         try {
-            return jdbc.queryForObject(GET_ALL_GARDENING_POST_LIKES, of("postId", postId), Integer.class);
+            Integer likes = jdbc.queryForObject(GET_ALL_GARDENING_POST_LIKES, of("postId", postId), Integer.class);
+            return Objects.requireNonNullElse(likes, 0);
         } catch (Exception exception) {
-            throw new ApiException("An error occurred. Please try again.");
+            throw new ApiException("An error occurred here. Please try again.");
         }
     }
 
     @Override
-    public boolean userHasLikedPost(Long userId, Long postId) {
+    public boolean userHasLikedGardeningPost(Long userId, Long postId) {
         try {
-            String sql = "SELECT COUNT(*) FROM PostLikes WHERE user_id = :userId AND post_id = :postId";
+            String sql = "SELECT COUNT(*) FROM GardeningPostLikes WHERE user_id = :userId AND post_id = :postId";
             SqlParameterSource params = new MapSqlParameterSource()
                     .addValue("userId", userId)
                     .addValue("postId", postId);
@@ -421,10 +430,10 @@ private final LikedGardeningPostRowMapper likedGardeningPostRowMapper;
     }
 
     @Override
-    public List<LikedGardeningPost> getUserLikedPosts(Long userId) {
+    public List<LikedGardeningPost> getUserLikedGardeningPosts(Long userId) {
         try {
             String sql = "SELECT gp.id, gp.date, gp.title, gp.description, gp.tag, gp.likes, gp.view_count, gp.img_url " +
-                    "FROM PostLikes pl " +
+                    "FROM GardeningPostLikes pl " +
                     "INNER JOIN GardeningPost gp ON pl.post_id = gp.id " +
                     "WHERE pl.user_id = :userId";
 
@@ -448,12 +457,235 @@ private final LikedGardeningPostRowMapper likedGardeningPostRowMapper;
         }
     }
 
-
     @Override
-    public List<GardeningPost> getAllGardeningPosts() {
-        return jdbcTemplate.query("SELECT * FROM GardeningPost", gardeningPostRowMapper);
+    public void addRecipeLike(Long id) {
+        try {
+            jdbc.update(UPDATE_PLUS_RECIPE_LIKES, of("id", id));
+            log.info("Executing SQL: {}", UPDATE_PLUS_RECIPE_LIKES);
+            log.info("Parameter values: id = {}", id);
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred maybe. Please try again.");
+        }
     }
 
+    @Override
+    public void deleteRecipeLike(Long id) {
+        try {
+            jdbc.update(UPDATE_MINUS_RECIPE_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void addRecipePostLikeKeyTable(Long userId, Long postId) {
+        try {
+            jdbc.update(ADD_RECIPE_POST_LIKES_KEY_TABLE, of("userId", userId, "postId", postId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred there. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteRecipePostLikeKeyTable(Long userId, Long postId) {
+        try {
+            jdbc.update(DELETE_RECIPE_POST_LIKES_KEY_TABLE, of("userId", userId, "postId", postId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public int getAllRecipePostLikes(Long postId) {
+        try {
+            Integer likes = jdbc.queryForObject(GET_ALL_RECIPE_POST_LIKES, of("postId", postId), Integer.class);
+            return Objects.requireNonNullElse(likes, 0);
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred here. Please try again.");
+        }
+    }
+
+    @Override
+    public boolean userHasLikedRecipePost(Long userId, Long postId) {
+        try {
+            String sql = "SELECT COUNT(*) FROM RecipePostLikes WHERE user_id = :userId AND post_id = :postId";
+            SqlParameterSource params = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("postId", postId);
+            int likeCount = jdbc.queryForObject(sql, params, Integer.class);
+            return likeCount > 0;
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred while checking if the user has liked the post.");
+        }
+    }
+
+    @Override
+    public List<LikedRecipePost> getUserLikedRecipePosts(Long userId) {
+        try {
+            String sql = "SELECT gp.id, gp.date, gp.title, gp.description, gp.tag, gp.likes, gp.view_count, gp.img_url " +
+                    "FROM RecipePostLikes pl " +
+                    "INNER JOIN RecipePost gp ON pl.post_id = gp.id " +
+                    "WHERE pl.user_id = :userId";
+
+            List<LikedRecipePost> likedPosts = jdbc.query(sql, of("userId", userId), likedRecipePostRowMapper);
+            return likedPosts;
+        } catch (Exception exception) {
+            log.error("Error retrieving liked posts for user " + userId, exception);
+            throw new ApiException("An error occurred while retrieving liked posts.");
+        }
+    }
+
+    @Override
+    public void addIMadeLike(Long id) {
+        try {
+            jdbc.update(UPDATE_PLUS_I_MADE_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteIMadeLike(Long id) {
+        try {
+            jdbc.update(UPDATE_MINUS_I_MADE_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void addIMadePostLikeKeyTable(Long userId, Long postId) {
+        try {
+            jdbc.update(ADD_I_MADE_POST_LIKES_KEY_TABLE, of("userId", userId, "postId", postId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteIMadePostLikeKeyTable(Long userId, Long postId) {
+        try {
+            jdbc.update(DELETE_I_MADE_POST_LIKES_KEY_TABLE, of("userId", userId, "postId", postId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public int getAllIMadePostLikes(Long postId) {
+        try {
+            Integer likes = jdbc.queryForObject(GET_ALL_I_MADE_POST_LIKES, of("postId", postId), Integer.class);
+            return Objects.requireNonNullElse(likes, 0);
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred here. Please try again.");
+        }
+    }
+
+    @Override
+    public boolean userHasLikedIMadePost(Long userId, Long postId) {
+        try {
+            String sql = "SELECT COUNT(*) FROM IMadePostLikes WHERE user_id = :userId AND post_id = :postId";
+            SqlParameterSource params = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("postId", postId);
+            int likeCount = jdbc.queryForObject(sql, params, Integer.class);
+            return likeCount > 0;
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred while checking if the user has liked the post.");
+        }
+    }
+
+    @Override
+    public List<LikedIMadePost> getUserLikedIMadePosts(Long userId) {
+        try {
+            String sql = "SELECT gp.id, gp.date, gp.title, gp.description, gp.tag, gp.likes, gp.view_count, gp.img_url " +
+                    "FROM IMadePostLikes pl " +
+                    "INNER JOIN IMadePost gp ON pl.post_id = gp.id " +
+                    "WHERE pl.user_id = :userId";
+
+            List<LikedIMadePost> likedPosts = jdbc.query(sql, of("userId", userId), likedIMadePostRowMapper);
+            return likedPosts;
+        } catch (Exception exception) {
+            log.error("Error retrieving liked posts for user " + userId, exception);
+            throw new ApiException("An error occurred while retrieving liked posts.");
+        }
+    }
+
+    @Override
+    public void addOtherLike(Long id) {
+        try {
+            jdbc.update(UPDATE_PLUS_OTHER_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteOtherLike(Long id) {
+        try {
+            jdbc.update(UPDATE_MINUS_OTHER_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void addOtherPostLikeKeyTable(Long userId, Long postId) {
+        try {
+            jdbc.update(ADD_OTHER_POST_LIKES_KEY_TABLE, of("userId", userId, "postId", postId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteOtherPostLikeKeyTable(Long userId, Long postId) {
+        try {
+            jdbc.update(DELETE_OTHER_POST_LIKES_KEY_TABLE, of("userId", userId, "postId", postId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public int getAllOtherPostLikes(Long postId) {
+        try {
+            Integer likes = jdbc.queryForObject(GET_ALL_OTHER_POST_LIKES, of("postId", postId), Integer.class);
+            return Objects.requireNonNullElse(likes, 0);
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred here. Please try again.");
+        }
+    }
+
+    @Override
+    public boolean userHasLikedOtherPost(Long userId, Long postId) {
+        try {
+            String sql = "SELECT COUNT(*) FROM OtherPostLikes WHERE user_id = :userId AND post_id = :postId";
+            SqlParameterSource params = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("postId", postId);
+            int likeCount = jdbc.queryForObject(sql, params, Integer.class);
+            return likeCount > 0;
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred while checking if the user has liked the post.");
+        }
+    }
+
+    @Override
+    public List<LikedOtherPost> getUserLikedOtherPosts(Long userId) {
+        try {
+            String sql = "SELECT gp.id, gp.date, gp.title, gp.description, gp.tag, gp.likes, gp.view_count, gp.img_url " +
+                    "FROM OtherPostLikes pl " +
+                    "INNER JOIN OtherPost gp ON pl.post_id = gp.id " +
+                    "WHERE pl.user_id = :userId";
+
+            List<LikedOtherPost> likedPosts = jdbc.query(sql, of("userId", userId), likedOtherPostRowMapper);
+            return likedPosts;
+        } catch (Exception exception) {
+            log.error("Error retrieving liked posts for user " + userId, exception);
+            throw new ApiException("An error occurred while retrieving liked posts.");
+        }
+    }
 
     @Override
     public List<GardeningPost> getAllGardeningPosts(int pageSize, int offset) {

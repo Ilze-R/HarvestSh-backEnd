@@ -83,11 +83,14 @@ public class UserController {
     @GetMapping("/profile")
     public ResponseEntity<HttpResponse> profile(Authentication authentication) {
         UserDTO user = userService.getUserByEmail(getAuthenticatedUser(authentication).getEmail());
-        List<LikedGardeningPost> likedPosts = postService.getUserLikedPosts(user.getId());
+        List<LikedGardeningPost> likedGardeningPosts = postService.getUserLikedGardeningPosts(user.getId());
+        List<LikedRecipePost> likedRecipePosts = postService.getUserLikedRecipePosts(user.getId());
+        List<LikedIMadePost> likedIMadePosts = postService.getUserLikedIMadePosts(user.getId());
+        List<LikedOtherPost> likedOtherPosts = postService.getUserLikedOtherPosts(user.getId());
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
-                        .data(of("user", user, "events", eventService.getEventsByUserId(user.getId()),"roles", roleService.getRoles(), "likedPosts", likedPosts))
+                        .data(of("user", user, "events", eventService.getEventsByUserId(user.getId()),"roles", roleService.getRoles(), "likedGardeningPosts", likedGardeningPosts, "likedRecipePosts", likedRecipePosts, "likedIMadePosts", likedIMadePosts, "likedOtherPosts", likedOtherPosts))
                         .message("Profile Retrieved")
                         .status(OK)
                         .statusCode(OK.value())
@@ -454,7 +457,7 @@ public class UserController {
                         .timeStamp(now().toString())
                         .data(of("user", userService.getUserByEmail(user.getEmail()),
                                 "posts", recipePosts))
-                        .message("Gardening posts retrieved")
+                        .message("Recipe posts retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
@@ -467,7 +470,7 @@ int postCount = postService.getAllRecipePostCount();
                 HttpResponse.builder()
                         .timeStamp(now().toString())
                         .data(of("postCount", postCount))
-                        .message("Gardening posts counted")
+                        .message("Recipe posts counted")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
@@ -484,7 +487,7 @@ int postCount = postService.getAllRecipePostCount();
                         .timeStamp(now().toString())
                         .data(of("user", userService.getUserByEmail(user.getEmail()),
                                 "posts", iMadePosts))
-                        .message("Gardening posts retrieved")
+                        .message("I made posts retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
@@ -501,7 +504,7 @@ int postCount = postService.getAllRecipePostCount();
                         .timeStamp(now().toString())
                         .data(of("user", userService.getUserByEmail(user.getEmail()),
                                 "posts", otherPosts))
-                        .message("Gardening posts retrieved")
+                        .message("Other posts retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());

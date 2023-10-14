@@ -53,9 +53,9 @@ CREATE TABLE GardeningPost (
                       FOREIGN KEY (users_gardening_post_id) REFERENCES Users(id)
 );
 
-DROP TABLE IF EXISTS PostLikes;
+DROP TABLE IF EXISTS GardeningPostLikes;
 
-CREATE TABLE PostLikes (
+CREATE TABLE GardeningPostLikes (
                            id BIGINT PRIMARY KEY AUTO_INCREMENT,
                            user_id BIGINT UNSIGNED NOT NULL,
                            post_id BIGINT UNSIGNED NOT NULL,
@@ -78,9 +78,9 @@ CREATE TABLE GardeningComment (
                                FOREIGN KEY (comment_gardening_post_id) REFERENCES GardeningPost(id)
 );
 
-DROP TABLE IF EXISTS CommentLikes;
+DROP TABLE IF EXISTS GardeningCommentLikes;
 
-CREATE TABLE CommentLikes (
+CREATE TABLE GardeningCommentLikes (
                               id BIGINT PRIMARY KEY AUTO_INCREMENT,
                               user_id BIGINT UNSIGNED NOT NULL,
                               comment_id BIGINT NOT NULL,
@@ -101,6 +101,16 @@ CREATE TABLE RecipePost (
                                img_url  VARCHAR(255),
                                users_recipe_post_id BIGINT UNSIGNED NOT NULL,
                                FOREIGN KEY (users_recipe_post_id) REFERENCES Users(id)
+);
+
+DROP TABLE IF EXISTS RecipePostLikes;
+
+CREATE TABLE RecipePostLikes (
+                                    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                    user_id BIGINT UNSIGNED NOT NULL,
+                                    post_id BIGINT UNSIGNED NOT NULL,
+                                    FOREIGN KEY (user_id) REFERENCES Users(id),
+                                    FOREIGN KEY (post_id) REFERENCES RecipePost(id)
 );
 
 DROP TABLE IF EXISTS RecipeComment;
@@ -131,6 +141,16 @@ CREATE TABLE IMadePost (
                             FOREIGN KEY (users_i_made_post_id) REFERENCES Users(id)
 );
 
+DROP TABLE IF EXISTS IMadePostLikes;
+
+CREATE TABLE IMadePostLikes (
+                                 id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                 user_id BIGINT UNSIGNED NOT NULL,
+                                 post_id BIGINT UNSIGNED NOT NULL,
+                                 FOREIGN KEY (user_id) REFERENCES Users(id),
+                                 FOREIGN KEY (post_id) REFERENCES IMadePost(id)
+);
+
 DROP TABLE IF EXISTS IMadeComment;
 
 CREATE TABLE IMadeComment (
@@ -156,6 +176,16 @@ CREATE TABLE OtherPost (
                            img_url  VARCHAR(255),
                            users_other_post_id BIGINT UNSIGNED NOT NULL,
                            FOREIGN KEY (users_other_post_id) REFERENCES Users(id)
+);
+
+DROP TABLE IF EXISTS OtherPostLikes;
+
+CREATE TABLE OtherPostLikes (
+                                id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                user_id BIGINT UNSIGNED NOT NULL,
+                                post_id BIGINT UNSIGNED NOT NULL,
+                                FOREIGN KEY (user_id) REFERENCES Users(id),
+                                FOREIGN KEY (post_id) REFERENCES OtherPost(id)
 );
 
 DROP TABLE IF EXISTS OtherComment;
