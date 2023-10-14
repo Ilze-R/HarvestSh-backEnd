@@ -1,7 +1,5 @@
 package com.example.demo.query;
 
-import com.example.demo.domain.Users;
-
 public class PostQuery {
     public static final String INSERT_GARDENING_POST_QUERY = "INSERT INTO GardeningPost(date, title, description, tag, likes, view_count," +
             " img_url, users_gardening_post_id)"+
@@ -29,7 +27,6 @@ public class PostQuery {
             "VALUES (:date, :comment_text, :parent_comment_id, :comment_user_id, :comment_other_post_id)";
 
     public static final String SELECT_GARDENING_POST_BY_ID = "SELECT * FROM GardeningPost WHERE id = :id";
-  //  public static final String SELECT_GARDENING_POST_BY_ID = "SELECT id, date, title, description, tag, likes, view_count, img_url, user_image_url FROM GardeningPost WHERE id = :id";
     public static final String SELECT_RECIPE_POST_BY_ID = "SELECT * FROM RecipePost WHERE id = :id";
     public static final String SELECT_I_MADE_POST_BY_ID = "SELECT * FROM IMadePost WHERE id = :id";
     public static final String SELECT_OTHER_POST_BY_ID = "SELECT * FROM OtherPost WHERE id = :id";
@@ -74,18 +71,40 @@ public class PostQuery {
     public static final String DELETE_OTHER_COMMENT = "DELETE FROM OtherComment WHERE id = :id";
 
     public static  final String UPDATE_PLUS_GARDENING_LIKES = "UPDATE GardeningPost SET likes = likes + 1 WHERE id = :id";
+    public static  final String UPDATE_PLUS_RECIPE_LIKES = "UPDATE RecipePost SET likes = likes + 1 WHERE id = :id";
+    public static  final String UPDATE_PLUS_I_MADE_LIKES = "UPDATE IMadePost SET likes = likes + 1 WHERE id = :id";
+    public static  final String UPDATE_PLUS_OTHER_LIKES = "UPDATE OtherPost SET likes = likes + 1 WHERE id = :id";
 
     public static  final String UPDATE_MINUS_GARDENING_LIKES = "UPDATE GardeningPost SET likes = likes - 1 WHERE id = :id";
+    public static  final String UPDATE_MINUS_RECIPE_LIKES = "UPDATE RecipePost SET likes = likes - 1 WHERE id = :id";
+    public static  final String UPDATE_MINUS_I_MADE_LIKES = "UPDATE IMadePost SET likes = likes - 1 WHERE id = :id";
+    public static  final String UPDATE_MINUS_OTHER_LIKES = "UPDATE OtherPost SET likes = likes - 1 WHERE id = :id";
 
-    public static final String ADD_POST_LIKES_KEY_TABLE = "INSERT INTO PostLikes (user_id, post_id)\n" +
+    public static final String ADD_GARDENING_POST_LIKES_KEY_TABLE = "INSERT INTO GardeningPostLikes (user_id, post_id)\n" +
+            "VALUES (:userId, :postId)";
+    public static final String ADD_RECIPE_POST_LIKES_KEY_TABLE = "INSERT INTO RecipePostLikes (user_id, post_id)\n" +
+            "VALUES (:userId, :postId)";
+    public static final String ADD_I_MADE_POST_LIKES_KEY_TABLE = "INSERT INTO IMadePostLikes (user_id, post_id)\n" +
+            "VALUES (:userId, :postId)";
+    public static final String ADD_OTHER_POST_LIKES_KEY_TABLE = "INSERT INTO OtherPostLikes (user_id, post_id)\n" +
             "VALUES (:userId, :postId)";
 
-    public static final String DELETE_POST_LIKES_KEY_TABLE = "DELETE FROM PostLikes\n" +
+    public static final String DELETE_GARDENING_POST_LIKES_KEY_TABLE = "DELETE FROM GardeningPostLikes\n" +
+            "WHERE user_id = :userId AND post_id = :postId";
+
+    public static final String DELETE_RECIPE_POST_LIKES_KEY_TABLE = "DELETE FROM RecipePostLikes\n" +
+            "WHERE user_id = :userId AND post_id = :postId";
+    public static final String DELETE_I_MADE_POST_LIKES_KEY_TABLE = "DELETE FROM IMadePostLikes\n" +
+            "WHERE user_id = :userId AND post_id = :postId";
+    public static final String DELETE_OTHER_POST_LIKES_KEY_TABLE = "DELETE FROM OtherPostLikes\n" +
             "WHERE user_id = :userId AND post_id = :postId";
 
     public static final String GET_ALL_GARDENING_POST_LIKES = "SELECT likes FROM GardeningPost WHERE id = :postId";
+    public static final String GET_ALL_RECIPE_POST_LIKES = "SELECT likes FROM RecipePost WHERE id = :postId";
+    public static final String GET_ALL_I_MADE_POST_LIKES = "SELECT likes FROM IMadePost WHERE id = :postId";
+    public static final String GET_ALL_OTHER_POST_LIKES = "SELECT likes FROM OtherPost WHERE id = :postId";
 
     public static final String SELECT_GARDENING_COMMENT_BY_ID_QUERY = "SELECT * FROM GardeningComment WHERE id = :id";
 
-    public static final String SELECT_ALL_POSTS_LIKED_BY_USER = "SELECT post_id FROM PostLikes WHERE user_id = :userId;";
+    public static final String SELECT_ALL_POSTS_LIKED_BY_USER = "SELECT post_id FROM GardeningPostLikes WHERE user_id = :userId;";
 }

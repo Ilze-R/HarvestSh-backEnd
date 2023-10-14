@@ -55,18 +55,67 @@ public interface PostRepository{
     void deleteIMadeComment(Long commentId);
     void deleteOtherComment(Long commentId);
 
+    // GARDENING LIKES
+
     void addGardeningLike(Long id);
 
     void deleteGardeningLike(Long id);
 
-    void addPostLikeKeyTable(Long userId, Long postId);
+    void addGardeningPostLikeKeyTable(Long userId, Long postId);
 
-    void deletePostLikeKeyTable(Long userId, Long postId);
+    void deleteGardeningPostLikeKeyTable(Long userId, Long postId);
 
     int getAllGardeningPostLikes(Long postId);
 
-    boolean userHasLikedPost(Long userId, Long postId);
+    boolean userHasLikedGardeningPost(Long userId, Long postId);
 
-    List<LikedGardeningPost> getUserLikedPosts(Long userId);
+    List<LikedGardeningPost> getUserLikedGardeningPosts(Long userId);
     GardeningComment getGardeningCommentById(long id);
+
+    // RECIPE LIKES
+
+    void addRecipeLike(Long id);
+
+    void deleteRecipeLike(Long id);
+
+    void addRecipePostLikeKeyTable(Long userId, Long postId);
+
+    void deleteRecipePostLikeKeyTable(Long userId, Long postId);
+
+    int getAllRecipePostLikes(Long postId);
+
+    boolean userHasLikedRecipePost(Long userId, Long postId);
+
+    List<LikedRecipePost> getUserLikedRecipePosts(Long userId);
+
+    // IMADE LIKES
+
+    void addIMadeLike(Long id);
+
+    void deleteIMadeLike(Long id);
+
+    void addIMadePostLikeKeyTable(Long userId, Long postId);
+
+    void deleteIMadePostLikeKeyTable(Long userId, Long postId);
+
+    int getAllIMadePostLikes(Long postId);
+
+    boolean userHasLikedIMadePost(Long userId, Long postId);
+
+    List<LikedIMadePost> getUserLikedIMadePosts(Long userId);
+    // OTHER LIKES
+
+    void addOtherLike(Long id);
+
+    void deleteOtherLike(Long id);
+
+    void addOtherPostLikeKeyTable(Long userId, Long postId);
+
+    void deleteOtherPostLikeKeyTable(Long userId, Long postId);
+
+    int getAllOtherPostLikes(Long postId);
+
+    boolean userHasLikedOtherPost(Long userId, Long postId);
+
+    List<LikedOtherPost> getUserLikedOtherPosts(Long userId);
 }

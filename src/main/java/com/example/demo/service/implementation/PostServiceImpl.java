@@ -177,13 +177,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void addPostLikeKeyTable(Long userId, Long postId) {
-        postRepository.addPostLikeKeyTable(userId, postId);
+    public void addGardeningPostLikeKeyTable(Long userId, Long postId) {
+        postRepository.addGardeningPostLikeKeyTable(userId, postId);
     }
 
     @Override
-    public void deletePostLikeKeyTable(Long userId, Long postId) {
-        postRepository.deletePostLikeKeyTable(userId, postId);
+    public void deleteGardeningPostLikeKeyTable(Long userId, Long postId) {
+        postRepository.deleteGardeningPostLikeKeyTable(userId, postId);
     }
 
     @Override
@@ -192,13 +192,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public boolean userHasLikedPost(Long userId, Long postId) {
-        return postRepository.userHasLikedPost(userId, postId);
+    public boolean userHasLikedGardeningPost(Long userId, Long postId) {
+        return postRepository.userHasLikedGardeningPost(userId, postId);
     }
 
     @Override
-    public List<LikedGardeningPost> getUserLikedPosts(Long userId) {
-        return postRepository.getUserLikedPosts(userId);
+    public List<LikedGardeningPost> getUserLikedGardeningPosts(Long userId) {
+        return postRepository.getUserLikedGardeningPosts(userId);
     }
 
     ;
@@ -211,6 +211,111 @@ public class PostServiceImpl implements PostService {
     @Override
     public GardeningComment getGardeningCommentById(long id) {
         return postRepository.getGardeningCommentById(id);
+    }
+
+    @Override
+    public void updatePlusRecipeLike(Long id) {
+        postRepository.addRecipeLike(id);
+    }
+
+    @Override
+    public void updateMinusRecipeLike(Long id) {
+        postRepository.deleteRecipeLike(id);
+    }
+
+    @Override
+    public void addRecipePostLikeKeyTable(Long userId, Long postId) {
+        postRepository.addRecipePostLikeKeyTable(userId, postId);
+    }
+
+    @Override
+    public void deleteRecipePostLikeKeyTable(Long userId, Long postId) {
+        postRepository.deleteRecipePostLikeKeyTable(userId, postId);
+    }
+
+    @Override
+    public int getAllRecipePostLikes(Long postId) {
+        return postRepository.getAllRecipePostLikes(postId);
+    }
+
+    @Override
+    public boolean userHasLikedRecipePost(Long userId, Long postId) {
+        return postRepository.userHasLikedRecipePost(userId, postId);
+    }
+
+    @Override
+    public List<LikedRecipePost> getUserLikedRecipePosts(Long userId) {
+        return postRepository.getUserLikedRecipePosts(userId);
+    }
+
+    @Override
+    public void updatePlusIMadeLike(Long id) {
+        postRepository.addIMadeLike(id);
+    }
+
+    @Override
+    public void updateMinusIMadeLike(Long id) {
+        postRepository.deleteIMadeLike(id);
+    }
+
+    @Override
+    public void addIMadePostLikeKeyTable(Long userId, Long postId) {
+        postRepository.addIMadePostLikeKeyTable(userId, postId);
+    }
+
+    @Override
+    public void deleteIMadePostLikeKeyTable(Long userId, Long postId) {
+        postRepository.deleteIMadePostLikeKeyTable(userId, postId);
+    }
+
+    @Override
+    public int getAllIMadePostLikes(Long postId) {
+        return postRepository.getAllIMadePostLikes(postId);
+    }
+
+    @Override
+    public boolean userHasLikedIMadePost(Long userId, Long postId) {
+        return postRepository.userHasLikedIMadePost(userId, postId);
+    }
+
+    @Override
+    public List<LikedIMadePost> getUserLikedIMadePosts(Long userId) {
+        return postRepository.getUserLikedIMadePosts(userId);
+    }
+
+    @Override
+    public void updatePlusOtherLike(Long id) {
+        postRepository.addOtherLike(id);
+    }
+
+    @Override
+    public void updateMinusOtherLike(Long id) {
+        postRepository.deleteOtherLike(id);
+    }
+
+    @Override
+    public void addOtherPostLikeKeyTable(Long userId, Long postId) {
+        postRepository.addOtherPostLikeKeyTable(userId, postId);
+    }
+
+    @Override
+    public void deleteOtherPostLikeKeyTable(Long userId, Long postId) {
+        postRepository.deleteOtherPostLikeKeyTable(userId, postId);
+    }
+
+    @Override
+    public int getAllOtherPostLikes(Long postId) {
+        return postRepository.getAllOtherPostLikes(postId);
+    }
+
+    @Override
+    public boolean userHasLikedOtherPost(Long userId, Long postId) {
+        return postRepository.userHasLikedOtherPost(userId, postId);
+    }
+
+    @Override
+    public List<LikedOtherPost> getUserLikedOtherPosts(Long userId) {
+        return postRepository.getUserLikedOtherPosts(userId);
     }
 
 }
