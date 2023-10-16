@@ -15,8 +15,9 @@ public class RecipeCommentRowMapper implements RowMapper<RecipeComment> {
         recipeComment.setId(rs.getLong(1));
         recipeComment.setDate(rs.getTimestamp(2).toLocalDateTime());
         recipeComment.setComment_text(rs.getString(3));
-        recipeComment.setParent_comment_id((long) rs.getInt(4));
-        recipeComment.setComment_user_id((long) rs.getInt(5));
+        recipeComment.setLikes((long) rs.getInt(4));
+        recipeComment.setParent_comment_id((long) rs.getInt(5));
+        recipeComment.setComment_user_id((long) rs.getInt(6));
         recipeComment.setUser_image_url(rs.getString("user_image_url"));
         recipeComment.setUsername(rs.getString("username"));
         return recipeComment;

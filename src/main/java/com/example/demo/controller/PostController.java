@@ -151,6 +151,27 @@ public class PostController {
                         .build());
     }
 
+    @PatchMapping("/toggle/gardeningcommentlike/{id}/{userid}")
+    public ResponseEntity<HttpResponse> toggleLikeToGardeningComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
+        boolean hasLiked = postService.userHasLikedGardeningComment(userId, id);
+        if (hasLiked) {
+            postService.updateMinusGardeningCommentLike(id);
+            postService.deleteGardeningCommentLikeKeyTable(userId, id);
+        } else {
+            postService.updatePlusGardeningCommentLike(id);
+            postService.addGardeningCommentLikeKeyTable(userId, id);
+        }
+        int totalLikes = postService.getAllGardeningCommentLikes(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("total-likes", totalLikes))
+                        .message(hasLiked ? "Comment like deleted successfully" : "Comment like added successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
     @GetMapping("/gardeningpostlikes/{id}")
     public ResponseEntity<HttpResponse> getAllGardeningPostLikes(@PathVariable("id") long id) {
         int totalLikes = postService.getAllGardeningPostLikes(id);

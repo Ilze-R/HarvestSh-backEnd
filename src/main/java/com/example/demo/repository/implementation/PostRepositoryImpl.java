@@ -41,6 +41,8 @@ public class PostRepositoryImpl implements PostRepository {
     private final LikedRecipePostRowMapper likedRecipePostRowMapper;
     private final LikedIMadePostRowMapper likedIMadePostRowMapper;
     private final LikedOtherPostRowMapper likedOtherPostRowMapper;
+
+    private final LikedGardeningCommRowMapper likedGardeningCommRowMapper;
     private final GardeningCommentRowMapper gardeningCommentRowMapper;
     private final RecipeCommentRowMapper recipeCommentRowMapper;
 
@@ -172,6 +174,7 @@ public class PostRepositoryImpl implements PostRepository {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
             parameters.addValue("date", Timestamp.valueOf(currentDateTime));
             parameters.addValue("comment_text", gardeningComment.getComment_text());
+            parameters.addValue("likes", 0);
             parameters.addValue("parent_comment_id", gardeningComment.getParent_comment_id());
             parameters.addValue("comment_user_id",userId);
             parameters.addValue("comment_gardening_post_id", postId);
@@ -205,6 +208,7 @@ public class PostRepositoryImpl implements PostRepository {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
             parameters.addValue("date", Timestamp.valueOf(currentDateTime));
             parameters.addValue("comment_text", recipeComment.getComment_text());
+            parameters.addValue("likes", 0);
             parameters.addValue("parent_comment_id", recipeComment.getParent_comment_id());
             parameters.addValue("comment_user_id",userId);
             parameters.addValue("comment_recipe_post_id", postId);
@@ -238,6 +242,7 @@ public class PostRepositoryImpl implements PostRepository {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
             parameters.addValue("date", Timestamp.valueOf(currentDateTime));
             parameters.addValue("comment_text", iMadeComment.getComment_text());
+            parameters.addValue("likes", 0);
             parameters.addValue("parent_comment_id", iMadeComment.getParent_comment_id());
             parameters.addValue("comment_user_id",userId);
             parameters.addValue("comment_i_made_post_id", postId);
@@ -271,6 +276,7 @@ public class PostRepositoryImpl implements PostRepository {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
             parameters.addValue("date", Timestamp.valueOf(currentDateTime));
             parameters.addValue("comment_text", otherComment.getComment_text());
+            parameters.addValue("likes", 0);
             parameters.addValue("parent_comment_id", otherComment.getParent_comment_id());
             parameters.addValue("comment_user_id",userId);
             parameters.addValue("comment_other_post_id", postId);
@@ -411,7 +417,7 @@ public class PostRepositoryImpl implements PostRepository {
             Integer likes = jdbc.queryForObject(GET_ALL_GARDENING_POST_LIKES, of("postId", postId), Integer.class);
             return Objects.requireNonNullElse(likes, 0);
         } catch (Exception exception) {
-            throw new ApiException("An error occurred here. Please try again.");
+            throw new ApiException("An error occurred. Please try again.");
         }
     }
 
@@ -458,13 +464,88 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public void addGardeningCommentLike(Long id) {
+        try {
+            jdbc.update(UPDATE_PLUS_GARDENING_COMMENT_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteGardeningCommentLike(Long id) {
+        try {
+            jdbc.update(UPDATE_MINUS_GARDENING_COMMENT_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void addGardeningCommentLikeKeyTable(Long userId, Long commentId) {
+        try {
+            jdbc.update(ADD_GARDENING_COMMENT_LIKES_KEY_TABLE, of("userId", userId, "postId", commentId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteGardeningCommentLikeKeyTable(Long userId, Long commentId) {
+        try {
+            jdbc.update(DELETE_GARDENING_COMMENT_LIKES_KEY_TABLE, of("userId", userId, "postId", commentId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public int getAllGardeningCommentLikes(Long commentId) {
+        try {
+            Integer likes = jdbc.queryForObject(GET_ALL_GARDENING_COMMENT_LIKES, of("postId", commentId), Integer.class);
+            return Objects.requireNonNullElse(likes, 0);
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public boolean userHasLikedGardeningComment(Long userId, Long commentId) {
+        try {
+            String sql = "SELECT COUNT(*) FROM GardeningCommentLikes WHERE user_id = :userId AND comment_id = :commentId";
+            SqlParameterSource params = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("postId", commentId);
+            int likeCount = jdbc.queryForObject(sql, params, Integer.class);
+            return likeCount > 0;
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred while checking if the user has liked the post.");
+        }
+    }
+
+    @Override
+    public List<LikedGardeningComment> getUserLikedGardeningComments(Long userId) {
+        try {
+            String sql = "SELECT gc.likes " +
+                    "FROM GardeningCommentLikes cl " +
+                    "INNER JOIN GardeningComment gc ON cl.comment_id = gc.id " +
+                    "WHERE cl.user_id = :userId";
+            List<LikedGardeningComment> likedComments = jdbc.query(sql, of("userId", userId), likedGardeningCommRowMapper);
+            return likedComments;
+        } catch (Exception exception) {
+            log.error("Error retrieving liked comments for user " + userId, exception);
+            throw new ApiException("An error occurred while retrieving liked comments.");
+        }
+    }
+
+    @Override
     public void addRecipeLike(Long id) {
         try {
             jdbc.update(UPDATE_PLUS_RECIPE_LIKES, of("id", id));
             log.info("Executing SQL: {}", UPDATE_PLUS_RECIPE_LIKES);
             log.info("Parameter values: id = {}", id);
         } catch (Exception exception) {
-            throw new ApiException("An error occurred maybe. Please try again.");
+            throw new ApiException("An error occurred. Please try again.");
         }
     }
 
@@ -482,7 +563,7 @@ public class PostRepositoryImpl implements PostRepository {
         try {
             jdbc.update(ADD_RECIPE_POST_LIKES_KEY_TABLE, of("userId", userId, "postId", postId));
         } catch (Exception exception) {
-            throw new ApiException("An error occurred there. Please try again.");
+            throw new ApiException("An error occurred. Please try again.");
         }
     }
 
@@ -501,7 +582,7 @@ public class PostRepositoryImpl implements PostRepository {
             Integer likes = jdbc.queryForObject(GET_ALL_RECIPE_POST_LIKES, of("postId", postId), Integer.class);
             return Objects.requireNonNullElse(likes, 0);
         } catch (Exception exception) {
-            throw new ApiException("An error occurred here. Please try again.");
+            throw new ApiException("An error occurred. Please try again.");
         }
     }
 
@@ -710,6 +791,7 @@ public class PostRepositoryImpl implements PostRepository {
         return jdbcTemplate.query("SELECT RecipePost.*, Users.image_url AS user_image_url " +
                 "FROM RecipePost " +
                 "INNER JOIN Users ON RecipePost.users_recipe_post_id = Users.id " +
+                "ORDER BY RecipePost.date DESC " +
                 "LIMIT ? OFFSET ?", recipePostRowMapper, pageable.getPageSize(), pageable.getOffset());
     }
 
@@ -718,6 +800,7 @@ public class PostRepositoryImpl implements PostRepository {
         return jdbcTemplate.query("SELECT IMadePost.*, Users.image_url AS user_image_url " +
                 "FROM IMadePost " +
                 "INNER JOIN Users ON IMadePost.users_i_made_post_id = Users.id " +
+                "ORDER BY IMadePost.date DESC " +
                 "LIMIT ? OFFSET ?", iMadePostRowMapper, pageable.getPageSize(), pageable.getOffset());
     }
 
@@ -726,6 +809,7 @@ public class PostRepositoryImpl implements PostRepository {
         return jdbcTemplate.query("SELECT OtherPost.*, Users.image_url AS user_image_url " +
                 "FROM OtherPost " +
                 "INNER JOIN Users ON OtherPost.users_other_post_id = Users.id " +
+                "ORDER BY OtherPost.date DESC " +
                 "LIMIT ? OFFSET ?", otherPostRowMapper, pageable.getPageSize(), pageable.getOffset());
     }
 

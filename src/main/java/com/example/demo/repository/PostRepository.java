@@ -72,6 +72,23 @@ public interface PostRepository{
     List<LikedGardeningPost> getUserLikedGardeningPosts(Long userId);
     GardeningComment getGardeningCommentById(long id);
 
+    ////////////////
+
+    void addGardeningCommentLike(Long id);
+
+    void deleteGardeningCommentLike(Long id);
+
+    void addGardeningCommentLikeKeyTable(Long userId, Long commentId);
+
+    void deleteGardeningCommentLikeKeyTable(Long userId, Long commentId);
+
+    int getAllGardeningCommentLikes(Long commentId);
+
+    boolean userHasLikedGardeningComment(Long userId, Long commentId);
+
+    List<LikedGardeningComment> getUserLikedGardeningComments(Long userId);
+
+
     // RECIPE LIKES
 
     void addRecipeLike(Long id);
@@ -88,7 +105,7 @@ public interface PostRepository{
 
     List<LikedRecipePost> getUserLikedRecipePosts(Long userId);
 
-    // IMADE LIKES
+    // I MADE LIKES
 
     void addIMadeLike(Long id);
 

@@ -66,6 +66,19 @@ public interface PostService {
 
     GardeningComment getGardeningCommentById(long id);
 
+    ///////////////////////////////////////////////
+
+    void updatePlusGardeningCommentLike(Long id);
+    void updateMinusGardeningCommentLike(Long id);
+    void addGardeningCommentLikeKeyTable(Long userId, Long commentId);
+    void deleteGardeningCommentLikeKeyTable(Long userId, Long commentId);
+
+    int getAllGardeningCommentLikes(Long postId);
+
+    boolean userHasLikedGardeningComment(Long userId, Long commentId);
+
+    List<LikedGardeningComment> getUserLikedGardeningComments(Long commentId);
+
     //   RECIPE POST
 
     void updatePlusRecipeLike(Long id);
