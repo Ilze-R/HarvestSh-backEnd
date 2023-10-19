@@ -13,8 +13,18 @@ public interface PostRepository{
     GardeningPost create(Long userId, GardeningPost data, MultipartFile image);
 
     RecipePost create (Long userId, RecipePost data, MultipartFile image);
-    IMadePost create (Long userId, IMadePost data, MultipartFile image);
-    OtherPost create (Long userId, OtherPost data, MultipartFile image);
+
+ IMadePost create(Long userId, IMadePost data, MultipartFile image);
+
+ OtherPost create(Long userId, OtherPost data, MultipartFile image);
+
+ void deleteGardeningPost(Long postId);
+
+ void deleteRecipePost(Long postId);
+
+ void deleteIMadePost(Long postId);
+
+ void deleteOtherPost(Long postId);
 
     List<GardeningPost> getAllGardeningPosts();
 
@@ -54,6 +64,8 @@ public interface PostRepository{
     void deleteRecipeComment(Long commentId);
     void deleteIMadeComment(Long commentId);
     void deleteOtherComment(Long commentId);
+
+    GardeningComment getLatestGardeningComment(Long postId);
 
     // GARDENING LIKES
 

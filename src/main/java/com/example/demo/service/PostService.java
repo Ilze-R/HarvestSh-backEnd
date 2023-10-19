@@ -13,6 +13,12 @@ public interface PostService {
     IMadePost createIMadePost(long userId, IMadePost iMadePost, MultipartFile image);
 
     OtherPost createOtherPost(long userId, OtherPost otherPost, MultipartFile image);
+
+    void deleteGardeningPost(Long postId);
+    void deleteRecipePost(Long postId);
+    void deleteIMadePost(Long postId);
+    void deleteOtherPost(Long postId);
+
     List<GardeningPost> getAllGardeningPosts();
 
     List<GardeningPost> getAllGardeningPosts(int pageSize, int offset);
@@ -51,6 +57,8 @@ public interface PostService {
     void deleteRecipeComment(Long commentId);
     void deleteIMadeComment(Long commentId);
     void deleteOtherComment(Long commentId);
+
+    GardeningComment getLatestGardeningComment(long postId);
 
     //   GARDENING POST
     void updatePlusGardeningLike(Long id);

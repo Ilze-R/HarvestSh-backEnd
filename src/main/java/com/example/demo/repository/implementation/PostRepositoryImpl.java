@@ -163,6 +163,42 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public void deleteGardeningPost(Long postId) {
+        try {
+            jdbc.update(DELETE_GARDENING_POST, of("postId", postId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred here. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteRecipePost(Long postId) {
+        try {
+            jdbc.update(DELETE_RECIPE_POST, of("postId", postId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteIMadePost(Long postId) {
+        try {
+            jdbc.update(DELETE_I_MADE_POST, of("postId", postId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteOtherPost(Long postId) {
+        try {
+            jdbc.update(DELETE_OTHER_POST, of("postId", postId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
     public List<GardeningPost> getAllGardeningPosts() {
         return null;
     }
@@ -371,6 +407,18 @@ public class PostRepositoryImpl implements PostRepository {
         try {
             jdbc.update(DELETE_OTHER_COMMENT, of("id", commentId));
         } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public GardeningComment getLatestGardeningComment(Long postId) {
+        try {
+            return jdbc.queryForObject(SELECT_LATEST_COMMENT_FROM_GARDENING_POST, of("postId", postId), gardeningCommentRowMapper);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new ApiException("Comments were not fount: " + postId);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
             throw new ApiException("An error occurred. Please try again.");
         }
     }

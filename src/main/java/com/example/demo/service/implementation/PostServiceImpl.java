@@ -37,6 +37,27 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void deleteGardeningPost(Long postId) {
+        postRepository.deleteGardeningPost(postId);
+    }
+
+    @Override
+    public void deleteRecipePost(Long postId) {
+        postRepository.deleteRecipePost(postId);
+    }
+
+    @Override
+    public void deleteIMadePost(Long postId) {
+        postRepository.deleteIMadePost(postId);
+    }
+
+    @Override
+    public void deleteOtherPost(Long postId) {
+        postRepository.deleteOtherPost(postId);
+    }
+
+
+    @Override
     public List<GardeningPost> getAllGardeningPosts() {
         return postRepository.getAllGardeningPosts();
     }
@@ -164,6 +185,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public void deleteOtherComment(Long commentId) {
         postRepository.deleteOtherComment(commentId);
+    }
+
+    @Override
+    public GardeningComment getLatestGardeningComment(long postId) {
+        return postRepository.getLatestGardeningComment(postId);
     }
 
     @Override

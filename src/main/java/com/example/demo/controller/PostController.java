@@ -17,6 +17,58 @@ public class PostController {
 
     private final PostService postService;
 
+    @DeleteMapping("/delete/gardeningpost/{id}")
+    public ResponseEntity<HttpResponse> deleteGardeningPost(@PathVariable("id") long id) {
+        postService.deleteGardeningPost(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message("Post deleted successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+    }
+
+    @DeleteMapping("/delete/recipepost/{id}")
+    public ResponseEntity<HttpResponse> deleteRecipePost(@PathVariable("id") long id) {
+        postService.deleteRecipePost(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message("Post deleted successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+    }
+
+    @DeleteMapping("/delete/imadepost/{id}")
+    public ResponseEntity<HttpResponse> deleteIMadePost(@PathVariable("id") long id) {
+        postService.deleteIMadePost(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message("Post deleted successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+    }
+
+    @DeleteMapping("/delete/otherpost/{id}")
+    public ResponseEntity<HttpResponse> deleteOtherPost(@PathVariable("id") long id) {
+        postService.deleteOtherPost(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message("Post deleted successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+    }
+
     @DeleteMapping("/delete/gardeningcomment/{id}")
     public ResponseEntity<HttpResponse> deleteGardeningComment(@PathVariable("id") long id) {
         postService.deleteGardeningComment(id);
