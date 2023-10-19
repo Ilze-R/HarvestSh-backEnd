@@ -17,6 +17,58 @@ public class PostController {
 
     private final PostService postService;
 
+    @DeleteMapping("/delete/gardeningpost/{id}")
+    public ResponseEntity<HttpResponse> deleteGardeningPost(@PathVariable("id") long id) {
+        postService.deleteGardeningPost(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message("Post deleted successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+    }
+
+    @DeleteMapping("/delete/recipepost/{id}")
+    public ResponseEntity<HttpResponse> deleteRecipePost(@PathVariable("id") long id) {
+        postService.deleteRecipePost(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message("Post deleted successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+    }
+
+    @DeleteMapping("/delete/imadepost/{id}")
+    public ResponseEntity<HttpResponse> deleteIMadePost(@PathVariable("id") long id) {
+        postService.deleteIMadePost(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message("Post deleted successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+    }
+
+    @DeleteMapping("/delete/otherpost/{id}")
+    public ResponseEntity<HttpResponse> deleteOtherPost(@PathVariable("id") long id) {
+        postService.deleteOtherPost(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .message("Post deleted successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build()
+        );
+    }
+
     @DeleteMapping("/delete/gardeningcomment/{id}")
     public ResponseEntity<HttpResponse> deleteGardeningComment(@PathVariable("id") long id) {
         postService.deleteGardeningComment(id);
@@ -146,6 +198,27 @@ public class PostController {
                         .timeStamp(now().toString())
                         .data(of("total-likes", totalLikes))
                         .message(hasLiked ? "Post like deleted successfully" : "Post like added successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PatchMapping("/toggle/gardeningcommentlike/{id}/{userid}")
+    public ResponseEntity<HttpResponse> toggleLikeToGardeningComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
+        boolean hasLiked = postService.userHasLikedGardeningComment(userId, id);
+        if (hasLiked) {
+            postService.updateMinusGardeningCommentLike(id);
+            postService.deleteGardeningCommentLikeKeyTable(userId, id);
+        } else {
+            postService.updatePlusGardeningCommentLike(id);
+            postService.addGardeningCommentLikeKeyTable(userId, id);
+        }
+        int totalLikes = postService.getAllGardeningCommentLikes(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("total-likes", totalLikes))
+                        .message(hasLiked ? "Comment like deleted successfully" : "Comment like added successfully")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());

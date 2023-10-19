@@ -71,6 +71,7 @@ CREATE TABLE GardeningComment (
                                id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                date DATETIME DEFAULT CURRENT_TIMESTAMP,
                                comment_text TEXT,
+                               likes INT,
                                parent_comment_id BIGINT,
                                comment_user_id BIGINT UNSIGNED NOT NULL,
                             comment_gardening_post_id BIGINT UNSIGNED NOT NULL,
@@ -87,6 +88,7 @@ CREATE TABLE GardeningCommentLikes (
                               FOREIGN KEY (user_id) REFERENCES Users(id),
                               FOREIGN KEY (comment_id) REFERENCES GardeningComment(id)
 );
+
 
 DROP TABLE IF EXISTS RecipePost;
 
@@ -119,11 +121,22 @@ CREATE TABLE RecipeComment (
                                id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                date DATETIME DEFAULT CURRENT_TIMESTAMP,
                                comment_text TEXT,
+                               likes INT,
                                parent_comment_id BIGINT,
                                comment_user_id BIGINT UNSIGNED NOT NULL,
                                comment_recipe_post_id BIGINT UNSIGNED NOT NULL,
                                FOREIGN KEY (comment_user_id) REFERENCES Users(id),
                                FOREIGN KEY (comment_recipe_post_id) REFERENCES RecipePost(id)
+);
+
+DROP TABLE IF EXISTS RecipeCommentLikes;
+
+CREATE TABLE RecipeCommentLikes (
+                                       id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                       user_id BIGINT UNSIGNED NOT NULL,
+                                       comment_id BIGINT NOT NULL,
+                                       FOREIGN KEY (user_id) REFERENCES Users(id),
+                                       FOREIGN KEY (comment_id) REFERENCES RecipeComment(id)
 );
 
 DROP TABLE IF EXISTS IMadePost;
@@ -157,12 +170,24 @@ CREATE TABLE IMadeComment (
                                id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                date DATETIME DEFAULT CURRENT_TIMESTAMP,
                                comment_text TEXT,
+                               likes INT,
                                parent_comment_id BIGINT,
                                comment_user_id BIGINT UNSIGNED NOT NULL,
                                comment_i_made_post_id BIGINT UNSIGNED NOT NULL,
                                FOREIGN KEY (comment_user_id) REFERENCES Users(id),
                                FOREIGN KEY (comment_i_made_post_id) REFERENCES IMadePost(id)
 );
+
+DROP TABLE IF EXISTS IMadeCommentLikes;
+
+CREATE TABLE IMadeCommentLikes (
+                                    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                    user_id BIGINT UNSIGNED NOT NULL,
+                                    comment_id BIGINT NOT NULL,
+                                    FOREIGN KEY (user_id) REFERENCES Users(id),
+                                    FOREIGN KEY (comment_id) REFERENCES IMadeComment(id)
+);
+
 DROP TABLE IF EXISTS OtherPost;
 
 CREATE TABLE OtherPost (
@@ -194,11 +219,22 @@ CREATE TABLE OtherComment (
                               id BIGINT PRIMARY KEY AUTO_INCREMENT,
                               date DATETIME DEFAULT CURRENT_TIMESTAMP,
                               comment_text TEXT,
+                              likes INT,
                               parent_comment_id BIGINT,
                               comment_user_id BIGINT UNSIGNED NOT NULL,
                               comment_other_post_id BIGINT UNSIGNED NOT NULL,
                               FOREIGN KEY (comment_user_id) REFERENCES Users(id),
                               FOREIGN KEY (comment_other_post_id) REFERENCES OtherPost(id)
+);
+
+DROP TABLE IF EXISTS OtherCommentLikes;
+
+CREATE TABLE OtherCommentLikes (
+                                   id BIGINT PRIMARY KEY AUTO_INCREMENT,
+                                   user_id BIGINT UNSIGNED NOT NULL,
+                                   comment_id BIGINT NOT NULL,
+                                   FOREIGN KEY (user_id) REFERENCES Users(id),
+                                   FOREIGN KEY (comment_id) REFERENCES OtherComment(id)
 );
 
 DROP TABLE IF EXISTS Roles;

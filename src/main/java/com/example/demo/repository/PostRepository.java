@@ -13,8 +13,18 @@ public interface PostRepository{
     GardeningPost create(Long userId, GardeningPost data, MultipartFile image);
 
     RecipePost create (Long userId, RecipePost data, MultipartFile image);
-    IMadePost create (Long userId, IMadePost data, MultipartFile image);
-    OtherPost create (Long userId, OtherPost data, MultipartFile image);
+
+ IMadePost create(Long userId, IMadePost data, MultipartFile image);
+
+ OtherPost create(Long userId, OtherPost data, MultipartFile image);
+
+ void deleteGardeningPost(Long postId);
+
+ void deleteRecipePost(Long postId);
+
+ void deleteIMadePost(Long postId);
+
+ void deleteOtherPost(Long postId);
 
     List<GardeningPost> getAllGardeningPosts();
 
@@ -55,6 +65,8 @@ public interface PostRepository{
     void deleteIMadeComment(Long commentId);
     void deleteOtherComment(Long commentId);
 
+    GardeningComment getLatestGardeningComment(Long postId);
+
     // GARDENING LIKES
 
     void addGardeningLike(Long id);
@@ -72,6 +84,23 @@ public interface PostRepository{
     List<LikedGardeningPost> getUserLikedGardeningPosts(Long userId);
     GardeningComment getGardeningCommentById(long id);
 
+    ////////////////
+
+    void addGardeningCommentLike(Long id);
+
+    void deleteGardeningCommentLike(Long id);
+
+    void addGardeningCommentLikeKeyTable(Long userId, Long commentId);
+
+    void deleteGardeningCommentLikeKeyTable(Long userId, Long commentId);
+
+    int getAllGardeningCommentLikes(Long commentId);
+
+    boolean userHasLikedGardeningComment(Long userId, Long commentId);
+
+    List<LikedGardeningComment> getUserLikedGardeningComments(Long userId);
+
+
     // RECIPE LIKES
 
     void addRecipeLike(Long id);
@@ -88,7 +117,7 @@ public interface PostRepository{
 
     List<LikedRecipePost> getUserLikedRecipePosts(Long userId);
 
-    // IMADE LIKES
+    // I MADE LIKES
 
     void addIMadeLike(Long id);
 

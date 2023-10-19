@@ -21,6 +21,8 @@ public class IMadeComment {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;
     private String comment_text;
+
+    private Long likes;
     private Long parent_comment_id;
     private Long comment_user_id;
     private String user_image_url;

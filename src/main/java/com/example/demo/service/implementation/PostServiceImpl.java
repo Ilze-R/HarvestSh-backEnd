@@ -37,6 +37,27 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void deleteGardeningPost(Long postId) {
+        postRepository.deleteGardeningPost(postId);
+    }
+
+    @Override
+    public void deleteRecipePost(Long postId) {
+        postRepository.deleteRecipePost(postId);
+    }
+
+    @Override
+    public void deleteIMadePost(Long postId) {
+        postRepository.deleteIMadePost(postId);
+    }
+
+    @Override
+    public void deleteOtherPost(Long postId) {
+        postRepository.deleteOtherPost(postId);
+    }
+
+
+    @Override
     public List<GardeningPost> getAllGardeningPosts() {
         return postRepository.getAllGardeningPosts();
     }
@@ -167,6 +188,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public GardeningComment getLatestGardeningComment(long postId) {
+        return postRepository.getLatestGardeningComment(postId);
+    }
+
+    @Override
     public void updatePlusGardeningLike(Long id) {
         postRepository.addGardeningLike(id);
     }
@@ -211,6 +237,41 @@ public class PostServiceImpl implements PostService {
     @Override
     public GardeningComment getGardeningCommentById(long id) {
         return postRepository.getGardeningCommentById(id);
+    }
+
+    @Override
+    public void updatePlusGardeningCommentLike(Long id) {
+        postRepository.addGardeningCommentLike(id);
+    }
+
+    @Override
+    public void updateMinusGardeningCommentLike(Long id) {
+        postRepository.deleteGardeningCommentLike(id);
+    }
+
+    @Override
+    public void addGardeningCommentLikeKeyTable(Long userId, Long commentId) {
+        postRepository.addGardeningCommentLikeKeyTable(userId, commentId);
+    }
+
+    @Override
+    public void deleteGardeningCommentLikeKeyTable(Long userId, Long commentId) {
+        postRepository.deleteGardeningCommentLikeKeyTable(userId, commentId);
+    }
+
+    @Override
+    public int getAllGardeningCommentLikes(Long commentId) {
+        return postRepository.getAllGardeningCommentLikes(commentId);
+    }
+
+    @Override
+    public boolean userHasLikedGardeningComment(Long userId, Long commentId) {
+        return postRepository.userHasLikedGardeningComment(userId, commentId);
+    }
+
+    @Override
+    public List<LikedGardeningComment> getUserLikedGardeningComments(Long userId) {
+        return postRepository.getUserLikedGardeningComments(userId);
     }
 
     @Override
