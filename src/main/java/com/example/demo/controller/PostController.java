@@ -203,7 +203,7 @@ public class PostController {
                         .build());
     }
 
-    @PatchMapping("/toggle/gardeningcommentlike/{id}/{userid}")
+    @PatchMapping("/toggle/gardeningcommentlike/{userid}/{id}")
     public ResponseEntity<HttpResponse> toggleLikeToGardeningComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
         boolean hasLiked = postService.userHasLikedGardeningComment(userId, id);
         if (hasLiked) {
@@ -214,6 +214,69 @@ public class PostController {
             postService.addGardeningCommentLikeKeyTable(userId, id);
         }
         int totalLikes = postService.getAllGardeningCommentLikes(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("total-likes", totalLikes))
+                        .message(hasLiked ? "Comment like deleted successfully" : "Comment like added successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PatchMapping("/toggle/recipecommentlike/{userid}/{id}")
+    public ResponseEntity<HttpResponse> toggleLikeToRecipeComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
+        boolean hasLiked = postService.userHasLikedRecipeComment(userId, id);
+        if (hasLiked) {
+            postService.updateMinusRecipeCommentLike(id);
+            postService.deleteRecipeCommentLikeKeyTable(userId, id);
+        } else {
+            postService.updatePlusRecipeCommentLike(id);
+            postService.addRecipeCommentLikeKeyTable(userId, id);
+        }
+        int totalLikes = postService.getAllRecipeCommentLikes(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("total-likes", totalLikes))
+                        .message(hasLiked ? "Comment like deleted successfully" : "Comment like added successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PatchMapping("/toggle/imadecommentlike/{userid}/{id}")
+    public ResponseEntity<HttpResponse> toggleLikeToIMadeComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
+        boolean hasLiked = postService.userHasLikedIMadeComment(userId, id);
+        if (hasLiked) {
+            postService.updateMinusIMadeCommentLike(id);
+            postService.deleteIMadeCommentLikeKeyTable(userId, id);
+        } else {
+            postService.updatePlusIMadeCommentLike(id);
+            postService.addIMadeCommentLikeKeyTable(userId, id);
+        }
+        int totalLikes = postService.getAllIMadeCommentLikes(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("total-likes", totalLikes))
+                        .message(hasLiked ? "Comment like deleted successfully" : "Comment like added successfully")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PatchMapping("/toggle/othercommentlike/{userid}/{id}")
+    public ResponseEntity<HttpResponse> toggleLikeToOtherComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
+        boolean hasLiked = postService.userHasLikedOtherComment(userId, id);
+        if (hasLiked) {
+            postService.updateMinusOtherCommentLike(id);
+            postService.deleteOtherCommentLikeKeyTable(userId, id);
+        } else {
+            postService.updatePlusOtherCommentLike(id);
+            postService.addOtherCommentLikeKeyTable(userId, id);
+        }
+        int totalLikes = postService.getAllOtherCommentLikes(id);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())

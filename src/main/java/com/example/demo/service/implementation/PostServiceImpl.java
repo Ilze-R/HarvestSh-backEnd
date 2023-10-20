@@ -234,10 +234,10 @@ public class PostServiceImpl implements PostService {
         postRepository.updateRecipeComment(commentId, comment_text);
     }
 
-    @Override
-    public GardeningComment getGardeningCommentById(long id) {
-        return postRepository.getGardeningCommentById(id);
-    }
+//    @Override
+//    public GardeningComment getGardeningCommentById(long id) {
+//        return postRepository.getGardeningCommentById(id);
+//    }
 
     @Override
     public void updatePlusGardeningCommentLike(Long id) {
@@ -310,6 +310,41 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void updatePlusRecipeCommentLike(Long id) {
+        postRepository.addRecipeCommentLike(id);
+    }
+
+    @Override
+    public void updateMinusRecipeCommentLike(Long id) {
+        postRepository.deleteRecipeCommentLike(id);
+    }
+
+    @Override
+    public void addRecipeCommentLikeKeyTable(Long userId, Long commentId) {
+        postRepository.addRecipeCommentLikeKeyTable(userId, commentId);
+    }
+
+    @Override
+    public void deleteRecipeCommentLikeKeyTable(Long userId, Long commentId) {
+        postRepository.deleteRecipeCommentLikeKeyTable(userId, commentId);
+    }
+
+    @Override
+    public int getAllRecipeCommentLikes(Long commentId) {
+        return postRepository.getAllRecipeCommentLikes(commentId);
+    }
+
+    @Override
+    public boolean userHasLikedRecipeComment(Long userId, Long commentId) {
+        return postRepository.userHasLikedRecipeComment(userId, commentId);
+    }
+
+    @Override
+    public List<LikedRecipeComment> getUserLikedRecipeComments(Long userId) {
+        return postRepository.getUserLikedRecipeComments(userId);
+    }
+
+    @Override
     public void updatePlusIMadeLike(Long id) {
         postRepository.addIMadeLike(id);
     }
@@ -345,6 +380,41 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void updatePlusIMadeCommentLike(Long id) {
+        postRepository.addIMadeCommentLike(id);
+    }
+
+    @Override
+    public void updateMinusIMadeCommentLike(Long id) {
+        postRepository.deleteIMadeCommentLike(id);
+    }
+
+    @Override
+    public void addIMadeCommentLikeKeyTable(Long userId, Long commentId) {
+        postRepository.addIMadeCommentLikeKeyTable(userId, commentId);
+    }
+
+    @Override
+    public void deleteIMadeCommentLikeKeyTable(Long userId, Long commentId) {
+        postRepository.deleteIMadeCommentLikeKeyTable(userId, commentId);
+    }
+
+    @Override
+    public int getAllIMadeCommentLikes(Long commentId) {
+        return postRepository.getAllIMadeCommentLikes(commentId);
+    }
+
+    @Override
+    public boolean userHasLikedIMadeComment(Long userId, Long commentId) {
+        return postRepository.userHasLikedIMadeComment(userId, commentId);
+    }
+
+    @Override
+    public List<LikedIMadeComment> getUserLikedIMadeComments(Long userId) {
+        return postRepository.getUserLikedIMadeComments(userId);
+    }
+
+    @Override
     public void updatePlusOtherLike(Long id) {
         postRepository.addOtherLike(id);
     }
@@ -377,6 +447,41 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<LikedOtherPost> getUserLikedOtherPosts(Long userId) {
         return postRepository.getUserLikedOtherPosts(userId);
+    }
+
+    @Override
+    public void updatePlusOtherCommentLike(Long id) {
+        postRepository.addOtherCommentLike(id);
+    }
+
+    @Override
+    public void updateMinusOtherCommentLike(Long id) {
+        postRepository.deleteOtherCommentLike(id);
+    }
+
+    @Override
+    public void addOtherCommentLikeKeyTable(Long userId, Long commentId) {
+        postRepository.addOtherCommentLikeKeyTable(userId, commentId);
+    }
+
+    @Override
+    public void deleteOtherCommentLikeKeyTable(Long userId, Long commentId) {
+        postRepository.deleteOtherCommentLikeKeyTable(userId, commentId);
+    }
+
+    @Override
+    public int getAllOtherCommentLikes(Long commentId) {
+        return postRepository.getAllOtherCommentLikes(commentId);
+    }
+
+    @Override
+    public boolean userHasLikedOtherComment(Long userId, Long commentId) {
+        return postRepository.userHasLikedOtherComment(userId, commentId);
+    }
+
+    @Override
+    public List<LikedOtherComment> getUserLikedOtherComments(Long userId) {
+        return postRepository.getUserLikedOtherComments(userId);
     }
 
 }
