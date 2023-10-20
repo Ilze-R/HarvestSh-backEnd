@@ -82,7 +82,7 @@ public interface PostRepository{
     boolean userHasLikedGardeningPost(Long userId, Long postId);
 
     List<LikedGardeningPost> getUserLikedGardeningPosts(Long userId);
-    GardeningComment getGardeningCommentById(long id);
+//    GardeningComment getGardeningCommentById(long id);
 
     ////////////////
 
@@ -117,6 +117,22 @@ public interface PostRepository{
 
     List<LikedRecipePost> getUserLikedRecipePosts(Long userId);
 
+    ///////////////
+
+ void addRecipeCommentLike(Long id);
+
+ void deleteRecipeCommentLike(Long id);
+
+ void addRecipeCommentLikeKeyTable(Long userId, Long commentId);
+
+ void deleteRecipeCommentLikeKeyTable(Long userId, Long commentId);
+
+ int getAllRecipeCommentLikes(Long commentId);
+
+ boolean userHasLikedRecipeComment(Long userId, Long commentId);
+
+ List<LikedRecipeComment> getUserLikedRecipeComments(Long userId);
+
     // I MADE LIKES
 
     void addIMadeLike(Long id);
@@ -132,6 +148,22 @@ public interface PostRepository{
     boolean userHasLikedIMadePost(Long userId, Long postId);
 
     List<LikedIMadePost> getUserLikedIMadePosts(Long userId);
+
+    //////////////
+
+ void addIMadeCommentLike(Long id);
+
+ void deleteIMadeCommentLike(Long id);
+
+ void addIMadeCommentLikeKeyTable(Long userId, Long commentId);
+
+ void deleteIMadeCommentLikeKeyTable(Long userId, Long commentId);
+
+ int getAllIMadeCommentLikes(Long commentId);
+
+ boolean userHasLikedIMadeComment(Long userId, Long commentId);
+
+ List<LikedIMadeComment> getUserLikedIMadeComments(Long userId);
     // OTHER LIKES
 
     void addOtherLike(Long id);
@@ -147,4 +179,20 @@ public interface PostRepository{
     boolean userHasLikedOtherPost(Long userId, Long postId);
 
     List<LikedOtherPost> getUserLikedOtherPosts(Long userId);
+
+    ///////////
+
+ void addOtherCommentLike(Long id);
+
+ void deleteOtherCommentLike(Long id);
+
+ void addOtherCommentLikeKeyTable(Long userId, Long commentId);
+
+ void deleteOtherCommentLikeKeyTable(Long userId, Long commentId);
+
+ int getAllOtherCommentLikes(Long commentId);
+
+ boolean userHasLikedOtherComment(Long userId, Long commentId);
+
+ List<LikedOtherComment> getUserLikedOtherComments(Long userId);
 }

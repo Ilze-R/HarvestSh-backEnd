@@ -43,6 +43,9 @@ public class PostRepositoryImpl implements PostRepository {
     private final LikedOtherPostRowMapper likedOtherPostRowMapper;
 
     private final LikedGardeningCommRowMapper likedGardeningCommRowMapper;
+    private final LikedRecipeCommRowMapper likedRecipeCommRowMapper;
+    private final LikedIMadeCommRowMapper likedIMadeCommRowMapper;
+    private final LikedOtherCommRowMapper likedOtherCommRowMapper;
     private final GardeningCommentRowMapper gardeningCommentRowMapper;
     private final RecipeCommentRowMapper recipeCommentRowMapper;
 
@@ -499,17 +502,17 @@ public class PostRepositoryImpl implements PostRepository {
         }
     }
 
-    @Override
-    public GardeningComment getGardeningCommentById(long id) {
-        try {
-            return jdbc.queryForObject(SELECT_GARDENING_COMMENT_BY_ID_QUERY, of("id", id), new GardeningCommentRowMapper());
-        } catch (EmptyResultDataAccessException exception) {
-            throw new ApiException("No comment found by id: " + id);
-        } catch (Exception exception) {
-            log.error(exception.getMessage());
-            throw new ApiException("An error occurred. Please try again");
-        }
-    }
+//    @Override
+//    public GardeningComment getGardeningCommentById(long id) {
+//        try {
+//            return jdbc.queryForObject(SELECT_GARDENING_COMMENT_BY_ID_QUERY, of("id", id), new GardeningCommentRowMapper());
+//        } catch (EmptyResultDataAccessException exception) {
+//            throw new ApiException("No comment found by id: " + id);
+//        } catch (Exception exception) {
+//            log.error(exception.getMessage());
+//            throw new ApiException("An error occurred. Please try again");
+//        }
+//    }
 
     @Override
     public void addGardeningCommentLike(Long id) {
@@ -532,7 +535,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public void addGardeningCommentLikeKeyTable(Long userId, Long commentId) {
         try {
-            jdbc.update(ADD_GARDENING_COMMENT_LIKES_KEY_TABLE, of("userId", userId, "postId", commentId));
+            jdbc.update(ADD_GARDENING_COMMENT_LIKES_KEY_TABLE, of("userId", userId, "commentId", commentId));
         } catch (Exception exception) {
             throw new ApiException("An error occurred. Please try again.");
         }
@@ -541,7 +544,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public void deleteGardeningCommentLikeKeyTable(Long userId, Long commentId) {
         try {
-            jdbc.update(DELETE_GARDENING_COMMENT_LIKES_KEY_TABLE, of("userId", userId, "postId", commentId));
+            jdbc.update(DELETE_GARDENING_COMMENT_LIKES_KEY_TABLE, of("userId", userId, "commentId", commentId));
         } catch (Exception exception) {
             throw new ApiException("An error occurred. Please try again.");
         }
@@ -550,7 +553,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public int getAllGardeningCommentLikes(Long commentId) {
         try {
-            Integer likes = jdbc.queryForObject(GET_ALL_GARDENING_COMMENT_LIKES, of("postId", commentId), Integer.class);
+            Integer likes = jdbc.queryForObject(GET_ALL_GARDENING_COMMENT_LIKES, of("commentId", commentId), Integer.class);
             return Objects.requireNonNullElse(likes, 0);
         } catch (Exception exception) {
             throw new ApiException("An error occurred. Please try again.");
@@ -563,11 +566,11 @@ public class PostRepositoryImpl implements PostRepository {
             String sql = "SELECT COUNT(*) FROM GardeningCommentLikes WHERE user_id = :userId AND comment_id = :commentId";
             SqlParameterSource params = new MapSqlParameterSource()
                     .addValue("userId", userId)
-                    .addValue("postId", commentId);
+                    .addValue("commentId", commentId);
             int likeCount = jdbc.queryForObject(sql, params, Integer.class);
             return likeCount > 0;
         } catch (Exception exception) {
-            throw new ApiException("An error occurred while checking if the user has liked the post.");
+            throw new ApiException("An error occurred while checking if the user has liked the comment.");
         }
     }
 
@@ -665,6 +668,81 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public void addRecipeCommentLike(Long id) {
+        try {
+            jdbc.update(UPDATE_PLUS_RECIPE_COMMENT_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred here. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteRecipeCommentLike(Long id) {
+        try {
+            jdbc.update(UPDATE_MINUS_RECIPE_COMMENT_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred there. Please try again.");
+        }
+    }
+
+    @Override
+    public void addRecipeCommentLikeKeyTable(Long userId, Long commentId) {
+        try {
+            jdbc.update(ADD_RECIPE_COMMENT_LIKES_KEY_TABLE, of("userId", userId, "commentId", commentId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred maybe. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteRecipeCommentLikeKeyTable(Long userId, Long commentId) {
+        try {
+            jdbc.update(DELETE_RECIPE_COMMENT_LIKES_KEY_TABLE, of("userId", userId, "commentId", commentId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred some. Please try again.");
+        }
+    }
+
+    @Override
+    public int getAllRecipeCommentLikes(Long commentId) {
+        try {
+            Integer likes = jdbc.queryForObject(GET_ALL_RECIPE_COMMENT_LIKES, of("commentId", commentId), Integer.class);
+            return Objects.requireNonNullElse(likes, 0);
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred test. Please try again.");
+        }
+    }
+
+    @Override
+    public boolean userHasLikedRecipeComment(Long userId, Long commentId) {
+        try {
+            String sql = "SELECT COUNT(*) FROM RecipeCommentLikes WHERE user_id = :userId AND comment_id = :commentId";
+            SqlParameterSource params = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("commentId", commentId);
+            int likeCount = jdbc.queryForObject(sql, params, Integer.class);
+            return likeCount > 0;
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred while checking if the user has liked the comment.");
+        }
+    }
+
+    @Override
+    public List<LikedRecipeComment> getUserLikedRecipeComments(Long userId) {
+        try {
+            String sql = "SELECT gc.likes " +
+                    "FROM RecipeCommentLikes cl " +
+                    "INNER JOIN RecipeComment gc ON cl.comment_id = gc.id " +
+                    "WHERE cl.user_id = :userId";
+            List<LikedRecipeComment> likedComments = jdbc.query(sql, of("userId", userId), likedRecipeCommRowMapper);
+            return likedComments;
+        } catch (Exception exception) {
+            log.error("Error retrieving liked comments for user " + userId, exception);
+            throw new ApiException("An error occurred while retrieving liked comments.");
+        }
+    }
+
+    @Override
     public void addIMadeLike(Long id) {
         try {
             jdbc.update(UPDATE_PLUS_I_MADE_LIKES, of("id", id));
@@ -741,6 +819,81 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public void addIMadeCommentLike(Long id) {
+        try {
+            jdbc.update(UPDATE_PLUS_I_MADE_COMMENT_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteIMadeCommentLike(Long id) {
+        try {
+            jdbc.update(UPDATE_MINUS_I_MADE_COMMENT_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void addIMadeCommentLikeKeyTable(Long userId, Long commentId) {
+        try {
+            jdbc.update(ADD_I_MADE_COMMENT_LIKES_KEY_TABLE, of("userId", userId, "commentId", commentId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteIMadeCommentLikeKeyTable(Long userId, Long commentId) {
+        try {
+            jdbc.update(DELETE_I_MADE_COMMENT_LIKES_KEY_TABLE, of("userId", userId, "commentId", commentId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public int getAllIMadeCommentLikes(Long commentId) {
+        try {
+            Integer likes = jdbc.queryForObject(GET_ALL_I_MADE_COMMENT_LIKES, of("commentId", commentId), Integer.class);
+            return Objects.requireNonNullElse(likes, 0);
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public boolean userHasLikedIMadeComment(Long userId, Long commentId) {
+        try {
+            String sql = "SELECT COUNT(*) FROM IMadeCommentLikes WHERE user_id = :userId AND comment_id = :commentId";
+            SqlParameterSource params = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("commentId", commentId);
+            int likeCount = jdbc.queryForObject(sql, params, Integer.class);
+            return likeCount > 0;
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred while checking if the user has liked the comment.");
+        }
+    }
+
+    @Override
+    public List<LikedIMadeComment> getUserLikedIMadeComments(Long userId) {
+        try {
+            String sql = "SELECT gc.likes " +
+                    "FROM IMadeCommentLikes cl " +
+                    "INNER JOIN IMadeComment gc ON cl.comment_id = gc.id " +
+                    "WHERE cl.user_id = :userId";
+            List<LikedIMadeComment> likedComments = jdbc.query(sql, of("userId", userId), likedIMadeCommRowMapper);
+            return likedComments;
+        } catch (Exception exception) {
+            log.error("Error retrieving liked comments for user " + userId, exception);
+            throw new ApiException("An error occurred while retrieving liked comments.");
+        }
+    }
+
+    @Override
     public void addOtherLike(Long id) {
         try {
             jdbc.update(UPDATE_PLUS_OTHER_LIKES, of("id", id));
@@ -813,6 +966,81 @@ public class PostRepositoryImpl implements PostRepository {
         } catch (Exception exception) {
             log.error("Error retrieving liked posts for user " + userId, exception);
             throw new ApiException("An error occurred while retrieving liked posts.");
+        }
+    }
+
+    @Override
+    public void addOtherCommentLike(Long id) {
+        try {
+            jdbc.update(UPDATE_PLUS_OTHER_COMMENT_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteOtherCommentLike(Long id) {
+        try {
+            jdbc.update(UPDATE_MINUS_OTHER_COMMENT_LIKES, of("id", id));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void addOtherCommentLikeKeyTable(Long userId, Long commentId) {
+        try {
+            jdbc.update(ADD_OTHER_COMMENT_LIKES_KEY_TABLE, of("userId", userId, "commentId", commentId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public void deleteOtherCommentLikeKeyTable(Long userId, Long commentId) {
+        try {
+            jdbc.update(DELETE_OTHER_COMMENT_LIKES_KEY_TABLE, of("userId", userId, "commentId", commentId));
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public int getAllOtherCommentLikes(Long commentId) {
+        try {
+            Integer likes = jdbc.queryForObject(GET_ALL_OTHER_COMMENT_LIKES, of("commentId", commentId), Integer.class);
+            return Objects.requireNonNullElse(likes, 0);
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred. Please try again.");
+        }
+    }
+
+    @Override
+    public boolean userHasLikedOtherComment(Long userId, Long commentId) {
+        try {
+            String sql = "SELECT COUNT(*) FROM OtherCommentLikes WHERE user_id = :userId AND comment_id = :commentId";
+            SqlParameterSource params = new MapSqlParameterSource()
+                    .addValue("userId", userId)
+                    .addValue("commentId", commentId);
+            int likeCount = jdbc.queryForObject(sql, params, Integer.class);
+            return likeCount > 0;
+        } catch (Exception exception) {
+            throw new ApiException("An error occurred while checking if the user has liked the comment.");
+        }
+    }
+
+    @Override
+    public List<LikedOtherComment> getUserLikedOtherComments(Long userId) {
+        try {
+            String sql = "SELECT gc.likes " +
+                    "FROM OtherCommentLikes cl " +
+                    "INNER JOIN OtherComment gc ON cl.comment_id = gc.id " +
+                    "WHERE cl.user_id = :userId";
+            List<LikedOtherComment> likedComments = jdbc.query(sql, of("userId", userId), likedOtherCommRowMapper);
+            return likedComments;
+        } catch (Exception exception) {
+            log.error("Error retrieving liked comments for user " + userId, exception);
+            throw new ApiException("An error occurred while retrieving liked comments.");
         }
     }
 

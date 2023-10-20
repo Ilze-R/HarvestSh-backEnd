@@ -62,17 +62,17 @@ public class PostQuery {
             "\n" +
             "COMMIT;";
 
-    public static final String INSERT_GARDENING_COMMENT_QUERY = "INSERT INTO GardeningComment(date, comment_text, parent_comment_id, comment_user_id, comment_gardening_post_id)" +
-            "VALUES (:date, :comment_text, :parent_comment_id, :comment_user_id, :comment_gardening_post_id)";
+    public static final String INSERT_GARDENING_COMMENT_QUERY = "INSERT INTO GardeningComment(date, comment_text, likes, parent_comment_id, comment_user_id, comment_gardening_post_id)" +
+            "VALUES (:date, :comment_text, :likes, :parent_comment_id, :comment_user_id, :comment_gardening_post_id)";
 
-    public static final String INSERT_RECIPE_COMMENT_QUERY = "INSERT INTO RecipeComment(date, comment_text, parent_comment_id, comment_user_id, comment_recipe_post_id)" +
-            "VALUES (:date, :comment_text, :parent_comment_id, :comment_user_id, :comment_recipe_post_id)";
+    public static final String INSERT_RECIPE_COMMENT_QUERY = "INSERT INTO RecipeComment(date, comment_text, likes, parent_comment_id, comment_user_id, comment_recipe_post_id)" +
+            "VALUES (:date, :comment_text, :likes, :parent_comment_id, :comment_user_id, :comment_recipe_post_id)";
 
-    public static final String INSERT_I_MADE_COMMENT_QUERY = "INSERT INTO IMadeComment(date, comment_text, parent_comment_id, comment_user_id, comment_i_made_post_id)" +
-            "VALUES (:date, :comment_text, :parent_comment_id, :comment_user_id, :comment_i_made_post_id)";
+    public static final String INSERT_I_MADE_COMMENT_QUERY = "INSERT INTO IMadeComment(date, comment_text, likes, parent_comment_id, comment_user_id, comment_i_made_post_id)" +
+            "VALUES (:date, :comment_text, :likes, :parent_comment_id, :comment_user_id, :comment_i_made_post_id)";
 
-    public static final String INSERT_OTHER_COMMENT_QUERY = "INSERT INTO OtherComment(date, comment_text, parent_comment_id, comment_user_id, comment_other_post_id)" +
-            "VALUES (:date, :comment_text, :parent_comment_id, :comment_user_id, :comment_other_post_id)";
+    public static final String INSERT_OTHER_COMMENT_QUERY = "INSERT INTO OtherComment(date, comment_text, likes, parent_comment_id, comment_user_id, comment_other_post_id)" +
+            "VALUES (:date, :comment_text, :likes, :parent_comment_id, :comment_user_id, :comment_other_post_id)";
 
     public static final String SELECT_GARDENING_POST_BY_ID = "SELECT * FROM GardeningPost WHERE id = :id";
     public static final String SELECT_RECIPE_POST_BY_ID = "SELECT * FROM RecipePost WHERE id = :id";
@@ -136,7 +136,7 @@ public class PostQuery {
     public static final String UPDATE_MINUS_GARDENING_COMMENT_LIKES = "UPDATE GardeningComment SET likes = likes - 1 WHERE id = :id";
     public static final String UPDATE_MINUS_RECIPE_COMMENT_LIKES = "UPDATE RecipeComment SET likes = likes - 1 WHERE id = :id";
     public static final String UPDATE_MINUS_I_MADE_COMMENT_LIKES = "UPDATE IMadeComment SET likes = likes - 1 WHERE id = :id";
-    public static final String UPDATE_MINUS_OTHER_COMMENT_LIKES = "UPDATE GOtherComment SET likes = likes - 1 WHERE id = :id";
+    public static final String UPDATE_MINUS_OTHER_COMMENT_LIKES = "UPDATE OtherComment SET likes = likes - 1 WHERE id = :id";
     public static final String ADD_GARDENING_POST_LIKES_KEY_TABLE = "INSERT INTO GardeningPostLikes (user_id, post_id)\n" +
             "VALUES (:userId, :postId)";
     public static final String ADD_RECIPE_POST_LIKES_KEY_TABLE = "INSERT INTO RecipePostLikes (user_id, post_id)\n" +
@@ -180,9 +180,9 @@ public class PostQuery {
     public static final String GET_ALL_OTHER_POST_LIKES = "SELECT likes FROM OtherPost WHERE id = :postId";
 
     public static final String GET_ALL_GARDENING_COMMENT_LIKES = "SELECT likes FROM GardeningComment WHERE id = :commentId";
-    public static final String GET_ALL_RECIPE_COMMENT_LIKES = "SELECT likes FROM GardeningComment WHERE id = :commentId";
-    public static final String GET_ALL_I_MADE_COMMENT_LIKES = "SELECT likes FROM GardeningComment WHERE id = :commentId";
-    public static final String GET_ALL_OTHER_COMMENT_LIKES = "SELECT likes FROM GardeningComment WHERE id = :commentId";
+    public static final String GET_ALL_RECIPE_COMMENT_LIKES = "SELECT likes FROM RecipeComment WHERE id = :commentId";
+    public static final String GET_ALL_I_MADE_COMMENT_LIKES = "SELECT likes FROM IMadeComment WHERE id = :commentId";
+    public static final String GET_ALL_OTHER_COMMENT_LIKES = "SELECT likes FROM OtherComment WHERE id = :commentId";
 
     public static final String SELECT_GARDENING_COMMENT_BY_ID_QUERY = "SELECT * FROM GardeningComment WHERE id = :id";
 
