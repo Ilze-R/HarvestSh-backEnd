@@ -12,12 +12,7 @@ public class LikedIMadeCommRowMapper implements RowMapper<LikedIMadeComment> {
     @Override
     public LikedIMadeComment mapRow(ResultSet rs, int rowNum) throws SQLException {
         LikedIMadeComment likedIMadeComment = new LikedIMadeComment();
-        likedIMadeComment.setId(rs.getLong(1));
-        likedIMadeComment.setDate(rs.getTimestamp(2).toLocalDateTime());
-        likedIMadeComment.setComment_text(rs.getString(3));
-        likedIMadeComment.setLikes((long) rs.getInt(4));
-        likedIMadeComment.setParent_comment_id((long) rs.getInt(5));
-        likedIMadeComment.setComment_user_id((long) rs.getInt(6));
+        likedIMadeComment.setLikes((long) rs.getInt(1));
         return likedIMadeComment;
     }
 }

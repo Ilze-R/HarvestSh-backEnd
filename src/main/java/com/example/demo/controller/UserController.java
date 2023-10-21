@@ -29,7 +29,9 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.demo.dtomapper.UserDTOMapper.toUser;
 import static com.example.demo.enumeration.EventType.*;
@@ -63,7 +65,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<HttpResponse> login(@RequestBody @Valid LoginForm loginForm) {
         UserDTO user = authenticate(loginForm.getEmail(), loginForm.getPassword());
-        return  sendResponse(user);
+        return sendResponse(user);
 
     }
 
@@ -87,15 +89,33 @@ public class UserController {
         List<LikedRecipePost> likedRecipePosts = postService.getUserLikedRecipePosts(user.getId());
         List<LikedIMadePost> likedIMadePosts = postService.getUserLikedIMadePosts(user.getId());
         List<LikedOtherPost> likedOtherPosts = postService.getUserLikedOtherPosts(user.getId());
-        return ResponseEntity.ok().body(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("user", user, "events", eventService.getEventsByUserId(user.getId()),"roles", roleService.getRoles(), "likedGardeningPosts", likedGardeningPosts, "likedRecipePosts", likedRecipePosts, "likedIMadePosts", likedIMadePosts, "likedOtherPosts", likedOtherPosts))
-                        .message("Profile Retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
+        List<LikedGardeningComment> likedGardeningComments = postService.getUserLikedGardeningComments(user.getId());
+        List<LikedRecipeComment> likedRecipeComments = postService.getUserLikedRecipeComments(user.getId());
+        List<LikedIMadeComment> likedIMadeComments = postService.getUserLikedIMadeComments(user.getId());
+        List<LikedOtherComment> likedOtherComments = postService.getUserLikedOtherComments(user.getId());
+        Map<String, Object> data = new HashMap<>();
+        data.put("user", user);
+        data.put("events", eventService.getEventsByUserId(user.getId()));
+        data.put("roles", roleService.getRoles());
+        data.put("likedGardeningPosts", likedGardeningPosts);
+        data.put("likedRecipePosts", likedRecipePosts);
+        data.put("likedIMadePosts", likedIMadePosts);
+        data.put("likedOtherPosts", likedOtherPosts);
+        data.put("likedGardeningComments", likedGardeningComments);
+        data.put("likedRecipeComments", likedRecipeComments);
+        data.put("likedIMadeComments", likedIMadeComments);
+        data.put("likedOtherComments", likedOtherComments);
+
+        return ResponseEntity.ok(HttpResponse.builder()
+                .timeStamp(now().toString())
+                .data(data)
+                .message("Profile Retrieved")
+                .status(OK)
+                .statusCode(OK.value())
+                .build());
     }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<HttpResponse> getUserById(Authentication authentication, @PathVariable("id") long id) {

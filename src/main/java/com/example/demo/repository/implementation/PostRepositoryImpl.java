@@ -489,7 +489,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<LikedGardeningPost> getUserLikedGardeningPosts(Long userId) {
         try {
-            String sql = "SELECT gp.id, gp.date, gp.title, gp.description, gp.tag, gp.likes, gp.view_count, gp.img_url " +
+            String sql = "SELECT gp.likes " +
                     "FROM GardeningPostLikes pl " +
                     "INNER JOIN GardeningPost gp ON pl.post_id = gp.id " +
                     "WHERE pl.user_id = :userId";
@@ -501,18 +501,6 @@ public class PostRepositoryImpl implements PostRepository {
             throw new ApiException("An error occurred while retrieving liked posts.");
         }
     }
-
-//    @Override
-//    public GardeningComment getGardeningCommentById(long id) {
-//        try {
-//            return jdbc.queryForObject(SELECT_GARDENING_COMMENT_BY_ID_QUERY, of("id", id), new GardeningCommentRowMapper());
-//        } catch (EmptyResultDataAccessException exception) {
-//            throw new ApiException("No comment found by id: " + id);
-//        } catch (Exception exception) {
-//            log.error(exception.getMessage());
-//            throw new ApiException("An error occurred. Please try again");
-//        }
-//    }
 
     @Override
     public void addGardeningCommentLike(Long id) {
@@ -654,7 +642,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<LikedRecipePost> getUserLikedRecipePosts(Long userId) {
         try {
-            String sql = "SELECT gp.id, gp.date, gp.title, gp.description, gp.tag, gp.likes, gp.view_count, gp.img_url " +
+            String sql = "SELECT gp.likes " +
                     "FROM RecipePostLikes pl " +
                     "INNER JOIN RecipePost gp ON pl.post_id = gp.id " +
                     "WHERE pl.user_id = :userId";
@@ -805,7 +793,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<LikedIMadePost> getUserLikedIMadePosts(Long userId) {
         try {
-            String sql = "SELECT gp.id, gp.date, gp.title, gp.description, gp.tag, gp.likes, gp.view_count, gp.img_url " +
+            String sql = "SELECT gp.likes " +
                     "FROM IMadePostLikes pl " +
                     "INNER JOIN IMadePost gp ON pl.post_id = gp.id " +
                     "WHERE pl.user_id = :userId";
@@ -956,7 +944,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<LikedOtherPost> getUserLikedOtherPosts(Long userId) {
         try {
-            String sql = "SELECT gp.id, gp.date, gp.title, gp.description, gp.tag, gp.likes, gp.view_count, gp.img_url " +
+            String sql = "SELECT gp.likes " +
                     "FROM OtherPostLikes pl " +
                     "INNER JOIN OtherPost gp ON pl.post_id = gp.id " +
                     "WHERE pl.user_id = :userId";

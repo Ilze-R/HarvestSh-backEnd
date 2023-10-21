@@ -294,7 +294,7 @@ public class PostController {
                 HttpResponse.builder()
                         .timeStamp(now().toString())
                         .data(of("total-likes", totalLikes))
-                        .message("All likes retrieved")
+                        .message("All post likes retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
@@ -307,7 +307,7 @@ public class PostController {
                 HttpResponse.builder()
                         .timeStamp(now().toString())
                         .data(of("total-likes", totalLikes))
-                        .message("All likes retrieved")
+                        .message("All post likes retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
@@ -319,7 +319,7 @@ public class PostController {
                 HttpResponse.builder()
                         .timeStamp(now().toString())
                         .data(of("total-likes", totalLikes))
-                        .message("All likes retrieved")
+                        .message("All post likes retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
@@ -332,7 +332,59 @@ public class PostController {
                 HttpResponse.builder()
                         .timeStamp(now().toString())
                         .data(of("total-likes", totalLikes))
-                        .message("All likes retrieved")
+                        .message("All post likes retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/gardeningcommentlikes/{id}")
+    public ResponseEntity<HttpResponse> getAllGardeningCommentLikes(@PathVariable("id") long id) {
+        int totalLikes = postService.getAllGardeningCommentLikes(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("total-likes", totalLikes))
+                        .message("All comment likes retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/recipecommentlikes/{id}")
+    public ResponseEntity<HttpResponse> getAllRecipeCommentLikes(@PathVariable("id") long id) {
+        int totalLikes = postService.getAllRecipeCommentLikes(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("total-likes", totalLikes))
+                        .message("All comment likes retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/imadecommentlikes/{id}")
+    public ResponseEntity<HttpResponse> getAllIMadeCommentLikes(@PathVariable("id") long id) {
+        int totalLikes = postService.getAllIMadeCommentLikes(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("total-likes", totalLikes))
+                        .message("All comment likes retrieved")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @GetMapping("/othercommentlikes/{id}")
+    public ResponseEntity<HttpResponse> getAllOtherCommentLikes(@PathVariable("id") long id) {
+        int totalLikes = postService.getAllOtherCommentLikes(id);
+        return ResponseEntity.ok().body(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("total-likes", totalLikes))
+                        .message("All comment likes retrieved")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
