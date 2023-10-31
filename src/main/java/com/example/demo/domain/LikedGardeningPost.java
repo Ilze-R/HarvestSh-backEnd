@@ -14,5 +14,6 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 @AllArgsConstructor
 @JsonInclude(NON_DEFAULT)
 public class LikedGardeningPost {
+    private Long id;
     private Long likes;
 }

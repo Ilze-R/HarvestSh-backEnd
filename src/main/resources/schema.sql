@@ -71,12 +71,14 @@ CREATE TABLE GardeningComment (
                                id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                date DATETIME DEFAULT CURRENT_TIMESTAMP,
                                comment_text TEXT,
+                               reply_username VARCHAR(50),
                                likes INT,
                                parent_comment_id BIGINT,
                                comment_user_id BIGINT UNSIGNED NOT NULL,
-                            comment_gardening_post_id BIGINT UNSIGNED NOT NULL,
+                               comment_gardening_post_id BIGINT UNSIGNED NOT NULL,
                                FOREIGN KEY (comment_user_id) REFERENCES Users(id),
-                               FOREIGN KEY (comment_gardening_post_id) REFERENCES GardeningPost(id)
+                               FOREIGN KEY (comment_gardening_post_id) REFERENCES GardeningPost(id),
+                               FOREIGN KEY (parent_comment_id) REFERENCES GardeningComment(id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS GardeningCommentLikes;
@@ -86,7 +88,7 @@ CREATE TABLE GardeningCommentLikes (
                               user_id BIGINT UNSIGNED NOT NULL,
                               comment_id BIGINT NOT NULL,
                               FOREIGN KEY (user_id) REFERENCES Users(id),
-                              FOREIGN KEY (comment_id) REFERENCES GardeningComment(id)
+                              FOREIGN KEY (comment_id) REFERENCES GardeningComment(id) ON DELETE CASCADE
 );
 
 
@@ -121,12 +123,14 @@ CREATE TABLE RecipeComment (
                                id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                date DATETIME DEFAULT CURRENT_TIMESTAMP,
                                comment_text TEXT,
+                               reply_username VARCHAR(50),
                                likes INT,
                                parent_comment_id BIGINT,
                                comment_user_id BIGINT UNSIGNED NOT NULL,
                                comment_recipe_post_id BIGINT UNSIGNED NOT NULL,
                                FOREIGN KEY (comment_user_id) REFERENCES Users(id),
-                               FOREIGN KEY (comment_recipe_post_id) REFERENCES RecipePost(id)
+                               FOREIGN KEY (comment_recipe_post_id) REFERENCES RecipePost(id),
+                               FOREIGN KEY (parent_comment_id) REFERENCES RecipeComment(id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS RecipeCommentLikes;
@@ -136,7 +140,7 @@ CREATE TABLE RecipeCommentLikes (
                                        user_id BIGINT UNSIGNED NOT NULL,
                                        comment_id BIGINT NOT NULL,
                                        FOREIGN KEY (user_id) REFERENCES Users(id),
-                                       FOREIGN KEY (comment_id) REFERENCES RecipeComment(id)
+                                       FOREIGN KEY (comment_id) REFERENCES RecipeComment(id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS IMadePost;
@@ -170,12 +174,14 @@ CREATE TABLE IMadeComment (
                                id BIGINT PRIMARY KEY AUTO_INCREMENT,
                                date DATETIME DEFAULT CURRENT_TIMESTAMP,
                                comment_text TEXT,
+                               reply_username VARCHAR(50),
                                likes INT,
                                parent_comment_id BIGINT,
                                comment_user_id BIGINT UNSIGNED NOT NULL,
                                comment_i_made_post_id BIGINT UNSIGNED NOT NULL,
                                FOREIGN KEY (comment_user_id) REFERENCES Users(id),
-                               FOREIGN KEY (comment_i_made_post_id) REFERENCES IMadePost(id)
+                               FOREIGN KEY (comment_i_made_post_id) REFERENCES IMadePost(id),
+                               FOREIGN KEY (parent_comment_id) REFERENCES IMadeComment(id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS IMadeCommentLikes;
@@ -185,7 +191,7 @@ CREATE TABLE IMadeCommentLikes (
                                     user_id BIGINT UNSIGNED NOT NULL,
                                     comment_id BIGINT NOT NULL,
                                     FOREIGN KEY (user_id) REFERENCES Users(id),
-                                    FOREIGN KEY (comment_id) REFERENCES IMadeComment(id)
+                                    FOREIGN KEY (comment_id) REFERENCES IMadeComment(id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS OtherPost;
@@ -219,12 +225,14 @@ CREATE TABLE OtherComment (
                               id BIGINT PRIMARY KEY AUTO_INCREMENT,
                               date DATETIME DEFAULT CURRENT_TIMESTAMP,
                               comment_text TEXT,
+                              reply_username VARCHAR(50),
                               likes INT,
                               parent_comment_id BIGINT,
                               comment_user_id BIGINT UNSIGNED NOT NULL,
                               comment_other_post_id BIGINT UNSIGNED NOT NULL,
                               FOREIGN KEY (comment_user_id) REFERENCES Users(id),
-                              FOREIGN KEY (comment_other_post_id) REFERENCES OtherPost(id)
+                              FOREIGN KEY (comment_other_post_id) REFERENCES OtherPost(id),
+                              FOREIGN KEY (parent_comment_id) REFERENCES OtherComment(id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS OtherCommentLikes;
@@ -234,7 +242,7 @@ CREATE TABLE OtherCommentLikes (
                                    user_id BIGINT UNSIGNED NOT NULL,
                                    comment_id BIGINT NOT NULL,
                                    FOREIGN KEY (user_id) REFERENCES Users(id),
-                                   FOREIGN KEY (comment_id) REFERENCES OtherComment(id)
+                                   FOREIGN KEY (comment_id) REFERENCES OtherComment(id) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS Roles;

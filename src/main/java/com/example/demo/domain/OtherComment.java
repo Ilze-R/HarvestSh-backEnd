@@ -21,6 +21,7 @@ public class OtherComment {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;
     private String comment_text;
+    private String reply_username;
     private Long likes;
     private Long parent_comment_id;
     private Long comment_user_id;

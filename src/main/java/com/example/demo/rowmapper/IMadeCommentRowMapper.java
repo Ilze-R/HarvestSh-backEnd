@@ -15,9 +15,10 @@ public class IMadeCommentRowMapper implements RowMapper<IMadeComment> {
         imadecomment.setId(rs.getLong(1));
         imadecomment.setDate(rs.getTimestamp(2).toLocalDateTime());
         imadecomment.setComment_text(rs.getString(3));
-        imadecomment.setLikes((long) rs.getInt(4));
-        imadecomment.setParent_comment_id((long) rs.getInt(5));
-        imadecomment.setComment_user_id((long) rs.getInt(6));
+        imadecomment.setReply_username(rs.getString(4));
+        imadecomment.setLikes((long) rs.getInt(5));
+        imadecomment.setParent_comment_id((long) rs.getInt(6));
+        imadecomment.setComment_user_id((long) rs.getInt(7));
        imadecomment.setUser_image_url(rs.getString("user_image_url"));
         imadecomment.setUsername(rs.getString("username"));
         return imadecomment;

@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
-import static com.auth0.jwt.algorithms.Algorithm.HMAC256;
 import static com.auth0.jwt.algorithms.Algorithm.HMAC512;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Arrays.stream;

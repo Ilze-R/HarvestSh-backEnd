@@ -12,7 +12,8 @@ public class LikedIMadeCommRowMapper implements RowMapper<LikedIMadeComment> {
     @Override
     public LikedIMadeComment mapRow(ResultSet rs, int rowNum) throws SQLException {
         LikedIMadeComment likedIMadeComment = new LikedIMadeComment();
-        likedIMadeComment.setLikes((long) rs.getInt(1));
+        likedIMadeComment.setId(rs.getLong(1));
+        likedIMadeComment.setLikes((long) rs.getInt(2));
         return likedIMadeComment;
     }
 }

@@ -12,7 +12,8 @@ public class LikedGardeningCommRowMapper implements RowMapper<LikedGardeningComm
     @Override
     public LikedGardeningComment mapRow(ResultSet rs, int rowNum) throws SQLException {
         LikedGardeningComment likedGardeningComment = new LikedGardeningComment();
-        likedGardeningComment.setLikes((long) rs.getInt(1));
+        likedGardeningComment.setId(rs.getLong(1));
+        likedGardeningComment.setLikes((long) rs.getInt(2));
         return likedGardeningComment;
     }
 }
