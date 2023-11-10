@@ -5,6 +5,10 @@ public class PostQuery {
             " img_url, users_gardening_post_id)"+
             "VALUES (:date, :title, :description, :tag, :likes, :view_count, :img_url, :users_gardening_post_id)";
 
+    public static final String INSERT_GARDENING_POST_NO_IMAGE_QUERY = "INSERT INTO GardeningPost(date, title, description, tag, likes, view_count," +
+            " users_gardening_post_id)" +
+            "VALUES (:date, :title, :description, :tag, :likes, :view_count, :users_gardening_post_id)";
+
     public static final String INSERT_RECIPE_POST_QUERY = "INSERT INTO RecipePost(date, title, description, tag, likes, view_count, img_url, users_recipe_post_id)"+
             "VALUES (:date, :title, :description, :tag, :likes, :view_count, :img_url, :users_recipe_post_id)";
 

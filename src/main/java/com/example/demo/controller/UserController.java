@@ -404,6 +404,21 @@ public class UserController {
                         .build());
     }
 
+    @PostMapping(path = "/addgardeningpost/{id}")
+    public ResponseEntity<HttpResponse> addGardeningPostNoPhotoToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id,
+                                                               @ModelAttribute GardeningPost gardeningPost) {
+        GardeningPost createdGardeningPost = postService.createGardeningPostNoPhoto(id, gardeningPost);
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail()),
+                                "gardeningPost", createdGardeningPost))
+                        .message(String.format("Gardening post added to user with ID: %s", id))
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
     @PostMapping(path = "/addrecipepost/image/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<HttpResponse> addRecipePostToUser(@AuthenticationPrincipal UserDTO user, @PathVariable("id") Long id,
                                                                @ModelAttribute RecipePost recipePost, @RequestParam("image") MultipartFile image) {

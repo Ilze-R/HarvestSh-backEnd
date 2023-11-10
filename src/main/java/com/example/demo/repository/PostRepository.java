@@ -12,6 +12,8 @@ public interface PostRepository{
 
     GardeningPost create(Long userId, GardeningPost data, MultipartFile image);
 
+    GardeningPost createGardeningPostNoPhoto(long userId, GardeningPost gardeningPost);
+
     RecipePost create (Long userId, RecipePost data, MultipartFile image);
 
  IMadePost create(Long userId, IMadePost data, MultipartFile image);

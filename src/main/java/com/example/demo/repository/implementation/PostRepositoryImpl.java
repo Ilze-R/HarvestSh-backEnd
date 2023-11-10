@@ -85,6 +85,29 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public GardeningPost createGardeningPostNoPhoto(long userId, GardeningPost gardeningPost) {
+        try {
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("date", Timestamp.valueOf(currentDateTime));
+            parameters.addValue("title", gardeningPost.getTitle());
+            parameters.addValue("description", gardeningPost.getDescription());
+            parameters.addValue("tag", gardeningPost.getTag());
+            parameters.addValue("likes", 0);
+            parameters.addValue("view_count", gardeningPost.getView_count());
+            parameters.addValue("users_gardening_post_id", userId);
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbc.update(INSERT_GARDENING_POST_NO_IMAGE_QUERY, parameters, keyHolder);
+            long generatedId = Objects.requireNonNull(keyHolder.getKey()).longValue();
+            gardeningPost.setId(generatedId);
+            gardeningPost.setDate(currentDateTime);
+            return gardeningPost;
+        } catch (Exception exception){
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
+    @Override
     public RecipePost create(Long userId, RecipePost recipePost, MultipartFile image) {
         try {
             LocalDateTime currentDateTime = LocalDateTime.now();
