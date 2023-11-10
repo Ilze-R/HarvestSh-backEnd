@@ -12,7 +12,8 @@ public class LikedRecipePostRowMapper implements RowMapper<LikedRecipePost> {
     @Override
     public LikedRecipePost mapRow(ResultSet rs, int rowNum) throws SQLException {
         LikedRecipePost recipePost = new LikedRecipePost();
-        recipePost.setLikes((long) rs.getInt(1));
+        recipePost.setId(rs.getLong(1));
+        recipePost.setLikes((long) rs.getInt(2));
         return recipePost;
     }
 }

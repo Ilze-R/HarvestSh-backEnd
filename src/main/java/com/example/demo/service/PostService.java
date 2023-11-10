@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface PostService {
     GardeningPost createGardeningPost(long userId, GardeningPost gardeningPost, MultipartFile image);
+
+    GardeningPost createGardeningPostNoPhoto(long userId, GardeningPost gardeningPost);
     RecipePost createRecipePost(long userId, RecipePost recipePost, MultipartFile image);
 
     IMadePost createIMadePost(long userId, IMadePost iMadePost, MultipartFile image);

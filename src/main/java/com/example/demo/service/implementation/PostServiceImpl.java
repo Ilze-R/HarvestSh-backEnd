@@ -22,6 +22,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public GardeningPost createGardeningPostNoPhoto(long userId, GardeningPost gardeningPost) {
+        return postRepository.createGardeningPostNoPhoto(userId, gardeningPost);
+    }
+
+    @Override
     public RecipePost createRecipePost(long userId, RecipePost recipePost, MultipartFile image) {
         return postRepository.create(userId, recipePost, image );
     }

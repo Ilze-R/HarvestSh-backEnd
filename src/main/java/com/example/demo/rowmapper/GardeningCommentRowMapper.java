@@ -15,9 +15,10 @@ public class GardeningCommentRowMapper implements RowMapper<GardeningComment> {
         gardeningComment.setId(rs.getLong(1));
         gardeningComment.setDate(rs.getTimestamp(2).toLocalDateTime());
         gardeningComment.setComment_text(rs.getString(3));
-        gardeningComment.setLikes((long) rs.getInt(4));
-        gardeningComment.setParent_comment_id((long) rs.getInt(5));
-        gardeningComment.setComment_user_id((long) rs.getInt(6));
+        gardeningComment.setReply_username(rs.getString(4));
+        gardeningComment.setLikes((long) rs.getInt(5));
+        gardeningComment.setParent_comment_id((long) rs.getInt(6));
+        gardeningComment.setComment_user_id((long) rs.getInt(7));
         gardeningComment.setUser_image_url(rs.getString("user_image_url"));
         gardeningComment.setUsername(rs.getString("username"));
         return gardeningComment;

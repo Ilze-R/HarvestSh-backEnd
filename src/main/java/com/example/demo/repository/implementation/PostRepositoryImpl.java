@@ -85,6 +85,29 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
+    public GardeningPost createGardeningPostNoPhoto(long userId, GardeningPost gardeningPost) {
+        try {
+            LocalDateTime currentDateTime = LocalDateTime.now();
+            MapSqlParameterSource parameters = new MapSqlParameterSource();
+            parameters.addValue("date", Timestamp.valueOf(currentDateTime));
+            parameters.addValue("title", gardeningPost.getTitle());
+            parameters.addValue("description", gardeningPost.getDescription());
+            parameters.addValue("tag", gardeningPost.getTag());
+            parameters.addValue("likes", 0);
+            parameters.addValue("view_count", gardeningPost.getView_count());
+            parameters.addValue("users_gardening_post_id", userId);
+            KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbc.update(INSERT_GARDENING_POST_NO_IMAGE_QUERY, parameters, keyHolder);
+            long generatedId = Objects.requireNonNull(keyHolder.getKey()).longValue();
+            gardeningPost.setId(generatedId);
+            gardeningPost.setDate(currentDateTime);
+            return gardeningPost;
+        } catch (Exception exception){
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
+    @Override
     public RecipePost create(Long userId, RecipePost recipePost, MultipartFile image) {
         try {
             LocalDateTime currentDateTime = LocalDateTime.now();
@@ -213,6 +236,7 @@ public class PostRepositoryImpl implements PostRepository {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
             parameters.addValue("date", Timestamp.valueOf(currentDateTime));
             parameters.addValue("comment_text", gardeningComment.getComment_text());
+            parameters.addValue("reply_username", gardeningComment.getReply_username());
             parameters.addValue("likes", 0);
             parameters.addValue("parent_comment_id", gardeningComment.getParent_comment_id());
             parameters.addValue("comment_user_id",userId);
@@ -247,6 +271,7 @@ public class PostRepositoryImpl implements PostRepository {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
             parameters.addValue("date", Timestamp.valueOf(currentDateTime));
             parameters.addValue("comment_text", recipeComment.getComment_text());
+            parameters.addValue("reply_username", recipeComment.getReply_username());
             parameters.addValue("likes", 0);
             parameters.addValue("parent_comment_id", recipeComment.getParent_comment_id());
             parameters.addValue("comment_user_id",userId);
@@ -281,6 +306,7 @@ public class PostRepositoryImpl implements PostRepository {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
             parameters.addValue("date", Timestamp.valueOf(currentDateTime));
             parameters.addValue("comment_text", iMadeComment.getComment_text());
+            parameters.addValue("reply_username", iMadeComment.getReply_username());
             parameters.addValue("likes", 0);
             parameters.addValue("parent_comment_id", iMadeComment.getParent_comment_id());
             parameters.addValue("comment_user_id",userId);
@@ -315,6 +341,7 @@ public class PostRepositoryImpl implements PostRepository {
             MapSqlParameterSource parameters = new MapSqlParameterSource();
             parameters.addValue("date", Timestamp.valueOf(currentDateTime));
             parameters.addValue("comment_text", otherComment.getComment_text());
+            parameters.addValue("reply_username", otherComment.getReply_username());
             parameters.addValue("likes", 0);
             parameters.addValue("parent_comment_id", otherComment.getParent_comment_id());
             parameters.addValue("comment_user_id",userId);
@@ -489,7 +516,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<LikedGardeningPost> getUserLikedGardeningPosts(Long userId) {
         try {
-            String sql = "SELECT gp.likes " +
+            String sql = "SELECT gp.id, gp.likes " +
                     "FROM GardeningPostLikes pl " +
                     "INNER JOIN GardeningPost gp ON pl.post_id = gp.id " +
                     "WHERE pl.user_id = :userId";
@@ -565,7 +592,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<LikedGardeningComment> getUserLikedGardeningComments(Long userId) {
         try {
-            String sql = "SELECT gc.likes " +
+            String sql = "SELECT gc.id, gc.likes " +
                     "FROM GardeningCommentLikes cl " +
                     "INNER JOIN GardeningComment gc ON cl.comment_id = gc.id " +
                     "WHERE cl.user_id = :userId";
@@ -642,7 +669,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<LikedRecipePost> getUserLikedRecipePosts(Long userId) {
         try {
-            String sql = "SELECT gp.likes " +
+            String sql = "SELECT gp.id, gp.likes " +
                     "FROM RecipePostLikes pl " +
                     "INNER JOIN RecipePost gp ON pl.post_id = gp.id " +
                     "WHERE pl.user_id = :userId";
@@ -718,7 +745,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<LikedRecipeComment> getUserLikedRecipeComments(Long userId) {
         try {
-            String sql = "SELECT gc.likes " +
+            String sql = "SELECT gc.id, gc.likes " +
                     "FROM RecipeCommentLikes cl " +
                     "INNER JOIN RecipeComment gc ON cl.comment_id = gc.id " +
                     "WHERE cl.user_id = :userId";
@@ -793,7 +820,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<LikedIMadePost> getUserLikedIMadePosts(Long userId) {
         try {
-            String sql = "SELECT gp.likes " +
+            String sql = "SELECT gp.id, gp.likes " +
                     "FROM IMadePostLikes pl " +
                     "INNER JOIN IMadePost gp ON pl.post_id = gp.id " +
                     "WHERE pl.user_id = :userId";
@@ -869,7 +896,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<LikedIMadeComment> getUserLikedIMadeComments(Long userId) {
         try {
-            String sql = "SELECT gc.likes " +
+            String sql = "SELECT gc.id, gc.likes " +
                     "FROM IMadeCommentLikes cl " +
                     "INNER JOIN IMadeComment gc ON cl.comment_id = gc.id " +
                     "WHERE cl.user_id = :userId";
@@ -944,7 +971,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<LikedOtherPost> getUserLikedOtherPosts(Long userId) {
         try {
-            String sql = "SELECT gp.likes " +
+            String sql = "SELECT gp.id, gp.likes " +
                     "FROM OtherPostLikes pl " +
                     "INNER JOIN OtherPost gp ON pl.post_id = gp.id " +
                     "WHERE pl.user_id = :userId";
@@ -1020,7 +1047,7 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public List<LikedOtherComment> getUserLikedOtherComments(Long userId) {
         try {
-            String sql = "SELECT gc.likes " +
+            String sql = "SELECT gc.id, gc.likes " +
                     "FROM OtherCommentLikes cl " +
                     "INNER JOIN OtherComment gc ON cl.comment_id = gc.id " +
                     "WHERE cl.user_id = :userId";
