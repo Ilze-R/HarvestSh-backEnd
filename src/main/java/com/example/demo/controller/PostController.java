@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.*;
+import com.example.demo.enumeration.PostType;
 import com.example.demo.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static java.time.LocalTime.now;
 import static java.util.Map.of;
@@ -19,7 +22,7 @@ public class PostController {
 
     @DeleteMapping("/delete/gardeningpost/{id}")
     public ResponseEntity<HttpResponse> deleteGardeningPost(@PathVariable("id") long id) {
-        postService.deleteGardeningPost(id);
+        postService.deletePost(id, PostType.GARDENING);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -32,7 +35,7 @@ public class PostController {
 
     @DeleteMapping("/delete/recipepost/{id}")
     public ResponseEntity<HttpResponse> deleteRecipePost(@PathVariable("id") long id) {
-        postService.deleteRecipePost(id);
+        postService.deletePost(id, PostType.RECIPE);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -45,7 +48,7 @@ public class PostController {
 
     @DeleteMapping("/delete/imadepost/{id}")
     public ResponseEntity<HttpResponse> deleteIMadePost(@PathVariable("id") long id) {
-        postService.deleteIMadePost(id);
+        postService.deletePost(id, PostType.I_MADE);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -58,7 +61,7 @@ public class PostController {
 
     @DeleteMapping("/delete/otherpost/{id}")
     public ResponseEntity<HttpResponse> deleteOtherPost(@PathVariable("id") long id) {
-        postService.deleteOtherPost(id);
+        postService.deletePost(id, PostType.OTHER);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -71,7 +74,7 @@ public class PostController {
 
     @DeleteMapping("/delete/gardeningcomment/{id}")
     public ResponseEntity<HttpResponse> deleteGardeningComment(@PathVariable("id") long id) {
-        postService.deleteGardeningComment(id);
+        postService.deleteComment(id, PostType.GARDENING);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -84,7 +87,7 @@ public class PostController {
 
     @DeleteMapping("/delete/recipecomment/{id}")
     public ResponseEntity<HttpResponse> deleteRecipeComment(@PathVariable("id") long id) {
-        postService.deleteRecipeComment(id);
+        postService.deleteComment(id, PostType.RECIPE);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -97,7 +100,7 @@ public class PostController {
 
     @DeleteMapping("/delete/imadecomment/{id}")
     public ResponseEntity<HttpResponse> deleteIMadeComment(@PathVariable("id") long id) {
-        postService.deleteIMadeComment(id);
+        postService.deleteComment(id, PostType.I_MADE);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -110,7 +113,7 @@ public class PostController {
 
     @DeleteMapping("/delete/othercomment/{id}")
     public ResponseEntity<HttpResponse> deleteOtherComment(@PathVariable("id") long id) {
-        postService.deleteOtherComment(id);
+        postService.deleteComment(id, PostType.OTHER);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -125,13 +128,15 @@ public class PostController {
     public ResponseEntity<HttpResponse> toggleLikeToGardeningPost(@PathVariable("id") long id, @PathVariable("userid") long userId) {
         boolean hasLiked = postService.userHasLikedGardeningPost(userId, id);
         if (hasLiked) {
-            postService.updateMinusGardeningLike(id);
+            postService.removePostLike(id, PostType.GARDENING);
             postService.deleteGardeningPostLikeKeyTable(userId, id);
         } else {
-            postService.updatePlusGardeningLike(id);
+            postService.addPostLike(id, PostType.GARDENING);
             postService.addGardeningPostLikeKeyTable(userId, id);
         }
-        int totalLikes = postService.getAllGardeningPostLikes(id);
+        List<LikedGardeningPost> likedGardeningPosts = postService.getUserLikedGardeningPosts(userId);
+        int totalLikes = likedGardeningPosts.size();
+        //   int totalLikes = postService.getAllPostLikes(id, PostType.GARDENING);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -145,13 +150,14 @@ public class PostController {
     public ResponseEntity<HttpResponse> toggleLikeToRecipePost(@PathVariable("id") long id, @PathVariable("userid") long userId) {
         boolean hasLiked = postService.userHasLikedRecipePost(userId, id);
         if (hasLiked) {
-            postService.updateMinusRecipeLike(id);
+            postService.removePostLike(id, PostType.RECIPE);
             postService.deleteRecipePostLikeKeyTable(userId, id);
         } else {
-            postService.updatePlusRecipeLike(id);
+            postService.addPostLike(id, PostType.RECIPE);
             postService.addRecipePostLikeKeyTable(userId, id);
         }
-        int totalLikes = postService.getAllRecipePostLikes(id);
+        List<LikedRecipePost> likedRecipePosts = postService.getUserLikedRecipePosts(userId);
+        int totalLikes = likedRecipePosts.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -166,13 +172,14 @@ public class PostController {
     public ResponseEntity<HttpResponse> toggleLikeToIMadePost(@PathVariable("id") long id, @PathVariable("userid") long userId) {
         boolean hasLiked = postService.userHasLikedIMadePost(userId, id);
         if (hasLiked) {
-            postService.updateMinusIMadeLike(id);
+            postService.removePostLike(id, PostType.I_MADE);
             postService.deleteIMadePostLikeKeyTable(userId, id);
         } else {
-            postService.updatePlusIMadeLike(id);
+            postService.addPostLike(id, PostType.I_MADE);
             postService.addIMadePostLikeKeyTable(userId, id);
         }
-        int totalLikes = postService.getAllIMadePostLikes(id);
+        List<LikedIMadePost> likedIMadePosts = postService.getUserLikedIMadePosts(userId);
+        int totalLikes = likedIMadePosts.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -186,13 +193,14 @@ public class PostController {
     public ResponseEntity<HttpResponse> toggleLikeToOtherPost(@PathVariable("id") long id, @PathVariable("userid") long userId) {
         boolean hasLiked = postService.userHasLikedOtherPost(userId, id);
         if (hasLiked) {
-            postService.updateMinusOtherLike(id);
+            postService.removePostLike(id, PostType.OTHER);
             postService.deleteOtherPostLikeKeyTable(userId, id);
         } else {
-            postService.updatePlusOtherLike(id);
+            postService.addPostLike(id, PostType.OTHER);
             postService.addOtherPostLikeKeyTable(userId, id);
         }
-        int totalLikes = postService.getAllOtherPostLikes(id);
+        List<LikedOtherPost> likedOtherPosts = postService.getUserLikedOtherPosts(userId);
+        int totalLikes = likedOtherPosts.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -207,13 +215,14 @@ public class PostController {
     public ResponseEntity<HttpResponse> toggleLikeToGardeningComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
         boolean hasLiked = postService.userHasLikedGardeningComment(userId, id);
         if (hasLiked) {
-            postService.updateMinusGardeningCommentLike(id);
+            postService.removeCommentLike(id, PostType.GARDENING);
             postService.deleteGardeningCommentLikeKeyTable(userId, id);
         } else {
-            postService.updatePlusGardeningCommentLike(id);
+            postService.addCommentLike(id, PostType.GARDENING);
             postService.addGardeningCommentLikeKeyTable(userId, id);
         }
-        int totalLikes = postService.getAllGardeningCommentLikes(id);
+        List<LikedGardeningComment> likedGardeningComments = postService.getUserLikedGardeningComments(userId);
+        int totalLikes = likedGardeningComments.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -228,13 +237,14 @@ public class PostController {
     public ResponseEntity<HttpResponse> toggleLikeToRecipeComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
         boolean hasLiked = postService.userHasLikedRecipeComment(userId, id);
         if (hasLiked) {
-            postService.updateMinusRecipeCommentLike(id);
+            postService.removeCommentLike(id, PostType.RECIPE);
             postService.deleteRecipeCommentLikeKeyTable(userId, id);
         } else {
-            postService.updatePlusRecipeCommentLike(id);
+            postService.addCommentLike(id, PostType.RECIPE);
             postService.addRecipeCommentLikeKeyTable(userId, id);
         }
-        int totalLikes = postService.getAllRecipeCommentLikes(id);
+        List<LikedRecipeComment> likedRecipeComments = postService.getUserLikedRecipeComments(userId);
+        int totalLikes = likedRecipeComments.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -249,13 +259,14 @@ public class PostController {
     public ResponseEntity<HttpResponse> toggleLikeToIMadeComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
         boolean hasLiked = postService.userHasLikedIMadeComment(userId, id);
         if (hasLiked) {
-            postService.updateMinusIMadeCommentLike(id);
+            postService.removeCommentLike(id, PostType.I_MADE);
             postService.deleteIMadeCommentLikeKeyTable(userId, id);
         } else {
-            postService.updatePlusIMadeCommentLike(id);
+            postService.addCommentLike(id, PostType.I_MADE);
             postService.addIMadeCommentLikeKeyTable(userId, id);
         }
-        int totalLikes = postService.getAllIMadeCommentLikes(id);
+        List<LikedIMadeComment> likedIMadeComments = postService.getUserLikedIMadeComments(userId);
+        int totalLikes = likedIMadeComments.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -270,13 +281,14 @@ public class PostController {
     public ResponseEntity<HttpResponse> toggleLikeToOtherComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
         boolean hasLiked = postService.userHasLikedOtherComment(userId, id);
         if (hasLiked) {
-            postService.updateMinusOtherCommentLike(id);
+            postService.removeCommentLike(id, PostType.OTHER);
             postService.deleteOtherCommentLikeKeyTable(userId, id);
         } else {
-            postService.updatePlusOtherCommentLike(id);
+            postService.addCommentLike(id, PostType.OTHER);
             postService.addOtherCommentLikeKeyTable(userId, id);
         }
-        int totalLikes = postService.getAllOtherCommentLikes(id);
+        List<LikedOtherComment> likedOtherComments = postService.getUserLikedOtherComments(userId);
+        int totalLikes = likedOtherComments.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -286,108 +298,4 @@ public class PostController {
                         .statusCode(OK.value())
                         .build());
     }
-
-    @GetMapping("/gardeningpostlikes/{id}")
-    public ResponseEntity<HttpResponse> getAllGardeningPostLikes(@PathVariable("id") long id) {
-        int totalLikes = postService.getAllGardeningPostLikes(id);
-        return ResponseEntity.ok().body(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("total-likes", totalLikes))
-                        .message("All post likes retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-
-    @GetMapping("/recipepostlikes/{id}")
-    public ResponseEntity<HttpResponse> getAllRecipePostLikes(@PathVariable("id") long id) {
-        int totalLikes = postService.getAllRecipePostLikes(id);
-        return ResponseEntity.ok().body(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("total-likes", totalLikes))
-                        .message("All post likes retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-    @GetMapping("/imadepostlikes/{id}")
-    public ResponseEntity<HttpResponse> getAllIMadePostLikes(@PathVariable("id") long id) {
-        int totalLikes = postService.getAllIMadePostLikes(id);
-        return ResponseEntity.ok().body(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("total-likes", totalLikes))
-                        .message("All post likes retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-
-    @GetMapping("/otherpostlikes/{id}")
-    public ResponseEntity<HttpResponse> getAllOtherPostLikes(@PathVariable("id") long id) {
-        int totalLikes = postService.getAllOtherPostLikes(id);
-        return ResponseEntity.ok().body(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("total-likes", totalLikes))
-                        .message("All post likes retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-
-    @GetMapping("/gardeningcommentlikes/{id}")
-    public ResponseEntity<HttpResponse> getAllGardeningCommentLikes(@PathVariable("id") long id) {
-        int totalLikes = postService.getAllGardeningCommentLikes(id);
-        return ResponseEntity.ok().body(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("total-likes", totalLikes))
-                        .message("All comment likes retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-
-    @GetMapping("/recipecommentlikes/{id}")
-    public ResponseEntity<HttpResponse> getAllRecipeCommentLikes(@PathVariable("id") long id) {
-        int totalLikes = postService.getAllRecipeCommentLikes(id);
-        return ResponseEntity.ok().body(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("total-likes", totalLikes))
-                        .message("All comment likes retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-
-    @GetMapping("/imadecommentlikes/{id}")
-    public ResponseEntity<HttpResponse> getAllIMadeCommentLikes(@PathVariable("id") long id) {
-        int totalLikes = postService.getAllIMadeCommentLikes(id);
-        return ResponseEntity.ok().body(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("total-likes", totalLikes))
-                        .message("All comment likes retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-
-    @GetMapping("/othercommentlikes/{id}")
-    public ResponseEntity<HttpResponse> getAllOtherCommentLikes(@PathVariable("id") long id) {
-        int totalLikes = postService.getAllOtherCommentLikes(id);
-        return ResponseEntity.ok().body(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("total-likes", totalLikes))
-                        .message("All comment likes retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-
 }

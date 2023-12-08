@@ -1,28 +1,17 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.*;
+import com.example.demo.enumeration.PostType;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface PostService {
-    GardeningPost createGardeningPost(long userId, GardeningPost gardeningPost, MultipartFile image);
-
-    GardeningPost createGardeningPostNoPhoto(long userId, GardeningPost gardeningPost);
-    RecipePost createRecipePost(long userId, RecipePost recipePost, MultipartFile image);
-
-    IMadePost createIMadePost(long userId, IMadePost iMadePost, MultipartFile image);
-
-    OtherPost createOtherPost(long userId, OtherPost otherPost, MultipartFile image);
-
-    void deleteGardeningPost(Long postId);
-    void deleteRecipePost(Long postId);
-    void deleteIMadePost(Long postId);
-    void deleteOtherPost(Long postId);
-
+ <T extends Post> T createPost(Long userId, T post, MultipartFile image);
+ GardeningPost createGardeningPostNoPhoto(long userId, GardeningPost gardeningPost);
+    void deletePost(Long postId, PostType postType);
     List<GardeningPost> getAllGardeningPosts();
-
     List<GardeningPost> getAllGardeningPosts(int pageSize, int offset);
 
     List<GardeningPost> getAllGardeningPost(Pageable pageable);
@@ -39,51 +28,46 @@ public interface PostService {
    OtherPost getOtherPostById(long id);
 
     List<GardeningComment> getAllGardeningCommentsByPostId(long id);
-    GardeningComment addGardeningComment (long userId, long postId, GardeningComment gardeningComment);
+   List<RecipeComment> getAllRecipeCommentsByPostId(long id);
 
-    List<RecipeComment> getAllRecipeCommentsByPostId(long id);
-    RecipeComment addRecipeComment (long userId, long postId, RecipeComment recipeComment);
+   List<IMadeComment> getAllIMadeCommentsByPostId(long id);
 
-    List<IMadeComment> getAllIMadeCommentsByPostId(long id);
-    IMadeComment addIMadeComment (long userId, long postId, IMadeComment iMadeComment);
+   List<OtherComment> getAllOtherCommentsByPostId(long id);
 
-    List<OtherComment> getAllOtherCommentsByPostId(long id);
-    OtherComment addOtherComment (long userId, long postId, OtherComment otherComment);
+   GardeningComment addGardeningComment(long userId, long postId, GardeningComment gardeningComment);
 
-    void updateGardeningComment(Long commentId, String comment_text);
-    void updateRecipeComment(Long commentId, String comment_text);
-    void updateIMadeComment(Long commentId, String comment_text);
-    void updateOtherComment(Long commentId, String comment_text);
+   RecipeComment addRecipeComment(long userId, long postId, RecipeComment recipeComment);
 
-    void deleteGardeningComment(Long commentId);
-    void deleteRecipeComment(Long commentId);
-    void deleteIMadeComment(Long commentId);
-    void deleteOtherComment(Long commentId);
+   IMadeComment addIMadeComment(long userId, long postId, IMadeComment iMadeComment);
+
+   OtherComment addOtherComment(long userId, long postId, OtherComment otherComment);
+
+   void updateComment(Long commentId, String comment_text, PostType postType);
+
+   void deleteComment(Long commentId, PostType postType);
 
     GardeningComment getLatestGardeningComment(long postId);
+    void addPostLike(Long id, PostType postType);
 
     //   GARDENING POST
-    void updatePlusGardeningLike(Long id);
-    void updateMinusGardeningLike(Long id);
+    void removePostLike(Long id, PostType postType);
+
     void addGardeningPostLikeKeyTable(Long userId, Long postId);
     void deleteGardeningPostLikeKeyTable(Long userId, Long postId);
-
-    int getAllGardeningPostLikes(Long postId);
 
     boolean userHasLikedGardeningPost(Long userId, Long postId);
 
     List<LikedGardeningPost> getUserLikedGardeningPosts(Long userId);
 
-//    GardeningComment getGardeningCommentById(long id);
+    void addCommentLike(Long id, PostType postType);
+    void removeCommentLike(Long id, PostType postType);
 
     ///////////////////////////////////////////////
 
-    void updatePlusGardeningCommentLike(Long id);
-    void updateMinusGardeningCommentLike(Long id);
     void addGardeningCommentLikeKeyTable(Long userId, Long commentId);
     void deleteGardeningCommentLikeKeyTable(Long userId, Long commentId);
 
-    int getAllGardeningCommentLikes(Long postId);
+
 
     boolean userHasLikedGardeningComment(Long userId, Long commentId);
 
@@ -91,12 +75,8 @@ public interface PostService {
 
     //   RECIPE POST
 
-    void updatePlusRecipeLike(Long id);
-    void updateMinusRecipeLike(Long id);
     void addRecipePostLikeKeyTable(Long userId, Long postId);
     void deleteRecipePostLikeKeyTable(Long userId, Long postId);
-
-    int getAllRecipePostLikes(Long postId);
 
     boolean userHasLikedRecipePost(Long userId, Long postId);
 
@@ -104,24 +84,17 @@ public interface PostService {
 
     ///////////////////////////
 
-    void updatePlusRecipeCommentLike(Long id);
-    void updateMinusRecipeCommentLike(Long id);
     void addRecipeCommentLikeKeyTable(Long userId, Long commentId);
     void deleteRecipeCommentLikeKeyTable(Long userId, Long commentId);
-
-    int getAllRecipeCommentLikes(Long commentId);
 
     boolean userHasLikedRecipeComment(Long userId, Long commentId);
 
     List<LikedRecipeComment> getUserLikedRecipeComments(Long userId);
 
     //   IMADE POST
-    void updatePlusIMadeLike(Long id);
-    void updateMinusIMadeLike(Long id);
+
     void addIMadePostLikeKeyTable(Long userId, Long postId);
     void deleteIMadePostLikeKeyTable(Long userId, Long postId);
-
-    int getAllIMadePostLikes(Long postId);
 
     boolean userHasLikedIMadePost(Long userId, Long postId);
 
@@ -129,25 +102,16 @@ public interface PostService {
 
     ////////////////////
 
-    void updatePlusIMadeCommentLike(Long id);
-    void updateMinusIMadeCommentLike(Long id);
     void addIMadeCommentLikeKeyTable(Long userId, Long commentId);
     void deleteIMadeCommentLikeKeyTable(Long userId, Long commentId);
-
-    int getAllIMadeCommentLikes(Long commentId);
 
     boolean userHasLikedIMadeComment(Long userId, Long commentId);
 
     List<LikedIMadeComment> getUserLikedIMadeComments(Long userId);
 
     //   OTHER POST
-
-    void updatePlusOtherLike(Long id);
-    void updateMinusOtherLike(Long id);
     void addOtherPostLikeKeyTable(Long userId, Long postId);
     void deleteOtherPostLikeKeyTable(Long userId, Long postId);
-
-    int getAllOtherPostLikes(Long postId);
 
     boolean userHasLikedOtherPost(Long userId, Long postId);
 
@@ -155,12 +119,8 @@ public interface PostService {
 
     ////////////////////
 
-    void updatePlusOtherCommentLike(Long id);
-    void updateMinusOtherCommentLike(Long id);
     void addOtherCommentLikeKeyTable(Long userId, Long commentId);
     void deleteOtherCommentLikeKeyTable(Long userId, Long commentId);
-
-    int getAllOtherCommentLikes(Long commentId);
 
     boolean userHasLikedOtherComment(Long userId, Long commentId);
 

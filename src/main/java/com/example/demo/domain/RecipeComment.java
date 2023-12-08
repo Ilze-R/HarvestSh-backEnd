@@ -13,10 +13,10 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 
 @Data
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @JsonInclude(NON_DEFAULT)
-public class RecipeComment {
+public class RecipeComment implements Comment{
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;

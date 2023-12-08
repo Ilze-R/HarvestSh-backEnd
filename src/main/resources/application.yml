@@ -10,5 +10,5 @@ server:
   tomcat:
     max-http-form-post-size: 20MB
 application:
-  title: InvoiceMng
+  title: HarvestShare
   version: 1.0
