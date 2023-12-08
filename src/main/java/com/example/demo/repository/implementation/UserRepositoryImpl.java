@@ -56,6 +56,7 @@ public class UserRepositoryImpl implements UserRepository<Users>, UserDetailsSer
     private final RoleRepository<Role> roleRepository;
     private final BCryptPasswordEncoder encoder;
     private final EmailService emailService;
+
     @Override
     public Users create(Users user) {
         // Check the email is unique
@@ -74,7 +75,7 @@ public class UserRepositoryImpl implements UserRepository<Users>, UserDetailsSer
             jdbc.update(INSERT_ACCOUNT_VERIFICATION_URL_QUERY, of("userId", user.getId(), "url", verificationUrl));
             //Send email to user with verification URL
             sendEmail(user.getUsername(), user.getEmail(), verificationUrl, ACCOUNT);
-//            emailService.sendVerificationUrl(user.getFirstName(), user.getEmail(), verificationUrl, ACCOUNT.getType());
+        //  emailService.sendVerificationEmail(user.getUsername(), user.getEmail(), verificationUrl, ACCOUNT.getType());
             user.setEnabled(false);
             user.setNotLocked(true);
             //Return the newly created user
@@ -86,7 +87,7 @@ public class UserRepositoryImpl implements UserRepository<Users>, UserDetailsSer
     }
 
     private void sendEmail(String username, String email, String verificationUrl, VerificationType verificationType) {
-        CompletableFuture.runAsync(() -> emailService.sendVerificationEmail(username, email, verificationUrl, verificationType));
+       CompletableFuture.runAsync(() -> emailService.sendVerificationEmail(username, email, verificationUrl, verificationType));
 //        CompletableFuture.runAsync(() -> {
 //            try {
 //                emailService.sendVerificationEmail(username, email, verificationUrl, verificationType);

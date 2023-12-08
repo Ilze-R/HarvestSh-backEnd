@@ -16,7 +16,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_DEFAULT;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(NON_DEFAULT)
-public class IMadeComment {
+public class IMadeComment implements Comment{
     private Long id;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime date;
