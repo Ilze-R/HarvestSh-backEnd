@@ -54,6 +54,7 @@ public class UserController {
     private static final String TOKEN_PREFIX = "Bearer ";
     private final UserService userService;
     private final PostService postService;
+    private final CommentService commentService;
     private final AuthenticationManager authenticationManager;
     private final TokenProvider tokenProvider;
     private final RoleService roleService;
@@ -90,10 +91,10 @@ public class UserController {
         List<LikedRecipePost> likedRecipePosts = postService.getUserLikedRecipePosts(user.getId());
         List<LikedIMadePost> likedIMadePosts = postService.getUserLikedIMadePosts(user.getId());
         List<LikedOtherPost> likedOtherPosts = postService.getUserLikedOtherPosts(user.getId());
-        List<LikedGardeningComment> likedGardeningComments = postService.getUserLikedGardeningComments(user.getId());
-        List<LikedRecipeComment> likedRecipeComments = postService.getUserLikedRecipeComments(user.getId());
-        List<LikedIMadeComment> likedIMadeComments = postService.getUserLikedIMadeComments(user.getId());
-        List<LikedOtherComment> likedOtherComments = postService.getUserLikedOtherComments(user.getId());
+        List<LikedGardeningComment> likedGardeningComments = commentService.getUserLikedGardeningComments(user.getId());
+        List<LikedRecipeComment> likedRecipeComments = commentService.getUserLikedRecipeComments(user.getId());
+        List<LikedIMadeComment> likedIMadeComments = commentService.getUserLikedIMadeComments(user.getId());
+        List<LikedOtherComment> likedOtherComments = commentService.getUserLikedOtherComments(user.getId());
         Map<String, Object> data = new HashMap<>();
         data.put("user", user);
         data.put("events", eventService.getEventsByUserId(user.getId()));
@@ -550,7 +551,7 @@ int postCount = postService.getAllRecipePostCount();
     public ResponseEntity<HttpResponse> addCommentToGardeningPost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
                                                            @RequestBody GardeningComment gardeningComment) {
 
-        GardeningComment createdComment = postService.addGardeningComment(userId, postId, gardeningComment);
+        GardeningComment createdComment = commentService.addGardeningComment(userId, postId, gardeningComment);
         return ResponseEntity.ok(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -566,7 +567,7 @@ int postCount = postService.getAllRecipePostCount();
     @PostMapping(path = "/addrecipecomment/{userId}/{postId}")
     public ResponseEntity<HttpResponse> addCommentToRecipePost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
                                                                @RequestBody RecipeComment recipeComment) {
-        RecipeComment createdComment = postService.addRecipeComment(userId, postId, recipeComment);
+        RecipeComment createdComment = commentService.addRecipeComment(userId, postId, recipeComment);
         return ResponseEntity.ok(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -580,7 +581,7 @@ int postCount = postService.getAllRecipePostCount();
 
     @GetMapping("/gardeningpost/comments/{id}")
     public ResponseEntity<HttpResponse> getAllGardeningPostComments(@PathVariable("id") long id) {
-        List<GardeningComment> gardeningComment = postService.getAllGardeningCommentsByPostId(id);
+        List<GardeningComment> gardeningComment = commentService.getAllGardeningCommentsByPostId(id);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(LocalDateTime.now().toString())
@@ -596,7 +597,7 @@ int postCount = postService.getAllRecipePostCount();
 
     @GetMapping("/recipepost/comments/{id}")
     public ResponseEntity<HttpResponse> getAllRecipePostComments(@PathVariable("id") long id) {
-        List<RecipeComment> recipeComments = postService.getAllRecipeCommentsByPostId(id);
+        List<RecipeComment> recipeComments = commentService.getAllRecipeCommentsByPostId(id);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(LocalDateTime.now().toString())
@@ -611,7 +612,7 @@ int postCount = postService.getAllRecipePostCount();
     @PostMapping(path = "/addimadecomment/{userId}/{postId}")
     public ResponseEntity<HttpResponse> addCommentToIMadePost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
                                                                @RequestBody IMadeComment iMadeComment) {
-        IMadeComment createdComment = postService.addIMadeComment(userId, postId, iMadeComment);
+        IMadeComment createdComment = commentService.addIMadeComment(userId, postId, iMadeComment);
         return ResponseEntity.ok(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -625,7 +626,7 @@ int postCount = postService.getAllRecipePostCount();
 
     @GetMapping("/imadepost/comments/{id}")
     public ResponseEntity<HttpResponse> getAllIMadePostComments(@PathVariable("id") long id) {
-        List<IMadeComment> iMadeComments = postService.getAllIMadeCommentsByPostId(id);
+        List<IMadeComment> iMadeComments = commentService.getAllIMadeCommentsByPostId(id);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(LocalDateTime.now().toString())
@@ -640,7 +641,7 @@ int postCount = postService.getAllRecipePostCount();
     @PostMapping(path = "/addothercomment/{userId}/{postId}")
     public ResponseEntity<HttpResponse> addCommentToOtherPost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
                                                               @RequestBody OtherComment otherComment) {
-        OtherComment createdComment = postService.addOtherComment(userId, postId, otherComment);
+        OtherComment createdComment = commentService.addOtherComment(userId, postId, otherComment);
         return ResponseEntity.ok(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -654,7 +655,7 @@ int postCount = postService.getAllRecipePostCount();
 
     @GetMapping("/otherpost/comments/{id}")
     public ResponseEntity<HttpResponse> getAllOtherPostComments(@PathVariable("id") long id) {
-        List<OtherComment> otherComments = postService.getAllOtherCommentsByPostId(id);
+        List<OtherComment> otherComments = commentService.getAllOtherCommentsByPostId(id);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(LocalDateTime.now().toString())
@@ -668,7 +669,7 @@ int postCount = postService.getAllRecipePostCount();
 
     @PatchMapping("/update/gardeningcomment/{id}")
     public ResponseEntity<HttpResponse> updateGardeningComment(@PathVariable("id") long id, @RequestBody @Valid CommentForm form) {
-        postService.updateComment(id, form.getComment_text(), PostType.GARDENING);
+        commentService.updateComment(id, form.getComment_text(), PostType.GARDENING);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -680,7 +681,7 @@ int postCount = postService.getAllRecipePostCount();
 
     @PatchMapping("/update/recipecomment/{id}")
     public ResponseEntity<HttpResponse> updateRecipeComment(@PathVariable("id") long id, @RequestBody @Valid CommentForm form) {
-        postService.updateComment(id, form.getComment_text(), PostType.RECIPE);
+        commentService.updateComment(id, form.getComment_text(), PostType.RECIPE);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -691,7 +692,7 @@ int postCount = postService.getAllRecipePostCount();
     }
     @PatchMapping("/update/imadecomment/{id}")
     public ResponseEntity<HttpResponse> updateIMadeComment(@PathVariable("id") long id, @RequestBody @Valid CommentForm form) {
-        postService.updateComment(id, form.getComment_text(), PostType.I_MADE);
+        commentService.updateComment(id, form.getComment_text(), PostType.I_MADE);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -702,7 +703,7 @@ int postCount = postService.getAllRecipePostCount();
     }
     @PatchMapping("/update/othercomment/{id}")
     public ResponseEntity<HttpResponse> updateOtherComment(@PathVariable("id") long id, @RequestBody @Valid CommentForm form) {
-        postService.updateComment(id, form.getComment_text(), PostType.OTHER);
+        commentService.updateComment(id, form.getComment_text(), PostType.OTHER);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
