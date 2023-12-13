@@ -107,6 +107,11 @@ postRepository.deletePost(postId, postType);
     }
 
     @Override
+    public void addPostLikeNotification(Long postId, Long actionUser, Long receiverUser, PostType postType) {
+        postRepository.addPostLikeNotification(postId, actionUser, receiverUser, postType);
+    }
+
+    @Override
     public void deletePostLikeKeyTable(Long userId, Long postId, PostType postType) {
         postRepository.deletePostLikeKeyTable(userId, postId, postType);
     }

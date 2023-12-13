@@ -26,6 +26,7 @@ public interface PostRepository {
     OtherPost getOtherPostById(long id);
     int getAllRecipePostCount();
     void addPostLike(Long id, PostType postType);
+    void addPostLikeNotification(Long postId, Long actionUser, Long receiverUser, PostType postType);
     void removePostLike(Long id, PostType postType);
     boolean userHasLikedPost(Long userId, Long postId, String tableName);
     void addPostLikeKeyTable (Long userId, Long postId, PostType postType);

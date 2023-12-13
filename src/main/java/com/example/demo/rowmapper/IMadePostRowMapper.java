@@ -20,6 +20,8 @@ public class IMadePostRowMapper implements RowMapper<IMadePost> {
         iMadePost.setLikes((long) rs.getInt(6));
         iMadePost.setView_count((long) rs.getInt(7));
         iMadePost.setImg_url(rs.getString(8));
+        iMadePost.setAuthor_user_id(rs.getLong("author_user_id"));
+        iMadePost.setUsername(rs.getString("username"));
         iMadePost.setUser_image_url(rs.getString("user_image_url"));
         return iMadePost;
     }

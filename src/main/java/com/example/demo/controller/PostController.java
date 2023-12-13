@@ -126,17 +126,18 @@ public class PostController {
         );
     }
 
-    @PatchMapping("/toggle/gardeninglikes/{id}/{userid}")
-    public ResponseEntity<HttpResponse> toggleLikeToGardeningPost(@PathVariable("id") long id, @PathVariable("userid") long userId) {
-        boolean hasLiked = postService.userHasLikedPost(userId, id, "GardeningPostLikes");
+    @PatchMapping("/toggle/gardeninglikes/{post_id}/{action_userId}/{receiver_userId}")
+    public ResponseEntity<HttpResponse> toggleLikeToGardeningPost(@PathVariable("post_id") long postId, @PathVariable("action_userId") long actionUser, @PathVariable("receiver_userId") long receiverUser) {
+        boolean hasLiked = postService.userHasLikedPost(actionUser, postId, "GardeningPostLikes");
         if (hasLiked) {
-            postService.removePostLike(id, PostType.GARDENING);
-            postService.deletePostLikeKeyTable(userId, id, PostType.GARDENING);
+            postService.removePostLike(postId, PostType.GARDENING);
+            postService.deletePostLikeKeyTable(actionUser, postId, PostType.GARDENING);
         } else {
-            postService.addPostLike(id, PostType.GARDENING);
-            postService.addPostLikeKeyTable(userId, id, PostType.GARDENING);
+            postService.addPostLike(postId, PostType.GARDENING);
+            postService.addPostLikeKeyTable(actionUser, postId, PostType.GARDENING);
+            postService.addPostLikeNotification(postId, actionUser, receiverUser, PostType.GARDENING);
         }
-        List<LikedGardeningPost> likedGardeningPosts = postService.getUserLikedGardeningPosts(userId);
+        List<LikedGardeningPost> likedGardeningPosts = postService.getUserLikedGardeningPosts(actionUser);
         int totalLikes = likedGardeningPosts.size();
         //   int totalLikes = postService.getAllPostLikes(id, PostType.GARDENING);
         return ResponseEntity.ok().body(
@@ -148,17 +149,18 @@ public class PostController {
                         .statusCode(OK.value())
                         .build());
     }
-    @PatchMapping("/toggle/recipelikes/{id}/{userid}")
-    public ResponseEntity<HttpResponse> toggleLikeToRecipePost(@PathVariable("id") long id, @PathVariable("userid") long userId) {
-        boolean hasLiked = postService.userHasLikedPost(userId, id, "RecipePostLikes");
+    @PatchMapping("/toggle/recipelikes/{post_id}/{action_userId}/{receiver_userId}")
+    public ResponseEntity<HttpResponse> toggleLikeToRecipePost(@PathVariable("post_id") long postId, @PathVariable("action_userId") long actionUser, @PathVariable("receiver_userId") long receiverUser) {
+        boolean hasLiked = postService.userHasLikedPost(actionUser, postId, "RecipePostLikes");
         if (hasLiked) {
-            postService.removePostLike(id, PostType.RECIPE);
-            postService.deletePostLikeKeyTable(userId, id, PostType.RECIPE);
+            postService.removePostLike(postId, PostType.RECIPE);
+            postService.deletePostLikeKeyTable(actionUser, postId, PostType.RECIPE);
         } else {
-            postService.addPostLike(id, PostType.RECIPE);
-            postService.addPostLikeKeyTable(userId, id, PostType.RECIPE);
+            postService.addPostLike(postId, PostType.RECIPE);
+            postService.addPostLikeKeyTable(actionUser, postId, PostType.RECIPE);
+            postService.addPostLikeNotification(postId, actionUser, receiverUser, PostType.RECIPE);
         }
-        List<LikedRecipePost> likedRecipePosts = postService.getUserLikedRecipePosts(userId);
+        List<LikedRecipePost> likedRecipePosts = postService.getUserLikedRecipePosts(actionUser);
         int totalLikes = likedRecipePosts.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
@@ -170,17 +172,18 @@ public class PostController {
                         .build());
     }
 
-    @PatchMapping("/toggle/imadelikes/{id}/{userid}")
-    public ResponseEntity<HttpResponse> toggleLikeToIMadePost(@PathVariable("id") long id, @PathVariable("userid") long userId) {
-        boolean hasLiked = postService.userHasLikedPost(userId, id, "IMadePostLikes");
+    @PatchMapping("/toggle/imadelikes/{post_id}/{action_userId}/{receiver_userId}")
+    public ResponseEntity<HttpResponse> toggleLikeToIMadePost(@PathVariable("post_id") long postId, @PathVariable("action_userId") long actionUser, @PathVariable("receiver_userId") long receiverUser) {
+        boolean hasLiked = postService.userHasLikedPost(actionUser, postId, "IMadePostLikes");
         if (hasLiked) {
-            postService.removePostLike(id, PostType.I_MADE);
-            postService.deletePostLikeKeyTable(userId, id, PostType.I_MADE);
+            postService.removePostLike(postId, PostType.I_MADE);
+            postService.deletePostLikeKeyTable(actionUser, postId, PostType.I_MADE);
         } else {
-            postService.addPostLike(id, PostType.I_MADE);
-            postService.addPostLikeKeyTable(userId, id, PostType.I_MADE);
+            postService.addPostLike(postId, PostType.I_MADE);
+            postService.addPostLikeKeyTable(actionUser, postId, PostType.I_MADE);
+            postService.addPostLikeNotification(postId, actionUser, receiverUser, PostType.I_MADE);
         }
-        List<LikedIMadePost> likedIMadePosts = postService.getUserLikedIMadePosts(userId);
+        List<LikedIMadePost> likedIMadePosts = postService.getUserLikedIMadePosts(actionUser);
         int totalLikes = likedIMadePosts.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
@@ -191,17 +194,18 @@ public class PostController {
                         .statusCode(OK.value())
                         .build());
     }
-    @PatchMapping("/toggle/otherlikes/{id}/{userid}")
-    public ResponseEntity<HttpResponse> toggleLikeToOtherPost(@PathVariable("id") long id, @PathVariable("userid") long userId) {
-        boolean hasLiked = postService.userHasLikedPost(userId, id, "OtherPostLikes");
+    @PatchMapping("/toggle/otherlikes/{post_id}/{action_userId}/{receiver_userId}")
+    public ResponseEntity<HttpResponse> toggleLikeToOtherPost(@PathVariable("post_id") long postId, @PathVariable("action_userId") long actionUser, @PathVariable("receiver_userId") long receiverUser) {
+        boolean hasLiked = postService.userHasLikedPost(actionUser, postId, "OtherPostLikes");
         if (hasLiked) {
-            postService.removePostLike(id, PostType.OTHER);
-            postService.deletePostLikeKeyTable(userId, id, PostType.OTHER);
+            postService.removePostLike(postId, PostType.OTHER);
+            postService.deletePostLikeKeyTable(actionUser, postId, PostType.OTHER);
         } else {
-            postService.addPostLike(id, PostType.OTHER);
-            postService.addPostLikeKeyTable(userId, id, PostType.OTHER);
+            postService.addPostLike(postId, PostType.OTHER);
+            postService.addPostLikeKeyTable(actionUser, postId, PostType.OTHER);
+            postService.addPostLikeNotification(postId, actionUser, receiverUser, PostType.OTHER);
         }
-        List<LikedOtherPost> likedOtherPosts = postService.getUserLikedOtherPosts(userId);
+        List<LikedOtherPost> likedOtherPosts = postService.getUserLikedOtherPosts(actionUser);
         int totalLikes = likedOtherPosts.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()

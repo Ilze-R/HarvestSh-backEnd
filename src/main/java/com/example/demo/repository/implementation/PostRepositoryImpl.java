@@ -1,10 +1,12 @@
 package com.example.demo.repository.implementation;
 
 import com.example.demo.domain.*;
+import com.example.demo.dto.UserDTO;
 import com.example.demo.enumeration.PostType;
 import com.example.demo.exception.ApiException;
 import com.example.demo.repository.PostRepository;
 import com.example.demo.rowmapper.*;
+import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -47,6 +49,7 @@ public class PostRepositoryImpl implements PostRepository {
     private final IMadePostRowMapper iMadePostRowMapper;
     private final OtherPostRowMapper otherPostRowMapper;
     private final JdbcTemplate jdbcTemplate;
+    private final UserService userService;
 
     @Override
     public <T extends Post> T create(Long userId, T post, MultipartFile image) {
@@ -165,15 +168,41 @@ public class PostRepositoryImpl implements PostRepository {
             default -> throw new IllegalArgumentException("Unsupported comment type: " + postType);
         };
     }
-
     @Override
     public void addPostLike(Long id, PostType postType) {
-        jdbcUpdateQueryWithIdParameter(id, postType, UPDATE_PLUS_GARDENING_LIKES, UPDATE_PLUS_RECIPE_LIKES, UPDATE_PLUS_I_MADE_LIKES, UPDATE_PLUS_OTHER_LIKES);
+        jdbcUpdateQueryWithIdParameter(id, postType, UPDATE_PLUS_GARDENING_POST_LIKES, UPDATE_PLUS_RECIPE_POST_LIKES, UPDATE_PLUS_I_MADE_POST_LIKES, UPDATE_PLUS_OTHER_POST_LIKES);
     }
+//    id             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+//    user_id        BIGINT UNSIGNED NOT NULL,
+//    action_user_id BIGINT UNSIGNED NOT NULL,
+//    message        VARCHAR(255)    NOT NULL,
+//    is_read        BOOLEAN  DEFAULT FALSE,
+//    created_at     DATETIME DEFAULT CURRENT_TIMESTAMP,
+//    forum_type     VARCHAR(10),
+//    target         VARCHAR(50)     NOT NULL,
+//    target_id      BIGINT,
+
+    @Override
+    public void addPostLikeNotification(Long postId, Long actionUser, Long receiverUser, PostType postType) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        UserDTO actionUserObj = userService.getUserById(actionUser);
+        String actionUsername = actionUserObj.getUsername();
+        parameters.addValue("user_id", receiverUser);
+        parameters.addValue("action_user_id", actionUser);
+        parameters.addValue("message", actionUsername.substring(0,1).toUpperCase(Locale.ROOT) + actionUsername.substring(1).toLowerCase() + " liked Your post");
+        parameters.addValue("is_read", false);
+        parameters.addValue("created_at", Timestamp.valueOf(currentDateTime));
+        parameters.addValue("forum_type", postType.toString());
+        parameters.addValue("target", "POST");
+        parameters.addValue("target_id", postId);
+        jdbc.update(ADD_NOTIFICATION_ABOUT_POST_LIKE, parameters);
+    }
+
 
     @Override
     public void removePostLike(Long id, PostType postType) {
-            jdbcUpdateQueryWithIdParameter(id, postType, UPDATE_MINUS_GARDENING_LIKES, UPDATE_MINUS_RECIPE_LIKES, UPDATE_MINUS_I_MADE_LIKES, UPDATE_MINUS_OTHER_LIKES);
+            jdbcUpdateQueryWithIdParameter(id, postType, UPDATE_MINUS_GARDENING_POST_LIKES, UPDATE_MINUS_RECIPE_POST_LIKES, UPDATE_MINUS_I_MADE_POST_LIKES, UPDATE_MINUS_OTHER_POST_LIKES);
     }
 
     private void jdbcUpdateQueryWithIdParameter(Long id, PostType postType, String updateGardening, String updateRecipe, String updateIMade, String updateOther) {
@@ -274,7 +303,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<GardeningPost> getAllGardeningPost(Pageable pageable) {
-        return jdbcTemplate.query("SELECT GardeningPost.*, Users.image_url AS user_image_url " +
+        return jdbcTemplate.query("SELECT GardeningPost.*, Users.image_url AS user_image_url, Users.username AS username, Users.id AS author_user_id " +
                 "FROM GardeningPost " +
                 "INNER JOIN Users ON GardeningPost.users_gardening_post_id = Users.id " +
                 "ORDER BY GardeningPost.date DESC " +
@@ -283,7 +312,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<RecipePost> getAllRecipePost(Pageable pageable) {
-        return jdbcTemplate.query("SELECT RecipePost.*, Users.image_url AS user_image_url " +
+        return jdbcTemplate.query("SELECT RecipePost.*, Users.image_url AS user_image_url, Users.username AS username, Users.id AS author_user_id " +
                 "FROM RecipePost " +
                 "INNER JOIN Users ON RecipePost.users_recipe_post_id = Users.id " +
                 "ORDER BY RecipePost.date DESC " +
@@ -292,7 +321,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<IMadePost> getAllIMadePost(Pageable pageable) {
-        return jdbcTemplate.query("SELECT IMadePost.*, Users.image_url AS user_image_url " +
+        return jdbcTemplate.query("SELECT IMadePost.*, Users.image_url AS user_image_url, Users.username AS username, Users.id AS author_user_id " +
                 "FROM IMadePost " +
                 "INNER JOIN Users ON IMadePost.users_i_made_post_id = Users.id " +
                 "ORDER BY IMadePost.date DESC " +
@@ -301,7 +330,7 @@ public class PostRepositoryImpl implements PostRepository {
 
     @Override
     public List<OtherPost> getAllOtherPost(Pageable pageable) {
-        return jdbcTemplate.query("SELECT OtherPost.*, Users.image_url AS user_image_url " +
+        return jdbcTemplate.query("SELECT OtherPost.*, Users.image_url AS user_image_url, Users.username AS username, Users.id AS author_user_id " +
                 "FROM OtherPost " +
                 "INNER JOIN Users ON OtherPost.users_other_post_id = Users.id " +
                 "ORDER BY OtherPost.date DESC " +

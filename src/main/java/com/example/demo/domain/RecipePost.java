@@ -26,5 +26,7 @@ public class RecipePost implements Post{
     private Long likes;
     private Long view_count;
     private String img_url;
+    private Long author_user_id;
+    private String username;
     private String user_image_url;
 }

@@ -23,6 +23,8 @@ public interface PostService {
     IMadePost getIMadePostById(long id);
    OtherPost getOtherPostById(long id);
     void addPostLikeKeyTable(Long userId, Long postId, PostType postType);
+
+    void addPostLikeNotification(Long postId, Long actionUser, Long receiverUser, PostType postType);
     void deletePostLikeKeyTable(Long userId, Long postId, PostType postType);
     void addPostLike(Long id, PostType postType);
     void removePostLike(Long id, PostType postType);

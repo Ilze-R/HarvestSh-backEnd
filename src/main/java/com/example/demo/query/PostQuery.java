@@ -1,5 +1,7 @@
 package com.example.demo.query;
 
+import java.sql.Timestamp;
+
 public class PostQuery {
     public static final String INSERT_GARDENING_POST_QUERY = "INSERT INTO GardeningPost(date, title, description, tag, likes, view_count," +
             " img_url, users_gardening_post_id)"+
@@ -120,20 +122,20 @@ public class PostQuery {
     public static final String DELETE_I_MADE_COMMENT = "DELETE FROM IMadeComment WHERE id = :id";
     public static final String DELETE_OTHER_COMMENT = "DELETE FROM OtherComment WHERE id = :id";
 
-    public static  final String UPDATE_PLUS_GARDENING_LIKES = "UPDATE GardeningPost SET likes = likes + 1 WHERE id = :id";
-    public static  final String UPDATE_PLUS_RECIPE_LIKES = "UPDATE RecipePost SET likes = likes + 1 WHERE id = :id";
-    public static  final String UPDATE_PLUS_I_MADE_LIKES = "UPDATE IMadePost SET likes = likes + 1 WHERE id = :id";
-    public static  final String UPDATE_PLUS_OTHER_LIKES = "UPDATE OtherPost SET likes = likes + 1 WHERE id = :id";
-
+    public static  final String UPDATE_PLUS_GARDENING_POST_LIKES = "UPDATE GardeningPost SET likes = likes + 1 WHERE id = :id";
+    public static  final String UPDATE_PLUS_RECIPE_POST_LIKES = "UPDATE RecipePost SET likes = likes + 1 WHERE id = :id";
+    public static  final String UPDATE_PLUS_I_MADE_POST_LIKES = "UPDATE IMadePost SET likes = likes + 1 WHERE id = :id";
+    public static  final String UPDATE_PLUS_OTHER_POST_LIKES = "UPDATE OtherPost SET likes = likes + 1 WHERE id = :id";
+    public static final String ADD_NOTIFICATION_ABOUT_POST_LIKE = "INSERT INTO Notifications (user_id, action_user_id, message, is_read, created_at, forum_type, target, target_id) VALUES (:user_id, :action_user_id, :message, :is_read, :created_at, :forum_type, :target, :target_id)";
     public static final String UPDATE_PLUS_GARDENING_COMMENT_LIKES = "UPDATE GardeningComment SET likes = likes + 1 WHERE id = :id";
     public static final String UPDATE_PLUS_RECIPE_COMMENT_LIKES = "UPDATE RecipeComment SET likes = likes + 1 WHERE id = :id";
     public static final String UPDATE_PLUS_I_MADE_COMMENT_LIKES = "UPDATE IMadeComment SET likes = likes + 1 WHERE id = :id";
     public static final String UPDATE_PLUS_OTHER_COMMENT_LIKES = "UPDATE OtherComment SET likes = likes + 1 WHERE id = :id";
 
-    public static  final String UPDATE_MINUS_GARDENING_LIKES = "UPDATE GardeningPost SET likes = likes - 1 WHERE id = :id";
-    public static  final String UPDATE_MINUS_RECIPE_LIKES = "UPDATE RecipePost SET likes = likes - 1 WHERE id = :id";
-    public static  final String UPDATE_MINUS_I_MADE_LIKES = "UPDATE IMadePost SET likes = likes - 1 WHERE id = :id";
-    public static  final String UPDATE_MINUS_OTHER_LIKES = "UPDATE OtherPost SET likes = likes - 1 WHERE id = :id";
+    public static  final String UPDATE_MINUS_GARDENING_POST_LIKES = "UPDATE GardeningPost SET likes = likes - 1 WHERE id = :id";
+    public static  final String UPDATE_MINUS_RECIPE_POST_LIKES = "UPDATE RecipePost SET likes = likes - 1 WHERE id = :id";
+    public static  final String UPDATE_MINUS_I_MADE_POST_LIKES = "UPDATE IMadePost SET likes = likes - 1 WHERE id = :id";
+    public static  final String UPDATE_MINUS_OTHER_POST_LIKES = "UPDATE OtherPost SET likes = likes - 1 WHERE id = :id";
 
     public static final String UPDATE_MINUS_GARDENING_COMMENT_LIKES = "UPDATE GardeningComment SET likes = likes - 1 WHERE id = :id";
     public static final String UPDATE_MINUS_RECIPE_COMMENT_LIKES = "UPDATE RecipeComment SET likes = likes - 1 WHERE id = :id";
