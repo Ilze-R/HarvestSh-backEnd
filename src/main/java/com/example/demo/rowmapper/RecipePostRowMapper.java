@@ -20,6 +20,8 @@ public class RecipePostRowMapper implements RowMapper<RecipePost> {
         recipePost.setLikes((long) rs.getInt(6));
         recipePost.setView_count((long) rs.getInt(7));
         recipePost.setImg_url(rs.getString(8));
+        recipePost.setAuthor_user_id(rs.getLong("author_user_id"));
+        recipePost.setUsername(rs.getString("username"));
         recipePost.setUser_image_url(rs.getString("user_image_url"));
         return recipePost;
     }

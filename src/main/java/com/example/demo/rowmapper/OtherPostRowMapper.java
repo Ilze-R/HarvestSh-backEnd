@@ -20,6 +20,8 @@ public class OtherPostRowMapper implements RowMapper<OtherPost> {
         otherPost.setLikes((long) rs.getInt(6));
         otherPost.setView_count((long) rs.getInt(7));
         otherPost.setImg_url(rs.getString(8));
+        otherPost.setAuthor_user_id(rs.getLong("author_user_id"));
+        otherPost.setUsername(rs.getString("username"));
         otherPost.setUser_image_url(rs.getString("user_image_url"));
         return otherPost;
     }

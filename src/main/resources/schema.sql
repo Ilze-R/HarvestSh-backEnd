@@ -25,12 +25,17 @@ CREATE TABLE Users
 
 CREATE TABLE Notifications
 (
-    id         BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    user_id    BIGINT UNSIGNED NOT NULL,
-    message    VARCHAR(255)    NOT NULL,
-    is_read    BOOLEAN  DEFAULT FALSE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES Users (id)
+    id             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id        BIGINT UNSIGNED NOT NULL,
+    action_user_id BIGINT UNSIGNED NOT NULL,
+    message        VARCHAR(255)    NOT NULL,
+    is_read        BOOLEAN  DEFAULT FALSE,
+    created_at     DATETIME DEFAULT CURRENT_TIMESTAMP,
+    forum_type     VARCHAR(10),
+    target         VARCHAR(50)     NOT NULL,
+    target_id      BIGINT,
+    FOREIGN KEY (user_id) REFERENCES Users (id),
+    FOREIGN KEY (action_user_id) REFERENCES Users (id)
 );
 
 DROP TABLE IF EXISTS Give;
