@@ -172,15 +172,6 @@ public class PostRepositoryImpl implements PostRepository {
     public void addPostLike(Long id, PostType postType) {
         jdbcUpdateQueryWithIdParameter(id, postType, UPDATE_PLUS_GARDENING_POST_LIKES, UPDATE_PLUS_RECIPE_POST_LIKES, UPDATE_PLUS_I_MADE_POST_LIKES, UPDATE_PLUS_OTHER_POST_LIKES);
     }
-//    id             BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-//    user_id        BIGINT UNSIGNED NOT NULL,
-//    action_user_id BIGINT UNSIGNED NOT NULL,
-//    message        VARCHAR(255)    NOT NULL,
-//    is_read        BOOLEAN  DEFAULT FALSE,
-//    created_at     DATETIME DEFAULT CURRENT_TIMESTAMP,
-//    forum_type     VARCHAR(10),
-//    target         VARCHAR(50)     NOT NULL,
-//    target_id      BIGINT,
 
     @Override
     public void addPostLikeNotification(Long postId, Long actionUser, Long receiverUser, PostType postType) {
@@ -197,6 +188,15 @@ public class PostRepositoryImpl implements PostRepository {
         parameters.addValue("target", "POST");
         parameters.addValue("target_id", postId);
         jdbc.update(ADD_NOTIFICATION_ABOUT_POST_LIKE, parameters);
+    }
+
+    @Override
+    public void deletePostLikeNotification(Long postId, PostType postType) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("forum_type", postType.name());
+        parameters.addValue("target", "POST");
+        parameters.addValue("target_id", postId);
+        jdbc.update(DELETE_NOTIFICATION_ABOUT_POST_LIKE, parameters);
     }
 
 

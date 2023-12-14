@@ -34,6 +34,7 @@ CREATE TABLE Notifications
     forum_type     VARCHAR(10),
     target         VARCHAR(50)     NOT NULL,
     target_id      BIGINT,
+    post_id        BIGINT,
     FOREIGN KEY (user_id) REFERENCES Users (id),
     FOREIGN KEY (action_user_id) REFERENCES Users (id)
 );

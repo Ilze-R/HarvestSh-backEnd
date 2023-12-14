@@ -21,6 +21,8 @@ public interface CommentRepository {
     void addCommentLikeKeyTable(Long userId, Long commentId, PostType postType);
     void deleteCommentLikeKeyTable(Long userId, Long commentId, PostType postType);
     void addCommentLike(Long id, PostType postType);
+    void addCommentLikeNotification(Long commentId, Long postId, Long actionUser, Long receiverUser, PostType postType);
+    void deleteCommentLikeNotification(Long commentId, Long postId, PostType postType);
     void removeCommentLike(Long id, PostType postType);
     boolean userHasLikedComment(Long userId, Long commentId, String tableName);
     List<LikedGardeningComment> getUserLikedGardeningComments(Long userId);
