@@ -84,6 +84,16 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public void addCommentLikeNotification(Long commentId, Long postId, Long actionUser, Long receiverUser, PostType postType) {
+        commentRepository.addCommentLikeNotification(commentId, postId, actionUser, receiverUser, postType);
+    }
+
+    @Override
+    public void deleteCommentLikeNotification(Long commentId, Long postId, PostType postType) {
+        commentRepository.deleteCommentLikeNotification(commentId, postId, postType);
+    }
+
+    @Override
     public void removeCommentLike(Long id, PostType postType) {
         commentRepository.removeCommentLike(id, postType);
     }

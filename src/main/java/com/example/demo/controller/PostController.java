@@ -132,6 +132,7 @@ public class PostController {
         if (hasLiked) {
             postService.removePostLike(postId, PostType.GARDENING);
             postService.deletePostLikeKeyTable(actionUser, postId, PostType.GARDENING);
+            postService.deletePostLikeNotification(postId, PostType.GARDENING);
         } else {
             postService.addPostLike(postId, PostType.GARDENING);
             postService.addPostLikeKeyTable(actionUser, postId, PostType.GARDENING);
@@ -155,6 +156,7 @@ public class PostController {
         if (hasLiked) {
             postService.removePostLike(postId, PostType.RECIPE);
             postService.deletePostLikeKeyTable(actionUser, postId, PostType.RECIPE);
+            postService.deletePostLikeNotification(postId, PostType.RECIPE);
         } else {
             postService.addPostLike(postId, PostType.RECIPE);
             postService.addPostLikeKeyTable(actionUser, postId, PostType.RECIPE);
@@ -178,6 +180,7 @@ public class PostController {
         if (hasLiked) {
             postService.removePostLike(postId, PostType.I_MADE);
             postService.deletePostLikeKeyTable(actionUser, postId, PostType.I_MADE);
+            postService.deletePostLikeNotification(postId, PostType.I_MADE);
         } else {
             postService.addPostLike(postId, PostType.I_MADE);
             postService.addPostLikeKeyTable(actionUser, postId, PostType.I_MADE);
@@ -200,6 +203,7 @@ public class PostController {
         if (hasLiked) {
             postService.removePostLike(postId, PostType.OTHER);
             postService.deletePostLikeKeyTable(actionUser, postId, PostType.OTHER);
+            postService.deletePostLikeNotification(postId, PostType.OTHER);
         } else {
             postService.addPostLike(postId, PostType.OTHER);
             postService.addPostLikeKeyTable(actionUser, postId, PostType.OTHER);
@@ -217,17 +221,19 @@ public class PostController {
                         .build());
     }
 
-    @PatchMapping("/toggle/gardeningcommentlike/{userid}/{id}")
-    public ResponseEntity<HttpResponse> toggleLikeToGardeningComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
-        boolean hasLiked = commentService.userHasLikedComment(userId, id, "GardeningCommentLikes");
+    @PatchMapping("/toggle/gardeningcommentlike/{comment_id}/{post_id}/{action_userId}/{receiver_userId}")
+    public ResponseEntity<HttpResponse> toggleLikeToGardeningComment(@PathVariable("comment_id") long commentId, @PathVariable("post_id") long postId, @PathVariable("action_userId") long actionUser, @PathVariable("receiver_userId") long receiverUser) {
+        boolean hasLiked = commentService.userHasLikedComment(actionUser, commentId, "GardeningCommentLikes");
         if (hasLiked) {
-            commentService.removeCommentLike(id, PostType.GARDENING);
-            commentService.deleteCommentLikeKeyTable(userId, id, PostType.GARDENING);
+            commentService.removeCommentLike(commentId, PostType.GARDENING);
+            commentService.deleteCommentLikeKeyTable(actionUser, commentId, PostType.GARDENING);
+            commentService.deleteCommentLikeNotification(commentId, postId, PostType.GARDENING);
         } else {
-            commentService.addCommentLike(id, PostType.GARDENING);
-            commentService.addCommentLikeKeyTable(userId, id, PostType.GARDENING);
+            commentService.addCommentLike(commentId, PostType.GARDENING);
+            commentService.addCommentLikeKeyTable(actionUser, commentId, PostType.GARDENING);
+            commentService.addCommentLikeNotification(commentId, postId, actionUser, receiverUser, PostType.GARDENING);
         }
-        List<LikedGardeningComment> likedGardeningComments = commentService.getUserLikedGardeningComments(userId);
+        List<LikedGardeningComment> likedGardeningComments = commentService.getUserLikedGardeningComments(actionUser);
         int totalLikes = likedGardeningComments.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
@@ -239,17 +245,19 @@ public class PostController {
                         .build());
     }
 
-    @PatchMapping("/toggle/recipecommentlike/{userid}/{id}")
-    public ResponseEntity<HttpResponse> toggleLikeToRecipeComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
-        boolean hasLiked = commentService.userHasLikedComment(userId, id, "RecipeCommentLikes");
+    @PatchMapping("/toggle/recipecommentlike/{comment_id}/{post_id}/{action_userId}/{receiver_userId}")
+    public ResponseEntity<HttpResponse> toggleLikeToRecipeComment(@PathVariable("comment_id") long commentId, @PathVariable("post_id") long postId, @PathVariable("action_userId") long actionUser, @PathVariable("receiver_userId") long receiverUser) {
+        boolean hasLiked = commentService.userHasLikedComment(actionUser, commentId, "RecipeCommentLikes");
         if (hasLiked) {
-            commentService.removeCommentLike(id, PostType.RECIPE);
-            commentService.deleteCommentLikeKeyTable(userId, id, PostType.RECIPE);
+            commentService.removeCommentLike(commentId, PostType.RECIPE);
+            commentService.deleteCommentLikeKeyTable(actionUser, commentId, PostType.RECIPE);
+            commentService.deleteCommentLikeNotification(commentId, postId, PostType.RECIPE);
         } else {
-            commentService.addCommentLike(id, PostType.RECIPE);
-            commentService.addCommentLikeKeyTable(userId, id, PostType.RECIPE);
+            commentService.addCommentLike(commentId, PostType.RECIPE);
+            commentService.addCommentLikeKeyTable(actionUser, commentId, PostType.RECIPE);
+            commentService.addCommentLikeNotification(commentId, postId, actionUser, receiverUser, PostType.RECIPE);
         }
-        List<LikedRecipeComment> likedRecipeComments = commentService.getUserLikedRecipeComments(userId);
+        List<LikedRecipeComment> likedRecipeComments = commentService.getUserLikedRecipeComments(actionUser);
         int totalLikes = likedRecipeComments.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
@@ -261,17 +269,19 @@ public class PostController {
                         .build());
     }
 
-    @PatchMapping("/toggle/imadecommentlike/{userid}/{id}")
-    public ResponseEntity<HttpResponse> toggleLikeToIMadeComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
-        boolean hasLiked = commentService.userHasLikedComment(userId, id, "IMadeCommentLikes");
+    @PatchMapping("/toggle/imadecommentlike/{comment_id}/{post_id}/{action_userId}/{receiver_userId}")
+    public ResponseEntity<HttpResponse> toggleLikeToIMadeComment(@PathVariable("comment_id") long commentId, @PathVariable("post_id") long postId, @PathVariable("action_userId") long actionUser, @PathVariable("receiver_userId") long receiverUser) {
+        boolean hasLiked = commentService.userHasLikedComment(actionUser, commentId, "IMadeCommentLikes");
         if (hasLiked) {
-            commentService.removeCommentLike(id, PostType.I_MADE);
-            commentService.deleteCommentLikeKeyTable(userId, id, PostType.I_MADE);
+            commentService.removeCommentLike(commentId, PostType.I_MADE);
+            commentService.deleteCommentLikeKeyTable(actionUser, commentId, PostType.I_MADE);
+            commentService.deleteCommentLikeNotification(commentId, postId, PostType.I_MADE);
         } else {
-            commentService.addCommentLike(id, PostType.I_MADE);
-            commentService.addCommentLikeKeyTable(userId, id, PostType.I_MADE);
+            commentService.addCommentLike(commentId, PostType.I_MADE);
+            commentService.addCommentLikeKeyTable(actionUser, commentId, PostType.I_MADE);
+            commentService.addCommentLikeNotification(commentId, postId, actionUser, receiverUser, PostType.I_MADE);
         }
-        List<LikedIMadeComment> likedIMadeComments = commentService.getUserLikedIMadeComments(userId);
+        List<LikedIMadeComment> likedIMadeComments = commentService.getUserLikedIMadeComments(actionUser);
         int totalLikes = likedIMadeComments.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
@@ -283,17 +293,19 @@ public class PostController {
                         .build());
     }
 
-    @PatchMapping("/toggle/othercommentlike/{userid}/{id}")
-    public ResponseEntity<HttpResponse> toggleLikeToOtherComment(@PathVariable("id") long id, @PathVariable("userid") long userId) {
-        boolean hasLiked = commentService.userHasLikedComment(userId, id, "OtherCommentLikes");
+    @PatchMapping("/toggle/othercommentlike/{comment_id}/{post_id}/{action_userId}/{receiver_userId}")
+    public ResponseEntity<HttpResponse> toggleLikeToOtherComment(@PathVariable("comment_id") long commentId, @PathVariable("post_id") long postId, @PathVariable("action_userId") long actionUser, @PathVariable("receiver_userId") long receiverUser) {
+        boolean hasLiked = commentService.userHasLikedComment(actionUser, commentId, "OtherCommentLikes");
         if (hasLiked) {
-            commentService.removeCommentLike(id, PostType.OTHER);
-            commentService.deleteCommentLikeKeyTable(userId, id, PostType.OTHER);
+            commentService.removeCommentLike(commentId, PostType.OTHER);
+            commentService.deleteCommentLikeKeyTable(actionUser, commentId, PostType.OTHER);
+            commentService.deleteCommentLikeNotification(commentId, postId, PostType.OTHER);
         } else {
-           commentService.addCommentLike(id, PostType.OTHER);
-            commentService.addCommentLikeKeyTable(userId, id, PostType.OTHER);
+           commentService.addCommentLike(commentId, PostType.OTHER);
+            commentService.addCommentLikeKeyTable(actionUser, commentId, PostType.OTHER);
+            commentService.addCommentLikeNotification(commentId, postId, actionUser, receiverUser, PostType.OTHER);
         }
-        List<LikedOtherComment> likedOtherComments = commentService.getUserLikedOtherComments(userId);
+        List<LikedOtherComment> likedOtherComments = commentService.getUserLikedOtherComments(actionUser);
         int totalLikes = likedOtherComments.size();
         return ResponseEntity.ok().body(
                 HttpResponse.builder()

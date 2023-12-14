@@ -1,10 +1,12 @@
 package com.example.demo.repository.implementation;
 
 import com.example.demo.domain.*;
+import com.example.demo.dto.UserDTO;
 import com.example.demo.enumeration.PostType;
 import com.example.demo.exception.ApiException;
 import com.example.demo.repository.CommentRepository;
 import com.example.demo.rowmapper.*;
+import com.example.demo.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,12 +19,10 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-import static com.example.demo.query.PostQuery.*;
+import static com.example.demo.query.CommentQuery.*;
+import static com.example.demo.query.PostQuery.DELETE_NOTIFICATION_ABOUT_POST_LIKE;
 import static java.util.Map.of;
 
 @Repository
@@ -39,6 +39,7 @@ public class CommentRepositoryImpl implements CommentRepository {
     private final RecipeCommentRowMapper recipeCommentRowMapper;
     private final IMadeCommentRowMapper iMadeCommentRowMapper;
     private final OtherCommentRowMapper otherCommentRowMapper;
+    private final UserService userService;
 
     @Override
     public GardeningComment addGardeningComment(Long userId, Long postId, GardeningComment gardeningComment) {
@@ -247,6 +248,37 @@ public class CommentRepositoryImpl implements CommentRepository {
     @Override
     public void addCommentLike(Long id, PostType postType) {
         jdbcUpdateQueryWithIdParameter(id, postType, UPDATE_PLUS_GARDENING_COMMENT_LIKES, UPDATE_PLUS_RECIPE_COMMENT_LIKES, UPDATE_PLUS_I_MADE_COMMENT_LIKES, UPDATE_PLUS_OTHER_COMMENT_LIKES);
+    }
+
+    @Override
+    public void addCommentLikeNotification(Long commentId, Long postId, Long actionUser, Long receiverUser, PostType postType) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        UserDTO actionUserObj = userService.getUserById(actionUser);
+        String actionUsername = actionUserObj.getUsername();
+        parameters.addValue("user_id", receiverUser);
+        parameters.addValue("action_user_id", actionUser);
+        parameters.addValue("message", actionUsername.substring(0,1).toUpperCase(Locale.ROOT) + actionUsername.substring(1).toLowerCase() + " liked Your comment");
+        parameters.addValue("is_read", false);
+        parameters.addValue("created_at", Timestamp.valueOf(currentDateTime));
+        parameters.addValue("forum_type", postType.toString());
+        parameters.addValue("target", "COMMENT");
+        parameters.addValue("target_id", commentId);
+        parameters.addValue("post_id", postId);
+        jdbc.update(ADD_NOTIFICATION_ABOUT_COMMENT_LIKE, parameters);
+    }
+
+//            parameters.addValue("forum_type", postType.name());
+//        parameters.addValue("target", "POST");
+//        parameters.addValue("target_id", postId);
+    @Override
+    public void deleteCommentLikeNotification(Long commentId, Long postId, PostType postType) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("forum_type", postType.name());
+        parameters.addValue("target", "COMMENT");
+        parameters.addValue("target_id", commentId);
+        parameters.addValue("post_id", postId);
+        jdbc.update(DELETE_NOTIFICATION_ABOUT_COMMENT_LIKE, parameters);
     }
 
     @Override
