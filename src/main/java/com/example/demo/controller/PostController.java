@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.domain.*;
+import com.example.demo.enumeration.CommentAction;
 import com.example.demo.enumeration.PostType;
 import com.example.demo.service.CommentService;
 import com.example.demo.service.PostService;
@@ -76,7 +77,10 @@ public class PostController {
 
     @DeleteMapping("/delete/gardeningcomment/{id}")
     public ResponseEntity<HttpResponse> deleteGardeningComment(@PathVariable("id") long id) {
+        Long postId = commentService.getGardeningCommentPostId(id);
+
         commentService.deleteComment(id, PostType.GARDENING);
+        commentService.deleteCommentNotification(id, postId, PostType.GARDENING);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -89,7 +93,10 @@ public class PostController {
 
     @DeleteMapping("/delete/recipecomment/{id}")
     public ResponseEntity<HttpResponse> deleteRecipeComment(@PathVariable("id") long id) {
+        Long postId = commentService.getRecipeCommentPostId(id);
+
         commentService.deleteComment(id, PostType.RECIPE);
+        commentService.deleteCommentNotification(id, postId, PostType.RECIPE);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -102,7 +109,10 @@ public class PostController {
 
     @DeleteMapping("/delete/imadecomment/{id}")
     public ResponseEntity<HttpResponse> deleteIMadeComment(@PathVariable("id") long id) {
+        Long postId = commentService.getIMadeCommentPostId(id);
+
         commentService.deleteComment(id, PostType.I_MADE);
+        commentService.deleteCommentNotification(id, postId, PostType.I_MADE);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -115,7 +125,10 @@ public class PostController {
 
     @DeleteMapping("/delete/othercomment/{id}")
     public ResponseEntity<HttpResponse> deleteOtherComment(@PathVariable("id") long id) {
+        Long postId = commentService.getOtherCommentPostId(id);
+
         commentService.deleteComment(id, PostType.OTHER);
+        commentService.deleteCommentNotification(id, postId, PostType.OTHER);
         return ResponseEntity.ok().body(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
@@ -227,11 +240,11 @@ public class PostController {
         if (hasLiked) {
             commentService.removeCommentLike(commentId, PostType.GARDENING);
             commentService.deleteCommentLikeKeyTable(actionUser, commentId, PostType.GARDENING);
-            commentService.deleteCommentLikeNotification(commentId, postId, PostType.GARDENING);
+            commentService.deleteCommentNotification(commentId, postId, PostType.GARDENING);
         } else {
             commentService.addCommentLike(commentId, PostType.GARDENING);
             commentService.addCommentLikeKeyTable(actionUser, commentId, PostType.GARDENING);
-            commentService.addCommentLikeNotification(commentId, postId, actionUser, receiverUser, PostType.GARDENING);
+            commentService.addCommentNotification(commentId, postId, actionUser, receiverUser, PostType.GARDENING, CommentAction.LIKE);
         }
         List<LikedGardeningComment> likedGardeningComments = commentService.getUserLikedGardeningComments(actionUser);
         int totalLikes = likedGardeningComments.size();
@@ -251,11 +264,11 @@ public class PostController {
         if (hasLiked) {
             commentService.removeCommentLike(commentId, PostType.RECIPE);
             commentService.deleteCommentLikeKeyTable(actionUser, commentId, PostType.RECIPE);
-            commentService.deleteCommentLikeNotification(commentId, postId, PostType.RECIPE);
+            commentService.deleteCommentNotification(commentId, postId, PostType.RECIPE);
         } else {
             commentService.addCommentLike(commentId, PostType.RECIPE);
             commentService.addCommentLikeKeyTable(actionUser, commentId, PostType.RECIPE);
-            commentService.addCommentLikeNotification(commentId, postId, actionUser, receiverUser, PostType.RECIPE);
+            commentService.addCommentNotification(commentId, postId, actionUser, receiverUser, PostType.RECIPE, CommentAction.LIKE);
         }
         List<LikedRecipeComment> likedRecipeComments = commentService.getUserLikedRecipeComments(actionUser);
         int totalLikes = likedRecipeComments.size();
@@ -275,11 +288,11 @@ public class PostController {
         if (hasLiked) {
             commentService.removeCommentLike(commentId, PostType.I_MADE);
             commentService.deleteCommentLikeKeyTable(actionUser, commentId, PostType.I_MADE);
-            commentService.deleteCommentLikeNotification(commentId, postId, PostType.I_MADE);
+            commentService.deleteCommentNotification(commentId, postId, PostType.I_MADE);
         } else {
             commentService.addCommentLike(commentId, PostType.I_MADE);
             commentService.addCommentLikeKeyTable(actionUser, commentId, PostType.I_MADE);
-            commentService.addCommentLikeNotification(commentId, postId, actionUser, receiverUser, PostType.I_MADE);
+            commentService.addCommentNotification(commentId, postId, actionUser, receiverUser, PostType.I_MADE, CommentAction.LIKE);
         }
         List<LikedIMadeComment> likedIMadeComments = commentService.getUserLikedIMadeComments(actionUser);
         int totalLikes = likedIMadeComments.size();
@@ -299,11 +312,11 @@ public class PostController {
         if (hasLiked) {
             commentService.removeCommentLike(commentId, PostType.OTHER);
             commentService.deleteCommentLikeKeyTable(actionUser, commentId, PostType.OTHER);
-            commentService.deleteCommentLikeNotification(commentId, postId, PostType.OTHER);
+            commentService.deleteCommentNotification(commentId, postId, PostType.OTHER);
         } else {
            commentService.addCommentLike(commentId, PostType.OTHER);
             commentService.addCommentLikeKeyTable(actionUser, commentId, PostType.OTHER);
-            commentService.addCommentLikeNotification(commentId, postId, actionUser, receiverUser, PostType.OTHER);
+            commentService.addCommentNotification(commentId, postId, actionUser, receiverUser, PostType.OTHER, CommentAction.LIKE);
         }
         List<LikedOtherComment> likedOtherComments = commentService.getUserLikedOtherComments(actionUser);
         int totalLikes = likedOtherComments.size();

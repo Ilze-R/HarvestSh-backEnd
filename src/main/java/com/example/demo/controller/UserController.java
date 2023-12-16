@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.*;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.enumeration.CommentAction;
 import com.example.demo.enumeration.EventType;
 import com.example.demo.enumeration.PostType;
 import com.example.demo.event.NewUserEvent;
@@ -549,14 +550,19 @@ int postCount = postService.getAllRecipePostCount();
 
     @PostMapping(path = "/addgardeningcomment/{userId}/{postId}")
     public ResponseEntity<HttpResponse> addCommentToGardeningPost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
-                                                           @RequestBody GardeningComment gardeningComment) {
-
+                                                                  @RequestBody GardeningComment gardeningComment) {
         GardeningComment createdComment = commentService.addGardeningComment(userId, postId, gardeningComment);
+        Long postUserId = postService.getGardeningPostUserById(postId);
+        if (createdComment.getParent_comment_id() != null) {
+            commentService.addCommentNotification(createdComment.getId(), postId, userId, postUserId, PostType.GARDENING, CommentAction.REPLY);
+        }
+        if(createdComment.getParent_comment_id() == null){
+            commentService.addCommentNotification(createdComment.getId(), postId, userId, postUserId, PostType.GARDENING, CommentAction.MAIN_COMMENT);
+        }
         return ResponseEntity.ok(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
-                        .data(of("user", userService.getUserByEmail(user.getEmail()),
-                                "post", postService.getGardeningPostById(postId)))
+                        .data(of("user", userService.getUserByEmail(user.getEmail())))
                         .message("Comment added")
                         .status(OK)
                         .statusCode(OK.value())
@@ -568,16 +574,64 @@ int postCount = postService.getAllRecipePostCount();
     public ResponseEntity<HttpResponse> addCommentToRecipePost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
                                                                @RequestBody RecipeComment recipeComment) {
         RecipeComment createdComment = commentService.addRecipeComment(userId, postId, recipeComment);
+        Long postUserId = postService.getRecipePostUserById(postId);
+        if (createdComment.getParent_comment_id() != null) {
+            commentService.addCommentNotification(createdComment.getId(), postId, userId, postUserId, PostType.RECIPE, CommentAction.REPLY);
+        }
+        if(createdComment.getParent_comment_id() == null){
+            commentService.addCommentNotification(createdComment.getId(), postId, userId, postUserId, PostType.RECIPE, CommentAction.MAIN_COMMENT);
+        }
         return ResponseEntity.ok(
                 HttpResponse.builder()
                         .timeStamp(now().toString())
-                        .data(of("user", userService.getUserByEmail(user.getEmail()),
-                                "post", postService.getRecipePostById(postId)))
+                        .data(of("user", userService.getUserByEmail(user.getEmail())))
                         .message("Comment added")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());
     }
+    @PostMapping(path = "/addimadecomment/{userId}/{postId}")
+    public ResponseEntity<HttpResponse> addCommentToIMadePost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
+                                                              @RequestBody IMadeComment iMadeComment) {
+        IMadeComment createdComment = commentService.addIMadeComment(userId, postId, iMadeComment);
+        Long postUserId = postService.getIMadePostUserById(postId);
+        if (createdComment.getParent_comment_id() != null) {
+            commentService.addCommentNotification(createdComment.getId(), postId, userId, postUserId, PostType.I_MADE, CommentAction.REPLY);
+        }
+        if(createdComment.getParent_comment_id() == null){
+            commentService.addCommentNotification(createdComment.getId(), postId, userId, postUserId, PostType.I_MADE, CommentAction.MAIN_COMMENT);
+        }
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail())))
+                        .message("Comment added")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
+    @PostMapping(path = "/addothercomment/{userId}/{postId}")
+    public ResponseEntity<HttpResponse> addCommentToOtherPost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
+                                                              @RequestBody OtherComment otherComment) {
+        OtherComment createdComment = commentService.addOtherComment(userId, postId, otherComment);
+        Long postUserId = postService.getOtherPostUserById(postId);
+        if (createdComment.getParent_comment_id() != null) {
+            commentService.addCommentNotification(createdComment.getId(), postId, userId, postUserId, PostType.OTHER, CommentAction.REPLY);
+        }
+        if(createdComment.getParent_comment_id() == null){
+            commentService.addCommentNotification(createdComment.getId(), postId, userId, postUserId, PostType.OTHER, CommentAction.MAIN_COMMENT);
+        }
+        return ResponseEntity.ok(
+                HttpResponse.builder()
+                        .timeStamp(now().toString())
+                        .data(of("user", userService.getUserByEmail(user.getEmail())))
+                        .message("Comment added")
+                        .status(OK)
+                        .statusCode(OK.value())
+                        .build());
+    }
+
 
     @GetMapping("/gardeningpost/comments/{id}")
     public ResponseEntity<HttpResponse> getAllGardeningPostComments(@PathVariable("id") long id) {
@@ -609,21 +663,6 @@ int postCount = postService.getAllRecipePostCount();
                         .build());
     }
 
-    @PostMapping(path = "/addimadecomment/{userId}/{postId}")
-    public ResponseEntity<HttpResponse> addCommentToIMadePost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
-                                                               @RequestBody IMadeComment iMadeComment) {
-        IMadeComment createdComment = commentService.addIMadeComment(userId, postId, iMadeComment);
-        return ResponseEntity.ok(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("user", userService.getUserByEmail(user.getEmail()),
-                                "post", postService.getIMadePostById(postId)))
-                        .message("Comment added")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-
     @GetMapping("/imadepost/comments/{id}")
     public ResponseEntity<HttpResponse> getAllIMadePostComments(@PathVariable("id") long id) {
         List<IMadeComment> iMadeComments = commentService.getAllIMadeCommentsByPostId(id);
@@ -633,21 +672,6 @@ int postCount = postService.getAllRecipePostCount();
                         .data(of(
                                 "comments", iMadeComments))
                         .message("I Made Post comments retrieved")
-                        .status(OK)
-                        .statusCode(OK.value())
-                        .build());
-    }
-
-    @PostMapping(path = "/addothercomment/{userId}/{postId}")
-    public ResponseEntity<HttpResponse> addCommentToOtherPost(@AuthenticationPrincipal UserDTO user, @PathVariable("userId") Long userId, @PathVariable("postId") Long postId,
-                                                              @RequestBody OtherComment otherComment) {
-        OtherComment createdComment = commentService.addOtherComment(userId, postId, otherComment);
-        return ResponseEntity.ok(
-                HttpResponse.builder()
-                        .timeStamp(now().toString())
-                        .data(of("user", userService.getUserByEmail(user.getEmail()),
-                                "post", postService.getOtherPostById(postId)))
-                        .message("Comment added")
                         .status(OK)
                         .statusCode(OK.value())
                         .build());

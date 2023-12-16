@@ -10,7 +10,6 @@ public interface Post {
     Long getLikes();
     Long getView_count();
     LocalDateTime getDate();
-
     void setId(Long id);
     void setImg_url(String img_url);
     void setDate(LocalDateTime date);

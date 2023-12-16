@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -344,30 +343,30 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public GardeningPost getGardeningPostById(long id) {
-        return getPostById(id, PostType.GARDENING, SELECT_GARDENING_POST_BY_ID, gardeningPostRowMapper);
+    public Long getGardeningPostUserById(Long id) {
+        return getPostById(id, PostType.GARDENING, SELECT_GARDENING_POST_USER_BY_ID);
     }
 
     @Override
-    public RecipePost getRecipePostById(long id) {
-        return getPostById(id, PostType.RECIPE, SELECT_RECIPE_POST_BY_ID, recipePostRowMapper);
+    public Long getRecipePostUserById(Long id) {
+        return getPostById(id, PostType.RECIPE, SELECT_RECIPE_POST_USER_BY_ID);
     }
 
     @Override
-    public IMadePost getIMadePostById(long id) {
-        return getPostById(id, PostType.I_MADE, SELECT_I_MADE_POST_BY_ID, iMadePostRowMapper);
+    public Long getIMadePostUserById(Long id) {
+        return getPostById(id, PostType.I_MADE, SELECT_I_MADE_POST_USER_BY_ID);
     }
 
     @Override
-    public OtherPost getOtherPostById(long id) {
-        return getPostById(id, PostType.OTHER, SELECT_OTHER_POST_BY_ID, otherPostRowMapper);
+    public Long getOtherPostUserById(Long id) {
+        return getPostById(id, PostType.OTHER, SELECT_OTHER_POST_USER_BY_ID);
     }
 
-    public <T extends Post> T getPostById(long id, PostType postType, String selectQuery, RowMapper<T> rowMapper) {
+    public Long getPostById(long id, PostType postType, String selectQuery) {
         try {
             switch (postType) {
                 case GARDENING, RECIPE, I_MADE, OTHER -> {
-                    return jdbc.queryForObject(selectQuery, of("id", id), rowMapper);
+                    return jdbc.queryForObject(selectQuery, of("id", id), Long.class);
                 }
                 default -> throw new IllegalArgumentException("Unsupported post type: " + postType);
             }

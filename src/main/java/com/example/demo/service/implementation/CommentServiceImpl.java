@@ -1,6 +1,7 @@
 package com.example.demo.service.implementation;
 
 import com.example.demo.domain.*;
+import com.example.demo.enumeration.CommentAction;
 import com.example.demo.enumeration.PostType;
 import com.example.demo.repository.CommentRepository;
 import com.example.demo.service.CommentService;
@@ -64,6 +65,26 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public Long getGardeningCommentPostId(Long id) {
+        return commentRepository.getGardeningCommentPostId(id);
+    }
+
+    @Override
+    public Long getRecipeCommentPostId(Long id) {
+        return commentRepository.getRecipeCommentPostId(id);
+    }
+
+    @Override
+    public Long getIMadeCommentPostId(Long id) {
+        return commentRepository.getIMadeCommentPostId(id);
+    }
+
+    @Override
+    public Long getOtherCommentPostId(Long id) {
+        return commentRepository.getOtherCommentPostId(id);
+    }
+
+    @Override
     public void updateComment(Long commentId, String comment_text, PostType postType) {
         commentRepository.updateComment(commentId, comment_text, postType);
     }
@@ -84,13 +105,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void addCommentLikeNotification(Long commentId, Long postId, Long actionUser, Long receiverUser, PostType postType) {
-        commentRepository.addCommentLikeNotification(commentId, postId, actionUser, receiverUser, postType);
+    public void addCommentNotification(Long commentId, Long postId, Long actionUser, Long receiverUser, PostType postType, CommentAction commentAction) {
+        commentRepository.addCommentNotification(commentId, postId, actionUser, receiverUser, postType, commentAction);
     }
 
     @Override
-    public void deleteCommentLikeNotification(Long commentId, Long postId, PostType postType) {
-        commentRepository.deleteCommentLikeNotification(commentId, postId, postType);
+    public void deleteCommentNotification(Long commentId, Long postId, PostType postType) {
+        commentRepository.deleteCommentNotification(commentId, postId, postType);
     }
 
     @Override

@@ -20,10 +20,10 @@ public interface PostRepository {
     List<RecipePost> getAllRecipePost(Pageable pageable);
     List<IMadePost> getAllIMadePost(Pageable pageable);
     List<OtherPost> getAllOtherPost(Pageable pageable);
-    GardeningPost getGardeningPostById(long id);
-    RecipePost getRecipePostById(long id);
-    IMadePost getIMadePostById(long id);
-    OtherPost getOtherPostById(long id);
+    Long getGardeningPostUserById(Long id);
+    Long getRecipePostUserById(Long id);
+    Long getIMadePostUserById(Long id);
+    Long getOtherPostUserById(Long id);
     int getAllRecipePostCount();
     void addPostLike(Long id, PostType postType);
     void addPostLikeNotification(Long postId, Long actionUser, Long receiverUser, PostType postType);

@@ -67,25 +67,24 @@ postRepository.deletePost(postId, postType);
     }
 
     @Override
-    public GardeningPost getGardeningPostById(long id) {
-        return postRepository.getGardeningPostById(id);
+    public Long getGardeningPostUserById(Long id) {
+        return postRepository.getGardeningPostUserById(id);
     }
 
     @Override
-    public RecipePost getRecipePostById(long id) {
-        return postRepository.getRecipePostById(id);
+    public Long getRecipePostUserById(Long id) {
+        return postRepository.getRecipePostUserById(id);
     }
 
     @Override
-    public IMadePost getIMadePostById(long id) {
-        return postRepository.getIMadePostById(id);
+    public Long getIMadePostUserById(Long id) {
+        return postRepository.getIMadePostUserById(id);
     }
 
     @Override
-    public OtherPost getOtherPostById(long id) {
-        return postRepository.getOtherPostById(id);
+    public Long getOtherPostUserById(Long id) {
+        return postRepository.getOtherPostUserById(id);
     }
-
 
     @Override
     public void addPostLike(Long id, PostType postType) {
