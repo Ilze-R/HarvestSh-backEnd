@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.domain.*;
+import com.example.demo.enumeration.CommentAction;
 import com.example.demo.enumeration.PostType;
 
 import java.util.List;
@@ -15,14 +16,18 @@ public interface CommentRepository {
     List<RecipeComment> getAllRecipeCommentsByPostId(Long postId);
     List<IMadeComment> getAllIMadeCommentsByPostId(Long postId);
     List<OtherComment> getAllOtherCommentsByPostId(Long postId);
+    Long getGardeningCommentPostId(Long id);
+    Long getRecipeCommentPostId(Long id);
+    Long getIMadeCommentPostId(Long id);
+    Long getOtherCommentPostId(Long id);
     void updateComment(Long commentId, String comment_text, PostType postType);
     void deleteComment(Long commentId, PostType postType);
     GardeningComment getLatestGardeningComment(Long postId);
     void addCommentLikeKeyTable(Long userId, Long commentId, PostType postType);
     void deleteCommentLikeKeyTable(Long userId, Long commentId, PostType postType);
     void addCommentLike(Long id, PostType postType);
-    void addCommentLikeNotification(Long commentId, Long postId, Long actionUser, Long receiverUser, PostType postType);
-    void deleteCommentLikeNotification(Long commentId, Long postId, PostType postType);
+    void addCommentNotification(Long commentId, Long postId, Long actionUser, Long receiverUser, PostType postType, CommentAction commentAction);
+    void deleteCommentNotification(Long commentId, Long postId, PostType postType);
     void removeCommentLike(Long id, PostType postType);
     boolean userHasLikedComment(Long userId, Long commentId, String tableName);
     List<LikedGardeningComment> getUserLikedGardeningComments(Long userId);

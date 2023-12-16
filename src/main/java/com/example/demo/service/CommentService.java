@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.*;
+import com.example.demo.enumeration.CommentAction;
 import com.example.demo.enumeration.PostType;
 
 import java.util.List;
@@ -11,6 +12,10 @@ public interface CommentService {
     List<RecipeComment> getAllRecipeCommentsByPostId(long id);
     List<IMadeComment> getAllIMadeCommentsByPostId(long id);
     List<OtherComment> getAllOtherCommentsByPostId(long id);
+    Long getGardeningCommentPostId(Long id);
+    Long getRecipeCommentPostId(Long id);
+    Long getIMadeCommentPostId(Long id);
+    Long getOtherCommentPostId(Long id);
     GardeningComment addGardeningComment(long userId, long postId, GardeningComment gardeningComment);
     RecipeComment addRecipeComment(long userId, long postId, RecipeComment recipeComment);
     IMadeComment addIMadeComment(long userId, long postId, IMadeComment iMadeComment);
@@ -19,8 +24,8 @@ public interface CommentService {
     void deleteComment(Long commentId, PostType postType);
     GardeningComment getLatestGardeningComment(long postId);
     void addCommentLike(Long id, PostType postType);
-    void addCommentLikeNotification(Long commentId, Long postId, Long actionUser, Long receiverUser, PostType postType);
-    void deleteCommentLikeNotification(Long commentId, Long postId, PostType postType);
+    void addCommentNotification(Long commentId, Long postId, Long actionUser, Long receiverUser, PostType postType, CommentAction commentAction);
+    void deleteCommentNotification(Long commentId, Long postId, PostType postType);
     void removeCommentLike(Long id, PostType postType);
     boolean userHasLikedComment(Long userId, Long commentId, String tableName);
     List<LikedGardeningComment> getUserLikedGardeningComments(Long userId);

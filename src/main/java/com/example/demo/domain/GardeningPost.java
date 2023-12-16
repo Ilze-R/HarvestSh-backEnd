@@ -26,6 +26,7 @@ public class GardeningPost implements Post{
     private Long likes;
     private Long view_count;
     private String img_url;
+    private long users_gardening_post_id;
     private Long author_user_id;
     private String username;
     private String user_image_url;

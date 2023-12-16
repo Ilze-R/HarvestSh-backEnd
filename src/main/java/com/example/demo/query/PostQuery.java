@@ -18,56 +18,59 @@ public class PostQuery {
     public static final String INSERT_OTHER_POST_QUERY = "INSERT INTO OtherPost(date, title, description, tag, likes, view_count, img_url, users_other_post_id)"+
             "VALUES (:date, :title, :description, :tag, :likes, :view_count, :img_url, :users_other_post_id)";
 
-    public static final String DELETE_GARDENING_POST = "BEGIN;\n" +
-            "\n" +
-            "DELETE FROM GardeningCommentLikes WHERE comment_id IN (SELECT id FROM GardeningComment WHERE comment_gardening_post_id = :postId);\n" +
-            "\n" +
-            "DELETE FROM GardeningComment WHERE comment_gardening_post_id = :postId;\n" +
-            "\n" +
-            "DELETE FROM GardeningPostLikes WHERE post_id = :postId;\n" +
-            "\n" +
-            "DELETE FROM GardeningPost WHERE id = :postId;\n" +
-            "\n" +
-            "COMMIT;";
+    public static final String DELETE_GARDENING_POST = """
+            BEGIN;
 
-    public static final String DELETE_RECIPE_POST = "BEGIN;\n" +
-            "\n" +
-            "DELETE FROM RecipeCommentLikes WHERE comment_id IN (SELECT id FROM RecipeComment WHERE comment_recipe_post_id = :postId);\n" +
-            "\n" +
-            "DELETE FROM RecipeComment WHERE comment_recipe_post_id = :postId;\n" +
-            "\n" +
-            "DELETE FROM RecipePostLikes WHERE post_id = :postId;\n" +
-            "\n" +
-            "DELETE FROM RecipePost WHERE id = :postId;\n" +
-            "\n" +
-            "COMMIT;";
-    public static final String DELETE_I_MADE_POST = "BEGIN;\n" +
-            "\n" +
-            "DELETE FROM IMadeCommentLikes WHERE comment_id IN (SELECT id FROM IMadeComment WHERE comment_i_made_post_id = :postId);\n" +
-            "\n" +
-            "DELETE FROM IMadeComment WHERE comment_i_made_post_id = :postId;\n" +
-            "\n" +
-            "DELETE FROM IMadePostLikes WHERE post_id = :postId;\n" +
-            "\n" +
-            "DELETE FROM IMadePost WHERE id = :postId;\n" +
-            "\n" +
-            "COMMIT;";
-    public static final String DELETE_OTHER_POST = "BEGIN;\n" +
-            "\n" +
-            "DELETE FROM OtherCommentLikes WHERE comment_id IN (SELECT id FROM OtherComment WHERE comment_other_post_id = :postId);\n" +
-            "\n" +
-            "DELETE FROM OtherComment WHERE comment_other_post_id = :postId;\n" +
-            "\n" +
-            "DELETE FROM OtherPostLikes WHERE post_id = :postId;\n" +
-            "\n" +
-            "DELETE FROM OtherPost WHERE id = :postId;\n" +
-            "\n" +
-            "COMMIT;";
+            DELETE FROM GardeningCommentLikes WHERE comment_id IN (SELECT id FROM GardeningComment WHERE comment_gardening_post_id = :postId);
 
-    public static final String SELECT_GARDENING_POST_BY_ID = "SELECT * FROM GardeningPost WHERE id = :id";
-    public static final String SELECT_RECIPE_POST_BY_ID = "SELECT * FROM RecipePost WHERE id = :id";
-    public static final String SELECT_I_MADE_POST_BY_ID = "SELECT * FROM IMadePost WHERE id = :id";
-    public static final String SELECT_OTHER_POST_BY_ID = "SELECT * FROM OtherPost WHERE id = :id";
+            DELETE FROM GardeningComment WHERE comment_gardening_post_id = :postId;
+
+            DELETE FROM GardeningPostLikes WHERE post_id = :postId;
+
+            DELETE FROM GardeningPost WHERE id = :postId;
+
+            COMMIT;""";
+
+    public static final String DELETE_RECIPE_POST = """
+            BEGIN;
+
+            DELETE FROM RecipeCommentLikes WHERE comment_id IN (SELECT id FROM RecipeComment WHERE comment_recipe_post_id = :postId);
+
+            DELETE FROM RecipeComment WHERE comment_recipe_post_id = :postId;
+
+            DELETE FROM RecipePostLikes WHERE post_id = :postId;
+
+            DELETE FROM RecipePost WHERE id = :postId;
+
+            COMMIT;""";
+    public static final String DELETE_I_MADE_POST = """
+            BEGIN;
+
+            DELETE FROM IMadeCommentLikes WHERE comment_id IN (SELECT id FROM IMadeComment WHERE comment_i_made_post_id = :postId);
+
+            DELETE FROM IMadeComment WHERE comment_i_made_post_id = :postId;
+
+            DELETE FROM IMadePostLikes WHERE post_id = :postId;
+
+            DELETE FROM IMadePost WHERE id = :postId;
+
+            COMMIT;""";
+    public static final String DELETE_OTHER_POST = """
+            BEGIN;
+
+            DELETE FROM OtherCommentLikes WHERE comment_id IN (SELECT id FROM OtherComment WHERE comment_other_post_id = :postId);
+
+            DELETE FROM OtherComment WHERE comment_other_post_id = :postId;
+
+            DELETE FROM OtherPostLikes WHERE post_id = :postId;
+
+            DELETE FROM OtherPost WHERE id = :postId;
+
+            COMMIT;""";
+    public static final String SELECT_GARDENING_POST_USER_BY_ID = "SELECT users_gardening_post_id FROM GardeningPost WHERE id = :id";
+    public static final String SELECT_RECIPE_POST_USER_BY_ID = "SELECT users_recipe_post_id FROM RecipePost WHERE id = :id";
+    public static final String SELECT_I_MADE_POST_USER_BY_ID = "SELECT users_i_made_post_id FROM IMadePost WHERE id = :id";
+    public static final String SELECT_OTHER_POST_USER_BY_ID = "SELECT users_other_post_id FROM OtherPost WHERE id = :id";
     public static  final String UPDATE_PLUS_GARDENING_POST_LIKES = "UPDATE GardeningPost SET likes = likes + 1 WHERE id = :id";
     public static  final String UPDATE_PLUS_RECIPE_POST_LIKES = "UPDATE RecipePost SET likes = likes + 1 WHERE id = :id";
     public static  final String UPDATE_PLUS_I_MADE_POST_LIKES = "UPDATE IMadePost SET likes = likes + 1 WHERE id = :id";

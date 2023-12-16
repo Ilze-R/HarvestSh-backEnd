@@ -2,6 +2,7 @@ package com.example.demo.repository.implementation;
 
 import com.example.demo.domain.*;
 import com.example.demo.dto.UserDTO;
+import com.example.demo.enumeration.CommentAction;
 import com.example.demo.enumeration.PostType;
 import com.example.demo.exception.ApiException;
 import com.example.demo.repository.CommentRepository;
@@ -22,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.example.demo.query.CommentQuery.*;
-import static com.example.demo.query.PostQuery.DELETE_NOTIFICATION_ABOUT_POST_LIKE;
 import static java.util.Map.of;
 
 @Repository
@@ -180,6 +180,42 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
+    public Long getGardeningCommentPostId(Long id) {
+        return getCommentById(id, PostType.GARDENING, SELECT_GARDENING_COMMENT_POST_ID);
+    }
+
+    @Override
+    public Long getRecipeCommentPostId(Long id) {
+        return getCommentById(id, PostType.RECIPE, SELECT_RECIPE_COMMENT_POST_ID);
+    }
+
+    @Override
+    public Long getIMadeCommentPostId(Long id) {
+        return getCommentById(id, PostType.I_MADE, SELECT_I_MADE_COMMENT_POST_ID);
+    }
+
+    @Override
+    public Long getOtherCommentPostId(Long id) {
+        return getCommentById(id, PostType.OTHER, SELECT_OTHER_COMMENT_POST_ID);
+    }
+
+    public Long getCommentById(long id, PostType postType, String selectQuery) {
+        try {
+            switch (postType) {
+                case GARDENING, RECIPE, I_MADE, OTHER -> {
+                    return jdbc.queryForObject(selectQuery, of("id", id), Long.class);
+                }
+                default -> throw new IllegalArgumentException("Unsupported post type: " + postType);
+            }
+        } catch (EmptyResultDataAccessException exception) {
+            throw new ApiException("Post found by id: " + id);
+        } catch (Exception exception) {
+            log.error(exception.getMessage());
+            throw new ApiException("An error occurred. Please try again");
+        }
+    }
+
+    @Override
     public void updateComment(Long commentId, String comment_text, PostType postType) {
         try {
             switch (postType) {
@@ -251,34 +287,34 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public void addCommentLikeNotification(Long commentId, Long postId, Long actionUser, Long receiverUser, PostType postType) {
+    public void addCommentNotification(Long commentId, Long postId, Long actionUser, Long receiverUser, PostType postType, CommentAction commentAction) {
         LocalDateTime currentDateTime = LocalDateTime.now();
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         UserDTO actionUserObj = userService.getUserById(actionUser);
         String actionUsername = actionUserObj.getUsername();
         parameters.addValue("user_id", receiverUser);
         parameters.addValue("action_user_id", actionUser);
-        parameters.addValue("message", actionUsername.substring(0,1).toUpperCase(Locale.ROOT) + actionUsername.substring(1).toLowerCase() + " liked Your comment");
+        switch (commentAction) {
+            case REPLY -> parameters.addValue("message", actionUsername.substring(0, 1).toUpperCase(Locale.ROOT) + actionUsername.substring(1).toLowerCase() + " replied to Your comment");
+            case MAIN_COMMENT -> parameters.addValue("message", actionUsername.substring(0, 1).toUpperCase(Locale.ROOT) + actionUsername.substring(1).toLowerCase() + " commented on Your post");
+            case LIKE -> parameters.addValue("message", actionUsername.substring(0, 1).toUpperCase(Locale.ROOT) + actionUsername.substring(1).toLowerCase() + " liked Your comment");
+        }
         parameters.addValue("is_read", false);
         parameters.addValue("created_at", Timestamp.valueOf(currentDateTime));
         parameters.addValue("forum_type", postType.toString());
         parameters.addValue("target", "COMMENT");
         parameters.addValue("target_id", commentId);
         parameters.addValue("post_id", postId);
-        jdbc.update(ADD_NOTIFICATION_ABOUT_COMMENT_LIKE, parameters);
+        jdbc.update(ADD_COMMENT_NOTIFICATION, parameters);
     }
-
-//            parameters.addValue("forum_type", postType.name());
-//        parameters.addValue("target", "POST");
-//        parameters.addValue("target_id", postId);
     @Override
-    public void deleteCommentLikeNotification(Long commentId, Long postId, PostType postType) {
+    public void deleteCommentNotification(Long commentId, Long postId, PostType postType) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("forum_type", postType.name());
         parameters.addValue("target", "COMMENT");
         parameters.addValue("target_id", commentId);
         parameters.addValue("post_id", postId);
-        jdbc.update(DELETE_NOTIFICATION_ABOUT_COMMENT_LIKE, parameters);
+        jdbc.update(DELETE_COMMENT_NOTIFICATION, parameters);
     }
 
     @Override
